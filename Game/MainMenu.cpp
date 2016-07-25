@@ -13,17 +13,10 @@ void MainMenu::Update() {
     WrapAroundSelected(p1_selected);
     WrapAroundSelected(p2_selected);
 
-    int x;
-    int y;
-    int offset;
-    sf::Vertex* quad_selected;
-
-    // Player 1's selection box
-    x = p1_selected.x;
-    y = p1_selected.y;
-    offset = 8;
-
-    quad_selected = &vertices[MENU_X * MENU_Y * 4];
+    int x = p1_selected.x;
+    int y = p1_selected.y;
+    int offset = 8;
+    sf::Vertex* quad_selected = &vertices[MENU_X * MENU_Y * 4];
 
     // define its 4 corners
     quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);

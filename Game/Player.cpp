@@ -48,7 +48,7 @@ void Player::UpdateProjectiles(TileMap* &tileMap) {
         projectiles[i]->Update(tileMap);
 
         if (projectiles[i]->IsExpired()) {
-            if (projectiles[i]->IsTeleportedInBounds()) {
+            if (projectiles[i]->IsTeleportedInBounds(tileMap)) {
                 sprite.setPosition(projectiles[i]->GetPosition());
             }
 
@@ -60,11 +60,11 @@ void Player::UpdateProjectiles(TileMap* &tileMap) {
 
 // Move tank down 1 tile per frame if space exists below it
 void Player::UpdateFallingPlayer(TileMap* &tileMap) {
-    if (tileMap->tiles[tile_coords.x][tile_coords.y + 1].status == 0 && tileMap->tiles[tile_coords.x + 1][tile_coords.y + 1].status == 0) {
+    if (tileMap->GetTile(tile_coords.x, tile_coords.y + 1).status == 0 && tileMap->GetTile(tile_coords.x + 1, tile_coords.y + 1).status == 0) {
         sprite.move(0, TILE_SIZE);
     }
 
-    if (tile_coords.x < 0 || tile_coords.x > TILES_X || tile_coords.y < 0 || tile_coords.y >= TILES_Y - 1) {
+    if (!IsInBounds(tile_coords)) {
         is_dead = true;
     }
 }
@@ -116,10 +116,10 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
                 break;
             case 3:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3.1, 0)); // tunnel without outer shell
                 break;
             case 4:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 4.1, 0)); // tunnel without outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
                 break;
             case 5:
                 projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
@@ -168,21 +168,12 @@ void Player::InputRotateCounterClockwise() {
 // Move player left
 void Player::InputMoveLeft(TileMap* &tileMap) {
     if (fuel > 0 && (!fired || is_real_time)) {
-        if (IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y - 1))) {
-            if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 2) {
-                if (tileMap->tiles[tile_coords.x - 1][tile_coords.y - 1].status == 0) {
-                    fuel--;
-                    sprite.move(-TILE_SIZE, -TILE_SIZE);
-                }
-            } else {
-                fuel--;
-                sprite.move(-TILE_SIZE, 0);
-            }
-        } else if (IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y))) {
-            if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 0) {
-                fuel--;
-                sprite.move(-TILE_SIZE, 0);
-            }
+        if (tileMap->GetTile(tile_coords.x - 1, tile_coords.y).status > 0 && tileMap->GetTile(tile_coords.x - 1, tile_coords.y - 1).status == 0) {
+            --fuel;
+            sprite.move(-TILE_SIZE, -TILE_SIZE);
+        } else if (tileMap->GetTile(tile_coords.x - 1, tile_coords.y).status == 0) {
+            --fuel;
+            sprite.move(-TILE_SIZE, 0);
         }
     }
 }
@@ -190,21 +181,12 @@ void Player::InputMoveLeft(TileMap* &tileMap) {
 // Move player right
 void Player::InputMoveRight(TileMap* &tileMap) {
     if (fuel > 0 && (!fired || is_real_time)) {
-        if (IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y - 1))) {
-            if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 2) {
-                if (tileMap->tiles[tile_coords.x + 2][tile_coords.y - 1].status == 0) {
-                    fuel--;
-                    sprite.move(TILE_SIZE, -TILE_SIZE);
-                }
-            } else {
-                fuel--;
-                sprite.move(TILE_SIZE, 0);
-            }
-        } else if (IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y))) {
-            if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 0) {
-                fuel--;
-                sprite.move(TILE_SIZE, 0);
-            }
+        if (tileMap->GetTile(tile_coords.x + 2, tile_coords.y).status > 0 && tileMap->GetTile(tile_coords.x + 2, tile_coords.y - 1).status == 0) {
+            --fuel;
+            sprite.move(TILE_SIZE, -TILE_SIZE);
+        } else if (tileMap->GetTile(tile_coords.x + 2, tile_coords.y).status == 0) {
+            --fuel;
+            sprite.move(TILE_SIZE, 0);
         }
     }
 }

@@ -12,6 +12,7 @@ extern std::string MENU_MAP_FILE;
 extern std::string MENU_COLOR_FILE;
 extern std::string TILE_FILE;
 extern const int TILE_SIZE;
+extern const int TILE_PADDING;
 extern const int TILES_X;
 extern const int TILES_Y;
 extern const float PI;
@@ -21,3 +22,8 @@ std::string ToString(int);
 std::string ToString(sf::Vector2i);
 void DrawDebugString();
 void CreateDebugString();
+
+struct Tile {
+    int status;
+    sf::Vector2f velocity;
+};

@@ -8,7 +8,7 @@ public:
     Projectile_Teleport(sf::Vector2f, sf::Vector2f, float, int, float, int);
     virtual ~Projectile_Teleport() {};
     virtual void PostHit(TileMap* &);
-    virtual bool IsTeleportedInBounds();
+    virtual bool IsTeleportedInBounds(TileMap* &);
 private:
 
 };

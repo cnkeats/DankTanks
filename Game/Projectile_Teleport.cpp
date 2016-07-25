@@ -16,8 +16,8 @@ Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f ang
 }
 
 // Overridden IsTeleportedInBounds(), normally just returns false
-bool Projectile_Teleport::IsTeleportedInBounds() {
-    if (IsInBounds(sf::Vector2f(GetPosition().x, GetPosition().y)) && IsInBounds(sf::Vector2f(GetPosition().x + TILE_SIZE, GetPosition().y))) {
+bool Projectile_Teleport::IsTeleportedInBounds(TileMap* &tileMap) {
+    if (tileMap->GetTile(tile_coords.x, tile_coords.y).status >= 0 && tileMap->GetTile(tile_coords.x + 1, tile_coords.y).status >= 0) {
         return true;
     } else {
         return false;
