@@ -44,6 +44,7 @@
 		<Unit filename="Cousine-Regular.ttf" />
 		<Unit filename="Globals.cpp" />
 		<Unit filename="Globals.h" />
+		<Unit filename="ParticleSystem.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -1,9 +1,12 @@
 #include "Application.h"
+#include "ParticleSystem.cpp"
 
 Application::~Application() {}
 
 Application::Application() {
     InitialSetup();
+
+    ParticleSystem particles(10000);
 
     // Use a fixed time step
     static const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f); // 60 fps
@@ -20,7 +23,20 @@ Application::Application() {
             elapsed_time += clock.restart();
         }
 
-        Render();
+        //Render();
+
+        // make the particle system emitter follow the mouse
+        sf::Vector2i mouse = sf::Mouse::getPosition(window);
+        particles.setEmitter(window.mapPixelToCoords(mouse));
+
+        // update it
+        particles.update(elapsed_time);
+
+        // draw it
+        window.clear();
+        window.draw(particles);
+        debugString(debug_string, window, font);
+        window.display();
     }
 }
 
