@@ -1,3 +1,4 @@
+#pragma once
 #include "Globals.h"
 
 class TileMap {
@@ -6,10 +7,15 @@ public:
     ~TileMap();
     void Update(sf::RenderWindow &);
 
+    std::vector< std::vector<int> > tiles;
+    std::vector< std::vector<sf::Vector2f> > vector_field;
+
 private:
-    static const int TILE_SIZE = 20;
-    static const int TERRAIN_SIZE_X = 80;
-    static const int TERRAIN_SIZE_Y = 40;
-    sf::RectangleShape terrain_tile;
-    int terrain[TERRAIN_SIZE_Y][TERRAIN_SIZE_X];
+    void PopulateTiles();
+    void PopulateVectorField();
+
+    static const int TILE_SIZE = 10;
+    static const int TILES_X = 160;
+    static const int TILES_Y = 80;
+    sf::RectangleShape tile;
 };

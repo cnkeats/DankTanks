@@ -20,7 +20,6 @@ Application::Application() {
     while (window.isOpen()) {
         elapsed_time = clock.restart();
         debug_string = "usec/frame: " + toString(elapsed_time.asMicroseconds()) + " / 16666";
-        debug_string += " ... " + toString(projectile_vector.size());
 
         while (elapsed_time < TIME_PER_FRAME) {
             ProcessInput();
@@ -60,15 +59,16 @@ void Application::Render() {
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdateProjectiles();
+            debugString(debug_string, window, font);
             break;
         case Paused:
             break;
         default:
             debug_string = "Game state error";
+            debugString(debug_string, window, font);
             break;
     }
 
-    debugString(debug_string, window, font);
     window.display();
 }
 
@@ -79,7 +79,7 @@ void Application::UpdateTerrain() {
 
 void Application::UpdateProjectiles() {
     for (unsigned int i = 0; i < projectile_vector.size(); i++) {
-        projectile_vector[i]->Update(window);
+        projectile_vector[i]->Update(window, tileMap);
     }
 }
 
