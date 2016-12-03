@@ -12,6 +12,7 @@ private:
     void InitialSetup();
     void ProcessInput();
     void Render();
+    void GenerateTerrain();
     void UpdateTerrain();
     void UpdateProjectiles();
 

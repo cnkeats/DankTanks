@@ -19,7 +19,7 @@ Application::Application() {
     // Main game loop
     while (window.isOpen()) {
         elapsed_time = clock.restart();
-        debug_string = "usec/frame: " + toString(elapsed_time.asMicroseconds()) + " / 16666";
+        debug_string = toString(elapsed_time.asMicroseconds()) + " / 16666";
 
         while (elapsed_time < TIME_PER_FRAME) {
             ProcessInput();
@@ -80,13 +80,18 @@ void Application::UpdateTerrain() {
 void Application::UpdateProjectiles() {
     for (unsigned int i = 0; i < projectile_vector.size(); i++) {
         projectile_vector[i]->Update(window, tileMap);
+
+        if (projectile_vector[i]->isExpired()) {
+            delete projectile_vector[i];
+            projectile_vector.erase(projectile_vector.begin() + i);
+        }
     }
 }
 
 // Load files and set all starting states and defaults
 void Application::InitialSetup() {
     // Create window
-    window.create(sf::VideoMode(1600, 800), "Dank Tanks!");
+    window.create(sf::VideoMode(1, 1), "Dank Tanks!", sf::Style::Fullscreen);
 
     // Load a font for sf::Text
     font.loadFromFile("Cousine-Regular.ttf");

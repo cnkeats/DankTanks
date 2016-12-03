@@ -7,13 +7,16 @@ public:
     Projectile();
     ~Projectile();
     void Update(sf::RenderWindow &, TileMap* &);
+    bool isExpired();
 
 private:
+    bool isInBounds();
+
     sf::RectangleShape sprite;
     sf::Vector2f velocity;
-    sf::Vector2i grid_coords;
-    static const int TILE_SIZE = 10;
-    static const int TILES_X = 160;
-    static const int TILES_Y = 80;
-    bool isInBounds(sf::Vector2i);
+    sf::Vector2i tile_coords;
+    static const int TILE_SIZE = 15;
+    static const int TILES_X = 128;
+    static const int TILES_Y = 72;
+    bool is_expired;
 };

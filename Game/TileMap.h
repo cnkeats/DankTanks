@@ -1,21 +1,34 @@
 #pragma once
 #include "Globals.h"
 
+struct Tile {
+    int status;
+    sf::Vector2f velocity;
+};
+
 class TileMap {
 public:
     TileMap();
     ~TileMap();
     void Update(sf::RenderWindow &);
+    void Generate();
+    bool isGenerated();
 
-    std::vector< std::vector<int> > tiles;
-    std::vector< std::vector<sf::Vector2f> > vector_field;
+    std::vector< std::vector<Tile> > tiles;
 
 private:
+    void PopulateTileTypes();
     void PopulateTiles();
     void PopulateVectorField();
+    void GenerateBody();
+    void DrawMap(sf::RenderWindow &);
 
-    static const int TILE_SIZE = 10;
-    static const int TILES_X = 160;
-    static const int TILES_Y = 80;
-    sf::RectangleShape tile;
+    static const int TILE_SIZE = 15;
+    static const int TILES_X = 128;
+    static const int TILES_Y = 72;
+    std::vector<sf::RectangleShape> tile_types;
+    bool is_generated;
+    int bodies_to_generate;
+    enum LoadState {GeneratingBodies, PopulatingVectorField, DrawingMap};
+    LoadState load_state;
 };
