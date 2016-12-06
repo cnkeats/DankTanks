@@ -2,12 +2,12 @@
 
 Projectile::~Projectile() {}
 
-Projectile::Projectile() {
+Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setSize(sf::Vector2f(2, 2));
     sprite.setFillColor(sf::Color::White);
-    sprite.setPosition(100, 500);
+    sprite.setPosition(position);
 
-    velocity = sf::Vector2f(5.0f, -5.0f);
+    velocity = angle;
 
     is_expired = false;
 }
@@ -16,7 +16,7 @@ void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
     tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
     //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
 
-    if (isInBounds()) {
+    if (isInBounds(tile_coords)) {
         if (tileMap->tiles[tile_coords.x][tile_coords.y].status == 0) {
             // Add velocity from vector field
             velocity.x += tileMap->tiles[tile_coords.x][tile_coords.y].velocity.x;
@@ -30,10 +30,15 @@ void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
         } else { // Hit!
             //TODO border check
             tileMap->tiles[tile_coords.x][tile_coords.y].status = 0;
-            tileMap->tiles[tile_coords.x+1][tile_coords.y].status = 0;
-            tileMap->tiles[tile_coords.x][tile_coords.y+1].status = 0;
-            tileMap->tiles[tile_coords.x-1][tile_coords.y].status = 0;
-            tileMap->tiles[tile_coords.x][tile_coords.y-1].status = 0;
+            if (isInBounds(sf::Vector2i(tile_coords.x+1, tile_coords.y))) {
+                tileMap->tiles[tile_coords.x+1][tile_coords.y].status = 0;
+            } else if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y+1))) {
+                tileMap->tiles[tile_coords.x][tile_coords.y+1].status = 0;
+            } else if (isInBounds(sf::Vector2i(tile_coords.x-1, tile_coords.y))) {
+                tileMap->tiles[tile_coords.x-1][tile_coords.y].status = 0;
+            } else if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y-1))) {
+                tileMap->tiles[tile_coords.x][tile_coords.y-1].status = 0;
+            }
 
             is_expired = true;
         }
@@ -42,8 +47,8 @@ void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
     }
 }
 
-bool Projectile::isInBounds() {
-    return tile_coords.x >= 0 && tile_coords.x < TILES_X && tile_coords.y >= 0 && tile_coords.y < TILES_Y;
+bool Projectile::isInBounds(sf::Vector2i v) {
+    return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y;
 }
 
 bool Projectile::isExpired() {

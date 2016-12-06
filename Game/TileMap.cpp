@@ -3,8 +3,7 @@
 TileMap::~TileMap() {}
 
 TileMap::TileMap() {
-    load_state = GeneratingBodies;
-    bodies_to_generate = 30;
+    load_state = Generating;
 
     PopulateTileTypes();
     PopulateTiles();
@@ -12,17 +11,17 @@ TileMap::TileMap() {
 
 void TileMap::Update(sf::RenderWindow &window) {
     switch (load_state) {
-        case GeneratingBodies:
+        case Generating:
             Generate();
-            debug_string += " [Generating bodies]";
+            debug_string += " [Generating] ";
             break;
         case PopulatingVectorField:
             PopulateVectorField();
-            debug_string += " [Populating vector field]";
+            debug_string += " [Populating vector field] ";
             break;
         case DrawingMap:
             DrawMap(window);
-            debug_string += " [Drawing Map]";
+            debug_string += " [Drawing Map] ";
             break;
         default:
             break;
@@ -62,25 +61,13 @@ void TileMap::PopulateTiles() {
 }
 
 void TileMap::Generate() {
-    if (bodies_to_generate > 0) {
-        GenerateBody();
-        bodies_to_generate--;
-    } else {
-        load_state = PopulatingVectorField;
-    }
-}
-
-void TileMap::GenerateBody() {
-    //TODO Implement timer
-    sf::Vector2i center = sf::Vector2i(rand()%TILES_X, rand()%TILES_Y);
-
-    for (int x = -4; x < 5; ++x) {
-        for (int y = -4; y < 5; ++y) {
-            if (abs(x) + abs(y) <= 6 && center.x + x >= 0 && center.x + x < TILES_X && center.y + y >= 0 && center.y + y < TILES_Y) {
-                tiles[center.x + x][center.y + y].status = 1;
-            }
+    for (int x = 0; x < TILES_X; ++x) {
+        for (int y = TILES_Y - 30; y < TILES_Y; ++y) {
+            tiles[x][y].status = 1;
         }
     }
+
+    load_state = PopulatingVectorField;
 }
 
 void TileMap::PopulateVectorField() {
@@ -88,11 +75,7 @@ void TileMap::PopulateVectorField() {
     //TODO fix loading
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            if (tiles[x][y].status == 0) {
-                tiles[x][y].velocity = sf::Vector2f(0.0f, -0.1f);
-            } else if (tiles[x][y].status == 1) {
-                tiles[x][y].velocity = sf::Vector2f(0.0f, 0.0f);
-            }
+            tiles[x][y].velocity = sf::Vector2f(0.0f, -0.1f);
         }
     }
 

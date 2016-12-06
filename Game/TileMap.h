@@ -12,7 +12,6 @@ public:
     ~TileMap();
     void Update(sf::RenderWindow &);
     void Generate();
-    bool isGenerated();
 
     std::vector< std::vector<Tile> > tiles;
 
@@ -20,7 +19,6 @@ private:
     void PopulateTileTypes();
     void PopulateTiles();
     void PopulateVectorField();
-    void GenerateBody();
     void DrawMap(sf::RenderWindow &);
 
     static const int TILE_SIZE = 15;
@@ -28,7 +26,6 @@ private:
     static const int TILES_Y = 72;
     std::vector<sf::RectangleShape> tile_types;
     bool is_generated;
-    int bodies_to_generate;
-    enum LoadState {GeneratingBodies, PopulatingVectorField, DrawingMap};
+    enum LoadState {Generating, PopulatingVectorField, DrawingMap};
     LoadState load_state;
 };

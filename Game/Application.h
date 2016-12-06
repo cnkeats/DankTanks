@@ -1,6 +1,7 @@
 #include <math.h>
 #include "Globals.h"
 #include "TileMap.h"
+#include "Player.h"
 #include "Projectile.h"
 
 class Application {
@@ -12,9 +13,8 @@ private:
     void InitialSetup();
     void ProcessInput();
     void Render();
-    void GenerateTerrain();
     void UpdateTerrain();
-    void UpdateProjectiles();
+    void UpdatePlayers();
 
     sf::RenderWindow window;
     sf::Font font;
@@ -22,5 +22,5 @@ private:
     GameState game_state;
 
     TileMap *tileMap;
-    std::vector<Projectile*> projectile_vector;
+    std::vector<Player*> players;
 };

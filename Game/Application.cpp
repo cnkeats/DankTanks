@@ -2,10 +2,6 @@
 
 Application::~Application() {
     delete tileMap;
-
-    for (unsigned int i = 0; i < projectile_vector.size(); i++) {
-        delete projectile_vector[i];
-    }
 }
 
 Application::Application() {
@@ -19,7 +15,7 @@ Application::Application() {
     // Main game loop
     while (window.isOpen()) {
         elapsed_time = clock.restart();
-        debug_string = toString(elapsed_time.asMicroseconds()) + " / 16666";
+        debug_string = toString(elapsed_time.asMicroseconds()) + " / 16666 ";
 
         while (elapsed_time < TIME_PER_FRAME) {
             ProcessInput();
@@ -39,14 +35,22 @@ void Application::ProcessInput() {
         } else if (event.type == sf::Event::KeyPressed) {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
                 window.close();
-            } else if (event.key.code == sf::Keyboard::Space) { // Space bar
-                projectile_vector.push_back(new Projectile());
             } else if (event.key.code == sf::Keyboard::P) { // "P" key pressed
                 if (game_state == Running) {
                     game_state = Paused;
                 } else {
                     game_state = Running;
                 }
+            } else if (event.key.code == sf::Keyboard::Space) {
+                players[0]->InputFire(0);
+            } else if (event.key.code == sf::Keyboard::Up) {
+                players[0]->InputRotate(-1);
+            } else if (event.key.code == sf::Keyboard::Down) {
+                players[0]->InputRotate(1);
+            } else if (event.key.code == sf::Keyboard::Right) {
+                players[0]->InputMove(1);
+            } else if (event.key.code == sf::Keyboard::Left) {
+                players[0]->InputMove(-1);
             }
         }
     }
@@ -58,7 +62,7 @@ void Application::Render() {
         case Running:
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
-            UpdateProjectiles();
+            UpdatePlayers();
             debugString(debug_string, window, font);
             break;
         case Paused:
@@ -77,14 +81,9 @@ void Application::UpdateTerrain() {
     tileMap->Update(window);
 }
 
-void Application::UpdateProjectiles() {
-    for (unsigned int i = 0; i < projectile_vector.size(); i++) {
-        projectile_vector[i]->Update(window, tileMap);
-
-        if (projectile_vector[i]->isExpired()) {
-            delete projectile_vector[i];
-            projectile_vector.erase(projectile_vector.begin() + i);
-        }
+void Application::UpdatePlayers() {
+    for (unsigned int i = 0; i < players.size(); ++i) {
+        players[i]->Update(window, tileMap);
     }
 }
 
@@ -99,5 +98,9 @@ void Application::InitialSetup() {
     // Initialize game state
     game_state = Running;
 
+    // Create map
     tileMap = new TileMap();
+
+    // Create players
+    players.push_back(new Player());
 }
