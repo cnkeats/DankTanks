@@ -8,10 +8,10 @@ public:
     Projectile(sf::Vector2f, sf::Vector2f);
     ~Projectile();
     void Update(TileMap* &);
-    bool isExpired();
+    bool IsExpired();
 
 private:
-    bool isInBounds(sf::Vector2i);
+    bool IsInBounds(sf::Vector2i);
 
     sf::RectangleShape sprite;
     sf::Vector2f velocity;

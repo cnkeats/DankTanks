@@ -44,9 +44,30 @@ void TileMap::CreateTileVector() {
 }
 
 void TileMap::CreateTerrain() {
+    // TODO Make this work for different left & right
+    int left = -2;
+    int right = 5;
+
     for (int x = 0; x < TILES_X; ++x) {
-        for (int y = TILES_Y - 50; y < TILES_Y; ++y) {
-            tiles[x][y].status = 1;
+        float fx_f = 100;
+        for (int i = left; i < right; ++i) {
+            fx_f *= (x - i*50);
+        }
+
+        for (int i = left; i < right; ++i) {
+            fx_f /= 100;
+        }
+
+        fx_f += 80;
+
+        int fx = static_cast<int> (fx_f);
+
+        if (fx >= 0 && fx < TILES_Y) {
+            tiles[x][fx].status = 1;
+
+            for (int y = TILES_Y - 1; y > fx; --y) {
+                tiles[x][y].status = 1;
+            }
         }
     }
 

@@ -8,7 +8,7 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setPosition(position);
 
     velocity = angle;
-    blast_radius = 25;
+    blast_radius = 30;
 
     is_expired = false;
 }
@@ -17,7 +17,7 @@ void Projectile::Update(TileMap* &tileMap) {
     tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
     //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
 
-    if (isInBounds(tile_coords)) {
+    if (IsInBounds(tile_coords)) {
         if (tileMap->tiles[tile_coords.x][tile_coords.y].status == 0) {
             // Add velocity from vector field
             velocity.x += tileMap->tiles[tile_coords.x][tile_coords.y].velocity.x;
@@ -35,7 +35,7 @@ void Projectile::Update(TileMap* &tileMap) {
                 for (int y = -blast_radius; y <= blast_radius; ++y) {
                     sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
 
-                    if (isInBounds(p) && x*x + y*y < blast_radius*blast_radius) {
+                    if (IsInBounds(p) && x*x + y*y < blast_radius*blast_radius) {
                         tileMap->UpdateStatus(p, 0);
                     }
                 }
@@ -48,10 +48,10 @@ void Projectile::Update(TileMap* &tileMap) {
     }
 }
 
-bool Projectile::isInBounds(sf::Vector2i v) {
+bool Projectile::IsInBounds(sf::Vector2i v) {
     return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y;
 }
 
-bool Projectile::isExpired() {
+bool Projectile::IsExpired() {
     return is_expired;
 }

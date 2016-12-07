@@ -47,10 +47,20 @@ void Application::ProcessInput() {
                 players[0]->InputRotate(-1);
             } else if (event.key.code == sf::Keyboard::Down) {
                 players[0]->InputRotate(1);
-            } else if (event.key.code == sf::Keyboard::Right) {
-                players[0]->InputMove(1);
             } else if (event.key.code == sf::Keyboard::Left) {
-                players[0]->InputMove(-1);
+                players[0]->InputMove(tileMap, -1);
+            } else if (event.key.code == sf::Keyboard::Right) {
+                players[0]->InputMove(tileMap, 1);
+            } else if (event.key.code == sf::Keyboard::LControl) {
+                players[1]->InputFire(0);
+            } else if (event.key.code == sf::Keyboard::W) {
+                players[1]->InputRotate(-1);
+            } else if (event.key.code == sf::Keyboard::S) {
+                players[1]->InputRotate(1);
+            } else if (event.key.code == sf::Keyboard::A) {
+                players[1]->InputMove(tileMap, -1);
+            } else if (event.key.code == sf::Keyboard::D) {
+                players[1]->InputMove(tileMap, 1);
             }
         }
     }
@@ -85,6 +95,10 @@ void Application::UpdateTerrain() {
 void Application::UpdatePlayers() {
     for (unsigned int i = 0; i < players.size(); ++i) {
         players[i]->Update(tileMap);
+
+        if (players[i]->IsDead()) {
+            debug_string += " players[" + toString(i) + "] is dead.";
+        }
     }
 }
 
@@ -103,6 +117,6 @@ void Application::InitialSetup() {
     tileMap = new TileMap();
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
+    players.push_back(new Player(sf::Vector2f(130 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
     players.push_back(new Player(sf::Vector2f(118 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
 }
