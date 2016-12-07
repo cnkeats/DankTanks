@@ -10,7 +10,7 @@ class TileMap : public sf::Drawable, public sf::Transformable {
 public:
     TileMap();
     ~TileMap();
-    void Update(sf::RenderWindow &);
+    void Update();
     void UpdateStatus(sf::Vector2i, int);
 
     std::vector< std::vector<Tile> > tiles;
@@ -23,9 +23,6 @@ private:
     void UpdateStatus(sf::Vector2i);
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    static const int TILE_SIZE = 15;
-    static const int TILES_X = 128;
-    static const int TILES_Y = 72;
     enum LoadState {CreatingTerrain, CreatingVectorField, DrawingMap};
     LoadState load_state;
     sf::VertexArray vertices;

@@ -7,7 +7,7 @@ class Projectile {
 public:
     Projectile(sf::Vector2f, sf::Vector2f);
     ~Projectile();
-    void Update(sf::RenderWindow &, TileMap* &);
+    void Update(TileMap* &);
     bool isExpired();
 
 private:
@@ -16,8 +16,5 @@ private:
     sf::RectangleShape sprite;
     sf::Vector2f velocity;
     sf::Vector2i tile_coords;
-    static const int TILE_SIZE = 15;
-    static const int TILES_X = 128;
-    static const int TILES_Y = 72;
     bool is_expired;
 };

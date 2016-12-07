@@ -6,7 +6,7 @@ Player::~Player() {
     }
 }
 
-Player::Player() {
+Player::Player(sf::Vector2f position) {
     angle = 45;
     power = 5;
 
@@ -14,19 +14,19 @@ Player::Player() {
     sprite.setOutlineColor(sf::Color(127, 127, 127, 255));
     sprite.setOutlineThickness(0);
     sprite.setFillColor(sf::Color::Green);
-    sprite.setPosition(10 * TILE_SIZE, (TILES_Y - 31) * TILE_SIZE);
+    sprite.setPosition(position);
 }
 
-void Player::Update(sf::RenderWindow &window, TileMap* &tileMap) {
-    UpdateProjectiles(window, tileMap);
+void Player::Update(TileMap* &tileMap) {
+    UpdateProjectiles(tileMap);
 
     debug_string += toString(angle);
     window.draw(sprite);
 }
 
-void Player::UpdateProjectiles(sf::RenderWindow &window, TileMap* &tileMap) {
+void Player::UpdateProjectiles(TileMap* &tileMap) {
     for (unsigned int i = 0; i < projectiles.size(); i++) {
-        projectiles[i]->Update(window, tileMap);
+        projectiles[i]->Update(tileMap);
 
         if (projectiles[i]->isExpired()) {
             delete projectiles[i];

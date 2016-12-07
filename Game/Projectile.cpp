@@ -12,7 +12,7 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     is_expired = false;
 }
 
-void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
+void Projectile::Update(TileMap* &tileMap) {
     tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
     //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
 
@@ -29,26 +29,6 @@ void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
             window.draw(sprite);
         } else { // Hit!
             tileMap->UpdateStatus(tile_coords, 0);
-            //TODO border check
-            /*tileMap->tiles[tile_coords.x][tile_coords.y].status = 0;
-            if (isInBounds(sf::Vector2i(tile_coords.x+1, tile_coords.y))) {
-                tileMap->tiles[tile_coords.x+1][tile_coords.y].status = 0;
-
-            }
-
-            if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y+1))) {
-                tileMap->tiles[tile_coords.x][tile_coords.y+1].status = 0;
-
-            }
-
-            if (isInBounds(sf::Vector2i(tile_coords.x-1, tile_coords.y))) {
-                tileMap->tiles[tile_coords.x-1][tile_coords.y].status = 0;
-
-            }
-
-            if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y-1))) {
-                tileMap->tiles[tile_coords.x][tile_coords.y-1].status = 0;
-            }*/
 
             is_expired = true;
         }

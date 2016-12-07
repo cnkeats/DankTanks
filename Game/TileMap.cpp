@@ -9,7 +9,7 @@ TileMap::TileMap() {
     CreateTileMap();
 }
 
-void TileMap::Update(sf::RenderWindow &window) {
+void TileMap::Update() {
     switch (load_state) {
         case CreatingTerrain:
             CreateTerrain();

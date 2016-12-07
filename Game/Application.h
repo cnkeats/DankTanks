@@ -16,8 +16,6 @@ private:
     void UpdateTerrain();
     void UpdatePlayers();
 
-    sf::RenderWindow window;
-    sf::Font font;
     enum GameState {Running, Paused};
     GameState game_state;
 

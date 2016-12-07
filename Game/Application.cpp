@@ -63,13 +63,13 @@ void Application::Render() {
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            debugString(debug_string, window, font);
+            debugString(debug_string);
             break;
         case Paused:
             break;
         default:
             debug_string = "Game state error";
-            debugString(debug_string, window, font);
+            debugString(debug_string);
             break;
     }
 
@@ -78,13 +78,13 @@ void Application::Render() {
 
 // Update terrain using 2D array and tiles
 void Application::UpdateTerrain() {
-    tileMap->Update(window);
+    tileMap->Update();
     window.draw(*tileMap);
 }
 
 void Application::UpdatePlayers() {
     for (unsigned int i = 0; i < players.size(); ++i) {
-        players[i]->Update(window, tileMap);
+        players[i]->Update(tileMap);
     }
 }
 
@@ -103,5 +103,6 @@ void Application::InitialSetup() {
     tileMap = new TileMap();
 
     // Create players
-    players.push_back(new Player());
+    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, (TILES_Y - 31) * TILE_SIZE)));
+    players.push_back(new Player(sf::Vector2f(118 * TILE_SIZE, (TILES_Y - 31) * TILE_SIZE)));
 }
