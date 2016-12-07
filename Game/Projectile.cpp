@@ -28,17 +28,27 @@ void Projectile::Update(sf::RenderWindow &window, TileMap* &tileMap) {
             // Draw sprite to screen
             window.draw(sprite);
         } else { // Hit!
+            tileMap->UpdateStatus(tile_coords, 0);
             //TODO border check
-            tileMap->tiles[tile_coords.x][tile_coords.y].status = 0;
+            /*tileMap->tiles[tile_coords.x][tile_coords.y].status = 0;
             if (isInBounds(sf::Vector2i(tile_coords.x+1, tile_coords.y))) {
                 tileMap->tiles[tile_coords.x+1][tile_coords.y].status = 0;
-            } else if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y+1))) {
-                tileMap->tiles[tile_coords.x][tile_coords.y+1].status = 0;
-            } else if (isInBounds(sf::Vector2i(tile_coords.x-1, tile_coords.y))) {
-                tileMap->tiles[tile_coords.x-1][tile_coords.y].status = 0;
-            } else if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y-1))) {
-                tileMap->tiles[tile_coords.x][tile_coords.y-1].status = 0;
+
             }
+
+            if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y+1))) {
+                tileMap->tiles[tile_coords.x][tile_coords.y+1].status = 0;
+
+            }
+
+            if (isInBounds(sf::Vector2i(tile_coords.x-1, tile_coords.y))) {
+                tileMap->tiles[tile_coords.x-1][tile_coords.y].status = 0;
+
+            }
+
+            if (isInBounds(sf::Vector2i(tile_coords.x, tile_coords.y-1))) {
+                tileMap->tiles[tile_coords.x][tile_coords.y-1].status = 0;
+            }*/
 
             is_expired = true;
         }

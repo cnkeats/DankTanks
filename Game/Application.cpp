@@ -79,6 +79,7 @@ void Application::Render() {
 // Update terrain using 2D array and tiles
 void Application::UpdateTerrain() {
     tileMap->Update(window);
+    window.draw(*tileMap);
 }
 
 void Application::UpdatePlayers() {

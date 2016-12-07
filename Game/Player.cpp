@@ -7,7 +7,7 @@ Player::~Player() {
 }
 
 Player::Player() {
-    angle = 90;
+    angle = 45;
     power = 5;
 
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
