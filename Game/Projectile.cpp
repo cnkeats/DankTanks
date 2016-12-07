@@ -8,6 +8,7 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setPosition(position);
 
     velocity = angle;
+    blast_radius = 25;
 
     is_expired = false;
 }
@@ -29,6 +30,16 @@ void Projectile::Update(TileMap* &tileMap) {
             window.draw(sprite);
         } else { // Hit!
             tileMap->UpdateStatus(tile_coords, 0);
+
+            for (int x = -blast_radius; x <= blast_radius; ++x) {
+                for (int y = -blast_radius; y <= blast_radius; ++y) {
+                    sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
+
+                    if (isInBounds(p) && x*x + y*y < blast_radius*blast_radius) {
+                        tileMap->UpdateStatus(p, 0);
+                    }
+                }
+            }
 
             is_expired = true;
         }

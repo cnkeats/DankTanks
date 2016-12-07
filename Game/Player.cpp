@@ -8,7 +8,7 @@ Player::~Player() {
 
 Player::Player(sf::Vector2f position) {
     angle = 45;
-    power = 5;
+    power = 10;
 
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
     sprite.setOutlineColor(sf::Color(127, 127, 127, 255));

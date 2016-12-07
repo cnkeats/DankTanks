@@ -7,9 +7,9 @@
 std::string debug_string = "";
 sf::RenderWindow window;
 sf::Font font;
-const int TILE_SIZE = 15;
-const int TILES_X = 128;
-const int TILES_Y = 72;
+const int TILE_SIZE = 10;
+const int TILES_X = 192;
+const int TILES_Y = 108;
 const float PI_OVER_180 = 3.1415/180.0;
 
 int main() {

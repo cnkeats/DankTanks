@@ -20,6 +20,7 @@ void TileMap::Update() {
             debug_string += " [Populating vector field] ";
             break;
         case DrawingMap:
+            UpdateFallingBlocks();
             debug_string += " [Drawing Map] ";
             break;
         default:
@@ -44,7 +45,7 @@ void TileMap::CreateTileVector() {
 
 void TileMap::CreateTerrain() {
     for (int x = 0; x < TILES_X; ++x) {
-        for (int y = TILES_Y - 30; y < TILES_Y; ++y) {
+        for (int y = TILES_Y - 50; y < TILES_Y; ++y) {
             tiles[x][y].status = 1;
         }
     }
@@ -68,7 +69,7 @@ void TileMap::CreateVectorField() {
 
 void TileMap::CreateTileMap() {
     // load the tileset texture
-    if (!tile_textures.loadFromFile("tile.png"))
+    if (!tile_textures.loadFromFile("tile__.png"))
         return;
 
     // resize the vertex array to fit the level size
@@ -125,4 +126,15 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     // draw the vertex array
     target.draw(vertices, states);
+}
+
+void TileMap::UpdateFallingBlocks() {
+    for (int x = 0; x < TILES_X; ++x) {
+        for (int y = TILES_Y - 1; y >= 0; --y) {
+            if (tiles[x][y].status == 0 && tiles[x][y - 1].status == 1) {
+                UpdateStatus(sf::Vector2i(x, y), 1);
+                UpdateStatus(sf::Vector2i(x, y - 1), 0);
+            }
+        }
+    }
 }

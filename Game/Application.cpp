@@ -103,6 +103,6 @@ void Application::InitialSetup() {
     tileMap = new TileMap();
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, (TILES_Y - 31) * TILE_SIZE)));
-    players.push_back(new Player(sf::Vector2f(118 * TILE_SIZE, (TILES_Y - 31) * TILE_SIZE)));
+    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
+    players.push_back(new Player(sf::Vector2f(118 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
 }

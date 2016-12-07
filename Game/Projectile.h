@@ -17,4 +17,5 @@ private:
     sf::Vector2f velocity;
     sf::Vector2i tile_coords;
     bool is_expired;
+    int blast_radius;
 };
