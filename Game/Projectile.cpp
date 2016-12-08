@@ -8,11 +8,12 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setPosition(position);
 
     velocity = angle;
-    blast_radius = 30;
+    blast_radius = 10;
 
     is_expired = false;
 }
 
+// Main game loop calls players update which calls this update each frame
 void Projectile::Update(TileMap* &tileMap) {
     tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
     //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
@@ -48,10 +49,12 @@ void Projectile::Update(TileMap* &tileMap) {
     }
 }
 
+// Checks if xy is on screen
 bool Projectile::IsInBounds(sf::Vector2i v) {
     return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y;
 }
 
+// Checks if projectile has expired
 bool Projectile::IsExpired() {
     return is_expired;
 }

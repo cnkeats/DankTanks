@@ -20,7 +20,7 @@ private:
     void CreateTerrain();
     void CreateTileMap();
     void CreateVectorField();
-    void UpdateFallingBlocks();
+    void UpdateFallingTiles();
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     enum LoadState {CreatingTerrain, CreatingVectorField, DrawingMap};

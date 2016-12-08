@@ -9,6 +9,7 @@ TileMap::TileMap() {
     CreateTileMap();
 }
 
+// Main game loop calls this update function
 void TileMap::Update() {
     switch (load_state) {
         case CreatingTerrain:
@@ -20,7 +21,7 @@ void TileMap::Update() {
             debug_string += " [Populating vector field] ";
             break;
         case DrawingMap:
-            UpdateFallingBlocks();
+            UpdateFallingTiles();
             debug_string += " [Drawing Map] ";
             break;
         default:
@@ -28,6 +29,7 @@ void TileMap::Update() {
     }
 }
 
+// Create the 2D vector for the tile map with 0 status and 0 xy velocity
 void TileMap::CreateTileVector() {
     std::vector<Tile> temp_column;
     Tile temp_tile;
@@ -43,8 +45,10 @@ void TileMap::CreateTileVector() {
     }
 }
 
+// Create terrain but updating statuses to 1 based on an equation
 void TileMap::CreateTerrain() {
-    // TODO Make this work for different left & right
+    // TODO Make this work better for different left & right for varied terrain
+    // TODO It's f(x) = 100*(x-100)(x-50)(x-0)(x+50)... currently
     int left = -2;
     int right = 5;
 
@@ -59,7 +63,6 @@ void TileMap::CreateTerrain() {
         }
 
         fx_f += 80;
-
         int fx = static_cast<int> (fx_f);
 
         if (fx >= 0 && fx < TILES_Y) {
@@ -72,22 +75,22 @@ void TileMap::CreateTerrain() {
     }
 
     CreateTileMap();
-
     load_state = CreatingVectorField;
 }
 
+// Populate vector field for each tile.
 void TileMap::CreateVectorField() {
-    //TODO Implement timer
-    //TODO fix loading
+    //TODO Implement timer for complex gravity calculated over several frames
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            tiles[x][y].velocity = sf::Vector2f(0.0f, -0.1f);
+            tiles[x][y].velocity = sf::Vector2f(0.0f, -0.16f);
         }
     }
 
     load_state = DrawingMap;
 }
 
+// Create actual drawable map using a vertex array
 void TileMap::CreateTileMap() {
     // load the tileset texture
     if (!tile_textures.loadFromFile("tile__.png"))
@@ -121,6 +124,7 @@ void TileMap::CreateTileMap() {
     }
 }
 
+// Redefine each tile's texture based on its status each frame
 void TileMap::UpdateStatus(sf::Vector2i position, int status) {
     // current tile's status
     tiles[position.x][position.y].status = status;
@@ -141,6 +145,7 @@ void TileMap::UpdateStatus(sf::Vector2i position, int status) {
     quad[3].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
 }
 
+// Virtual draw
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // apply the tileset texture
     states.texture = &tile_textures;
@@ -149,7 +154,8 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(vertices, states);
 }
 
-void TileMap::UpdateFallingBlocks() {
+// Move each tile down 1 tile per frame if space exists below it
+void TileMap::UpdateFallingTiles() {
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = TILES_Y - 1; y >= 0; --y) {
             if (tiles[x][y].status == 0 && tiles[x][y - 1].status == 1) {
