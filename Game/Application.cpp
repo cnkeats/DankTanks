@@ -67,6 +67,7 @@ void Application::UpdatePlayers() {
 void Application::InitialSetup() {
     // Create window
     window.create(sf::VideoMode(1, 1), "Dank Tanks!", sf::Style::Fullscreen);
+    window.setMouseCursorVisible(false);
 
     // Load a font for sf::Text
     font.loadFromFile("Cousine-Regular.ttf");
@@ -78,8 +79,8 @@ void Application::InitialSetup() {
     tileMap = new TileMap();
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(130 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
-    players.push_back(new Player(sf::Vector2f(118 * TILE_SIZE, (TILES_Y - 51) * TILE_SIZE)));
+    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, 0)));
+    players.push_back(new Player(sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
 }
 
 // Handle user input
@@ -100,23 +101,23 @@ void Application::ProcessInput() {
             } else if (event.key.code == sf::Keyboard::Space) {
                 players[0]->InputFire();
             } else if (event.key.code == sf::Keyboard::Up) {
-                players[0]->InputRotate(-1);
+                players[0]->InputRotateClockwise();
             } else if (event.key.code == sf::Keyboard::Down) {
-                players[0]->InputRotate(1);
+                players[0]->InputRotateCounterClockwise();
             } else if (event.key.code == sf::Keyboard::Left) {
-                players[0]->InputMove(tileMap, -1);
+                players[0]->InputMoveLeft(tileMap);
             } else if (event.key.code == sf::Keyboard::Right) {
-                players[0]->InputMove(tileMap, 1);
+                players[0]->InputMoveRight(tileMap);
             } else if (event.key.code == sf::Keyboard::LControl) {
                 players[1]->InputFire();
             } else if (event.key.code == sf::Keyboard::W) {
-                players[1]->InputRotate(-1);
+                players[1]->InputRotateClockwise();
             } else if (event.key.code == sf::Keyboard::S) {
-                players[1]->InputRotate(1);
+                players[1]->InputRotateCounterClockwise();
             } else if (event.key.code == sf::Keyboard::A) {
-                players[1]->InputMove(tileMap, -1);
+                players[1]->InputMoveLeft(tileMap);
             } else if (event.key.code == sf::Keyboard::D) {
-                players[1]->InputMove(tileMap, 1);
+                players[1]->InputMoveRight(tileMap);
             }
         }
     }

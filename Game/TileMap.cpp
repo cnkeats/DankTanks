@@ -47,31 +47,41 @@ void TileMap::CreateTileVector() {
 
 // Create terrain but updating statuses to 1 based on an equation
 void TileMap::CreateTerrain() {
-    // TODO Make this work better for different left & right for varied terrain
-    // TODO It's f(x) = 100*(x-100)(x-50)(x-0)(x+50)... currently
-    int left = -2;
-    int right = 5;
+    int x = 0;
+    int sign = -1;
+    int number_of_peaks_and_valleys = 6;
+    float amplitude = 1;
 
-    for (int x = 0; x < TILES_X; ++x) {
-        float fx_f = 100;
-        for (int i = left; i < right; ++i) {
-            fx_f *= (x - i*50);
+    while (x < TILES_X) {
+        if (sign > 0) {
+            amplitude = rand()%(TILES_Y * 1/5) + 5;
+        } else {
+            amplitude = rand()%(TILES_Y * 2/3) + 10;
         }
 
-        for (int i = left; i < right; ++i) {
-            fx_f /= 100;
-        }
+        for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+            float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.75;
 
-        fx_f += 80;
-        int fx = static_cast<int> (fx_f);
+            int fx = static_cast<int> (fx_f);
 
-        if (fx >= 0 && fx < TILES_Y) {
-            tiles[x][fx].status = 1;
+            if (fx < 0) {
+                fx = 0;
+            }
 
-            for (int y = TILES_Y - 1; y > fx; --y) {
-                tiles[x][y].status = 1;
+            if (fx < TILES_Y) {
+                tiles[x][fx].status = 1;
+
+                for (int y = TILES_Y - 1; y > fx; --y) {
+                    tiles[x][y].status = 1;
+                }
+            }
+            ++x;
+
+            if (x >= TILES_X) {
+                break;
             }
         }
+        sign *= -1;
     }
 
     CreateTileMap();
@@ -93,8 +103,9 @@ void TileMap::CreateVectorField() {
 // Create actual drawable map using a vertex array
 void TileMap::CreateTileMap() {
     // load the tileset texture
-    if (!tile_textures.loadFromFile("tile__.png"))
+    if (!tile_textures.loadFromFile(TILE_FILE)) {
         return;
+    }
 
     // resize the vertex array to fit the level size
     vertices.setPrimitiveType(sf::Quads);

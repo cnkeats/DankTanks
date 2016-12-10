@@ -4,13 +4,15 @@
 #include "Globals.h"
 #include "Application.h"
 
-std::string debug_string = "";
 sf::RenderWindow window;
 sf::Font font;
+std::string debug_string = "";
+std::string TILE_FILE = "tile_10.png";
 const int TILE_SIZE = 10;
-const int TILES_X = 192;
-const int TILES_Y = 108;
-const float PI_OVER_180 = 3.1415/180.0;
+const int TILES_X = 192; // 1920 / TILE_SIZE (5 = 384, 10 = 192, 15 = 128)
+const int TILES_Y = 108; // 1080 / TILE_SIZE (5 = 216, 10 = 108, 15 = 72)
+const float PI = 3.14159265;
+const float PI_OVER_180 = 3.14159265/180.0;
 
 int main() {
     srand(time(NULL));
