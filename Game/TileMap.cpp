@@ -104,7 +104,7 @@ void TileMap::CreateVectorField() {
 void TileMap::CreateTileMap() {
     // load the tileset texture
     if (!tile_textures.loadFromFile(TILE_FILE)) {
-        return;
+        //TODO
     }
 
     // resize the vertex array to fit the level size

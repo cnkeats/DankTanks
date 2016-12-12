@@ -8,7 +8,7 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setPosition(position);
 
     velocity = angle;
-    blast_radius = 7.1; // 1, 1.1, 2.1, 3.1...?
+    blast_radius = 5.1; // 1, 1.1, 2.1, 3.1...? TODO with TILE_SIZE
 
     is_expired = false;
 }
