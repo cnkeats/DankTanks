@@ -56,7 +56,7 @@ void TileMap::CreateTerrain() {
         if (sign > 0) {
             amplitude = rand()%(TILES_Y * 1/5) + 5;
         } else {
-            amplitude = rand()%(TILES_Y * 2/3) + 10;
+            amplitude = rand()%(TILES_Y * 2/3) + 8;
         }
 
         for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
@@ -84,6 +84,26 @@ void TileMap::CreateTerrain() {
         sign *= -1;
     }
 
+    // border 1
+    /*for (int x = 0; x < TILES_X; ++x) {
+        for (int y = 0; y < TILES_Y; ++y) {
+            if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {
+                tiles[x][y].status = 2;
+            }
+        }
+    }*/
+
+    // border 2
+    /*for (int x = 0; x < TILES_X; ++x) {
+        for (int y = 0; y < TILES_Y; ++y) {
+            if (x == 0 || x == 1 || x == TILES_X - 1 || x == TILES_X - 2 ||
+                y == 0 || y == 1 || y == TILES_Y - 1 || y == TILES_Y - 2) {
+                tiles[x][y].status = 2;
+            }
+        }
+    }*/
+
+
     CreateTileMap();
     load_state = CreatingVectorField;
 }
@@ -93,7 +113,7 @@ void TileMap::CreateVectorField() {
     //TODO Implement timer for complex gravity calculated over several frames
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            tiles[x][y].velocity = sf::Vector2f(0.0f, -0.16f);
+            tiles[x][y].velocity = sf::Vector2f(0.0f, 0.16f);
         }
     }
 
@@ -137,23 +157,26 @@ void TileMap::CreateTileMap() {
 
 // Redefine each tile's texture based on its status each frame
 void TileMap::UpdateStatus(sf::Vector2i position, int status) {
-    // current tile's status
-    tiles[position.x][position.y].status = status;
+    // Pass -1 to leave the tile unaffected
+    if (status >= 0) {
+        // current tile's status
+        tiles[position.x][position.y].status = status;
 
-    // get a pointer to the current tile's quad
-    sf::Vertex* quad = &vertices[(position.x + position.y * TILES_X) * 4];
+        // get a pointer to the current tile's quad
+        sf::Vertex* quad = &vertices[(position.x + position.y * TILES_X) * 4];
 
-    // define its 4 corners
-    quad[0].position = sf::Vector2f(position.x * TILE_SIZE, position.y * TILE_SIZE);
-    quad[1].position = sf::Vector2f((position.x + 1) * TILE_SIZE, position.y * TILE_SIZE);
-    quad[2].position = sf::Vector2f((position.x + 1) * TILE_SIZE, (position.y + 1) * TILE_SIZE);
-    quad[3].position = sf::Vector2f(position.x * TILE_SIZE, (position.y + 1) * TILE_SIZE);
+        // define its 4 corners
+        quad[0].position = sf::Vector2f(position.x * TILE_SIZE, position.y * TILE_SIZE);
+        quad[1].position = sf::Vector2f((position.x + 1) * TILE_SIZE, position.y * TILE_SIZE);
+        quad[2].position = sf::Vector2f((position.x + 1) * TILE_SIZE, (position.y + 1) * TILE_SIZE);
+        quad[3].position = sf::Vector2f(position.x * TILE_SIZE, (position.y + 1) * TILE_SIZE);
 
-    // define its 4 texture coordinates
-    quad[0].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-    quad[1].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
-    quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
-    quad[3].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+        // define its 4 texture coordinates
+        quad[0].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
+        quad[1].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
+        quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
+        quad[3].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+    }
 }
 
 // Virtual draw

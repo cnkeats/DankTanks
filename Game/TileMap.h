@@ -21,7 +21,7 @@ private:
     void CreateTileMap();
     void CreateVectorField();
     void UpdateFallingTiles();
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 
     enum LoadState {CreatingTerrain, CreatingVectorField, DrawingMap};
     LoadState load_state;

@@ -79,8 +79,8 @@ void Application::InitialSetup() {
     tileMap = new TileMap();
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(10 * TILE_SIZE, 0)));
-    players.push_back(new Player(sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
+    players.push_back(new Player(sf::Vector2f(15 * TILE_SIZE, 0), sf::Color::Yellow));
+    players.push_back(new Player(sf::Vector2f((TILES_X - 15) * TILE_SIZE, 0), sf::Color::Red));
 }
 
 // Handle user input
@@ -108,6 +108,27 @@ void Application::ProcessInput() {
                 players[0]->InputMoveLeft(tileMap);
             } else if (event.key.code == sf::Keyboard::Right) {
                 players[0]->InputMoveRight(tileMap);
+            } else if (event.key.code == sf::Keyboard::Num0) {
+                players[0]->InputSetProjectileType(0);
+            } else if (event.key.code == sf::Keyboard::Num1) {
+                players[0]->InputSetProjectileType(1);
+            } else if (event.key.code == sf::Keyboard::Num2) {
+                players[0]->InputSetProjectileType(2);
+            } else if (event.key.code == sf::Keyboard::Num3) {
+                players[0]->InputSetProjectileType(3);
+            } else if (event.key.code == sf::Keyboard::Num4) {
+                players[0]->InputSetProjectileType(4);
+            } else if (event.key.code == sf::Keyboard::Num5) {
+                players[0]->InputSetProjectileType(5);
+            } else if (event.key.code == sf::Keyboard::Num6) {
+                players[0]->InputSetProjectileType(6);
+            } else if (event.key.code == sf::Keyboard::Num7) {
+                players[0]->InputSetProjectileType(7);
+            } else if (event.key.code == sf::Keyboard::Num8) {
+                players[0]->InputSetProjectileType(8);
+            } else if (event.key.code == sf::Keyboard::Num9) {
+                players[0]->InputSetProjectileType(9);
+
             } else if (event.key.code == sf::Keyboard::LControl) {
                 players[1]->InputFire();
             } else if (event.key.code == sf::Keyboard::W) {

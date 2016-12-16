@@ -6,11 +6,11 @@ Player::~Player() {
     }
 }
 
-Player::Player(sf::Vector2f position) {
+Player::Player(sf::Vector2f position, sf::Color color) {
     is_dead = false;
     projectile_type = 0;
     angle = 0;
-    power = 10;
+    power = 12;
     input_fire = false;
     input_rotate_clockwise = false;
     input_rotate_counter_clockwise = false;
@@ -18,13 +18,15 @@ Player::Player(sf::Vector2f position) {
     input_move_left = false;
 
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
-    sprite.setFillColor(sf::Color::Green);
+    sprite.setOutlineColor(sf::Color(sf::Color::Black));
+    sprite.setOutlineThickness(1);
+    sprite.setFillColor(color);
     sprite.setPosition(position);
 
     sprite_barrel.setSize(sf::Vector2f(1, -TILE_SIZE));
     sprite_barrel.setOutlineColor(sf::Color(sf::Color::Black));
     sprite_barrel.setOutlineThickness(1);
-    sprite_barrel.setFillColor(sf::Color::Green);
+    sprite_barrel.setFillColor(color);
     sprite_barrel.setPosition(sprite.getPosition());
 }
 
@@ -49,6 +51,10 @@ void Player::UpdateProjectiles(TileMap* &tileMap) {
         projectiles[i]->Update(tileMap);
 
         if (projectiles[i]->IsExpired()) {
+            if (projectiles[i]->IsTeleportedInBounds()) {
+                sprite.setPosition(projectiles[i]->GetPosition());
+            }
+
             delete projectiles[i];
             projectiles.erase(projectiles.begin() + i);
         }
@@ -80,9 +86,36 @@ void Player::UpdateInput(TileMap* &tileMap) {
 
         switch (projectile_type) {
             case 0:
-                projectiles.push_back(new Projectile(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 5.1));
+                break;
             case 1:
-                //projectiles.push_back(new );
+                projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 12.1));
+                break;
+            case 2:
+                for (int i = 0; i < 15; ++i) {
+                    projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 3.1));
+                }
+                break;
+            case 3:
+                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
+                break;
+            case 4:
+                projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+                break;
+            case 5:
+                projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector()));
+                break;
+            case 6:
+                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+                break;
+            case 7:
+                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+                break;
+            case 8:
+                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+                break;
+            case 9:
+                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
                 break;
             default:
                 break;
@@ -113,14 +146,19 @@ void Player::UpdateInput(TileMap* &tileMap) {
         }
     }
 
+    // TODO Clean this movement stuff up
     if (input_move_left) {
         input_move_left = false;
         if (IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y - 1))) {
-            if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 1) {
+            if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 2) {
                 if (tileMap->tiles[tile_coords.x - 1][tile_coords.y - 1].status == 0) {
                     sprite.move(-TILE_SIZE, -TILE_SIZE);
                 }
             } else {
+                sprite.move(-TILE_SIZE, 0);
+            }
+        } else if (IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y))) {
+            if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 0) {
                 sprite.move(-TILE_SIZE, 0);
             }
         }
@@ -129,15 +167,24 @@ void Player::UpdateInput(TileMap* &tileMap) {
     if (input_move_right) {
         input_move_right = false;
         if (IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y - 1))) {
-            if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 1) {
+            if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 2) {
                 if (tileMap->tiles[tile_coords.x + 2][tile_coords.y - 1].status == 0) {
                     sprite.move(TILE_SIZE, -TILE_SIZE);
                 }
             } else {
                 sprite.move(TILE_SIZE, 0);
             }
+        } else if (IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y))) {
+            if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 0) {
+                sprite.move(TILE_SIZE, 0);
+            }
         }
     }
+}
+
+// Change projectile type
+void Player::InputSetProjectileType(int i) {
+    projectile_type = i;
 }
 
 // Add a projectile to the projectile vector when fire button is pressed

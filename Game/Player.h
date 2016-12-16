@@ -1,10 +1,14 @@
 #include "Globals.h"
 #include "TileMap.h"
 #include "Projectile.h"
+#include "Projectile_Bomb.h"
+#include "Projectile_ImpactSplitBomb.h"
+#include "Projectile_Tile.h"
+#include "Projectile_Teleport.h"
 
 class Player {
 public:
-    Player(sf::Vector2f);
+    Player(sf::Vector2f, sf::Color);
     ~Player();
     void Update(TileMap* &);
     void InputFire();
@@ -12,6 +16,7 @@ public:
     void InputRotateCounterClockwise();
     void InputMoveLeft(TileMap* &);
     void InputMoveRight(TileMap* &);
+    void InputSetProjectileType(int i);
     bool IsDead();
 
 private:
