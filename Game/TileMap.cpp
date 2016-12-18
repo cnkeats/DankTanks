@@ -2,35 +2,34 @@
 
 TileMap::~TileMap() {}
 
-TileMap::TileMap() {
-    load_state = CreatingTerrain;
-
-    CreateTileVector();
-    CreateTileMap();
+TileMap::TileMap(sf::Vector2i selected) {
+    load_state = _GeneratingTerrain;
+    selected_map = selected;
 }
 
 // Main game loop calls this update function
 void TileMap::Update() {
     switch (load_state) {
-        case CreatingTerrain:
-            CreateTerrain();
-            debug_string += " [Generating] ";
+        case _GeneratingTerrain:
+            GenerateTerrain();
+            //debug_string += " [Generating] ";
             break;
-        case CreatingVectorField:
-            CreateVectorField();
-            debug_string += " [Populating vector field] ";
+        case _PopulatingVectorField:
+            PopulateVectorField();
+            //debug_string += " [Populating vector field] ";
             break;
-        case DrawingMap:
+        case _UpdatingMap:
             UpdateFallingTiles();
-            debug_string += " [Drawing Map] ";
+            //debug_string += " [Drawing Map] ";
             break;
         default:
             break;
     }
 }
 
-// Create the 2D vector for the tile map with 0 status and 0 xy velocity
-void TileMap::CreateTileVector() {
+// Create terrain but updating statuses to 1 based on an equation
+void TileMap::GenerateTerrain() {
+    // Create 2D vector for tile map
     std::vector<Tile> temp_column;
     Tile temp_tile;
     temp_tile.status = 0;
@@ -43,73 +42,80 @@ void TileMap::CreateTileVector() {
             tiles[x].push_back(temp_tile);
         }
     }
-}
 
-// Create terrain but updating statuses to 1 based on an equation
-void TileMap::CreateTerrain() {
-    int x = 0;
-    int sign = -1;
-    int number_of_peaks_and_valleys = 6;
-    float amplitude = 1;
+    if (selected_map == sf::Vector2i(0, 0)) {
+        // Use math to generate terrain
+        int x = 0;
+        int sign = -1;
+        int number_of_peaks_and_valleys = 6;
+        float amplitude = 1;
 
-    while (x < TILES_X) {
-        if (sign > 0) {
-            amplitude = rand()%(TILES_Y * 1/5) + 5;
-        } else {
-            amplitude = rand()%(TILES_Y * 2/3) + 8;
-        }
-
-        for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
-            float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.75;
-
-            int fx = static_cast<int> (fx_f);
-
-            if (fx < 0) {
-                fx = 0;
+        while (x < TILES_X) {
+            if (sign > 0) {
+                amplitude = rand()%(TILES_Y * 1/5) + 5;
+            } else {
+                amplitude = rand()%(TILES_Y * 2/3) + 8;
             }
 
-            if (fx < TILES_Y) {
-                tiles[x][fx].status = 1;
+            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.75;
 
-                for (int y = TILES_Y - 1; y > fx; --y) {
-                    tiles[x][y].status = 1;
+                int fx = static_cast<int> (fx_f);
+
+                if (fx < 0) {
+                    fx = 0;
+                }
+
+                if (fx < TILES_Y) {
+                    tiles[x][fx].status = 1;
+
+                    for (int y = TILES_Y - 1; y > fx; --y) {
+                        tiles[x][y].status = 1;
+                    }
+                }
+                ++x;
+
+                if (x >= TILES_X) {
+                    break;
                 }
             }
-            ++x;
-
-            if (x >= TILES_X) {
-                break;
+            sign *= -1;
+        }
+    } else if (selected_map == sf::Vector2i(1, 0)) {
+        // border 1
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {
+                    tiles[x][y].status = 2;
+                }
             }
         }
-        sign *= -1;
+    } else if (selected_map == sf::Vector2i(2, 0)) {
+        // border 2
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                if (x == 0 || x == 1 || x == TILES_X - 1 || x == TILES_X - 2 ||
+                    y == 0 || y == 1 || y == TILES_Y - 1 || y == TILES_Y - 2) {
+                    tiles[x][y].status = 2;
+                }
+            }
+        }
+    } else {
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                if (y > TILES_Y - 30) {
+                    tiles[x][y].status = 2;
+                }
+            }
+        }
     }
 
-    // border 1
-    /*for (int x = 0; x < TILES_X; ++x) {
-        for (int y = 0; y < TILES_Y; ++y) {
-            if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {
-                tiles[x][y].status = 2;
-            }
-        }
-    }*/
-
-    // border 2
-    /*for (int x = 0; x < TILES_X; ++x) {
-        for (int y = 0; y < TILES_Y; ++y) {
-            if (x == 0 || x == 1 || x == TILES_X - 1 || x == TILES_X - 2 ||
-                y == 0 || y == 1 || y == TILES_Y - 1 || y == TILES_Y - 2) {
-                tiles[x][y].status = 2;
-            }
-        }
-    }*/
-
-
-    CreateTileMap();
-    load_state = CreatingVectorField;
+    MakeTerrainDrawable();
+    load_state = _PopulatingVectorField;
 }
 
 // Populate vector field for each tile.
-void TileMap::CreateVectorField() {
+void TileMap::PopulateVectorField() {
     //TODO Implement timer for complex gravity calculated over several frames
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
@@ -117,11 +123,11 @@ void TileMap::CreateVectorField() {
         }
     }
 
-    load_state = DrawingMap;
+    load_state = _UpdatingMap;
 }
 
 // Create actual drawable map using a vertex array
-void TileMap::CreateTileMap() {
+void TileMap::MakeTerrainDrawable() {
     // load the tileset texture
     if (!tile_textures.loadFromFile(TILE_FILE)) {
         //TODO

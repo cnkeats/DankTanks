@@ -6,7 +6,7 @@
 class Projectile_Bomb : public Projectile {
 public:
     Projectile_Bomb(sf::Vector2f, sf::Vector2f, float);
-    ~Projectile_Bomb();
+    virtual ~Projectile_Bomb() {};
 private:
 
 };

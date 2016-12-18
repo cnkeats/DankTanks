@@ -5,10 +5,11 @@
 #include "Projectile_ImpactSplitBomb.h"
 #include "Projectile_Tile.h"
 #include "Projectile_Teleport.h"
+#include "Projectile_Tunnel.h"
 
 class Player {
 public:
-    Player(sf::Vector2f, sf::Color);
+    Player(sf::Vector2f);
     ~Player();
     void Update(TileMap* &);
     void InputFire();
@@ -17,10 +18,12 @@ public:
     void InputMoveLeft(TileMap* &);
     void InputMoveRight(TileMap* &);
     void InputSetProjectileType(int i);
+    void SetColor(sf::Vector2i);
+    void UpdateInfo();
+    bool IsTurnOver();
     bool IsDead();
 
 private:
-    void UpdateInput(TileMap* &);
     void UpdateProjectiles(TileMap* &);
     void UpdateFallingPlayer(TileMap* &);
     void UpdateBarrel();
@@ -28,12 +31,8 @@ private:
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
 
+    bool fired;
     bool is_dead;
-    bool input_fire;
-    bool input_rotate_clockwise;
-    bool input_rotate_counter_clockwise;
-    bool input_move_left;
-    bool input_move_right;
     int projectile_type;
     int angle;
     float power;

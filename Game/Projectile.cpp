@@ -62,7 +62,7 @@ bool Projectile::IsTeleportedInBounds() {
 }
 
 sf::Vector2f Projectile::GetPosition() {
-    return sf::Vector2f(tile_coords.x * TILE_SIZE, (tile_coords.y) * TILE_SIZE);
+    return sf::Vector2f(tile_coords.x * TILE_SIZE, tile_coords.y * TILE_SIZE);
 }
 
 // Checks if xy is on screen

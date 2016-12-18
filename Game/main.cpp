@@ -6,7 +6,10 @@
 
 sf::RenderWindow window;
 sf::Font font;
+sf::Text debug_text;
 std::string debug_string = "";
+std::string MENU_MAP_FILE = "menu_map.png";
+std::string MENU_COLOR_FILE = "menu_color.png";
 std::string TILE_FILE = "tile_10.png";
 const int TILE_SIZE = 10;
 const int TILES_X = 1920/10; // 1920 / TILE_SIZE (5 = 384, 10 = 192, 15 = 128)
@@ -15,6 +18,11 @@ const float PI = 3.14159265;
 const float PI_OVER_180 = 3.14159265/180.0;
 
 int main() {
+    debug_text.setFont(font);
+    debug_text.setCharacterSize(20);
+    debug_text.setColor(sf::Color::White);
+    debug_text.setPosition(0, 0);
+
     srand(time(NULL));
 
     Application app;

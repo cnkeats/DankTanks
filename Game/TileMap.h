@@ -8,7 +8,7 @@ struct Tile {
 
 class TileMap : public sf::Drawable, public sf::Transformable {
 public:
-    TileMap();
+    TileMap(sf::Vector2i);
     ~TileMap();
     void Update();
     void UpdateStatus(sf::Vector2i, int);
@@ -16,15 +16,16 @@ public:
     std::vector< std::vector<Tile> > tiles;
 
 private:
-    void CreateTileVector();
-    void CreateTerrain();
-    void CreateTileMap();
-    void CreateVectorField();
+    void GenerateTerrain();
+    void MakeTerrainDrawable();
+    void PopulateVectorField();
     void UpdateFallingTiles();
     virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
 
-    enum LoadState {CreatingTerrain, CreatingVectorField, DrawingMap};
+    enum LoadState {_GeneratingTerrain, _PopulatingVectorField, _UpdatingMap};
     LoadState load_state;
+
     sf::VertexArray vertices;
     sf::Texture tile_textures;
+    sf::Vector2i selected_map;
 };

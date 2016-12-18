@@ -5,7 +5,7 @@
 class Projectile {
 public:
     Projectile(sf::Vector2f, sf::Vector2f);
-    ~Projectile();
+    virtual ~Projectile();
     virtual void Update(TileMap* &);
     virtual bool IsTeleportedInBounds();
     bool IsExpired();
