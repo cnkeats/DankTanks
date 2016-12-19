@@ -37,6 +37,7 @@ void Projectile::Update(TileMap* &tileMap) {
     }
 }
 
+// This is called if a hit is detected
 void Projectile::Hit(TileMap* &tileMap) {
     tileMap->UpdateStatus(tile_coords, 0);
 
@@ -53,29 +54,32 @@ void Projectile::Hit(TileMap* &tileMap) {
     PostHit(tileMap);
 }
 
+// This is called after the hit function. This is mainly used by derived classed
 void Projectile::PostHit(TileMap* &tileMap) {
     is_expired = true;
 }
 
+// This is only used by the teleport derived class
 bool Projectile::IsTeleportedInBounds() {
     return false;
 }
 
+// Returns the pixel position once it's snapped to the grid
 sf::Vector2f Projectile::GetPosition() {
     return sf::Vector2f(tile_coords.x * TILE_SIZE, tile_coords.y * TILE_SIZE);
 }
 
-// Checks if xy is on screen
+// Returns true if this xy coordinate is in the tile map's range
 bool Projectile::IsInBounds(sf::Vector2i v) {
     return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y;
 }
 
-// Checks if xy is on screen
+// Returns true if this xy coordinate is in the tile map's range
 bool Projectile::IsInBounds(sf::Vector2f v) {
     return v.x >= 0 && v.x < TILES_X * TILE_SIZE && v.y >= 0 && v.y < TILES_Y * TILE_SIZE;
 }
 
-// Checks if projectile has expired
+// Returns true if this projectile has expired
 bool Projectile::IsExpired() {
     return is_expired;
 }

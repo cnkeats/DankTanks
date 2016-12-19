@@ -82,6 +82,110 @@ void TileMap::GenerateTerrain() {
             sign *= -1;
         }
     } else if (selected_map == sf::Vector2i(1, 0)) {
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                if (y > TILES_Y - 30) {
+                    tiles[x][y].status = 2;
+                }
+            }
+        }
+    } else if (selected_map == sf::Vector2i(2, 0)) {
+        // TODO Make this work better for different left & right for varied terrain
+        // TODO It's f(x) = 100*(x-100)(x-50)(x-0)(x+50)... currently
+        int left = -2;
+        int right = 5;
+
+        for (int x = 0; x < TILES_X; ++x) {
+            float fx_f = 100;
+            for (int i = left; i < right; ++i) {
+                fx_f *= (x - i*50);
+             }
+
+            for (int i = left; i < right; ++i) {
+                fx_f /= 100;
+            }
+
+            fx_f += 80;
+            int fx = static_cast<int> (fx_f);
+
+            if (fx >= 0 && fx < TILES_Y) {
+                tiles[x][fx].status = 1;
+
+                for (int y = TILES_Y - 1; y > fx; --y) {
+                    tiles[x][y].status = 1;
+                }
+            }
+        }
+    } else if (selected_map == sf::Vector2i(3, 0)) {
+    } else if (selected_map == sf::Vector2i(0, 1)) {
+    } else if (selected_map == sf::Vector2i(1, 1)) {
+    } else if (selected_map == sf::Vector2i(2, 1)) {
+        // Use math to generate terrain
+        int x = 0;
+        int sign = -1;
+        int number_of_peaks_and_valleys = 6;
+        float amplitude = 1;
+
+        while (x < TILES_X) {
+            amplitude = rand()%(TILES_Y * 2/3) + 8;
+
+            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.75;
+
+                int fx = static_cast<int> (fx_f);
+
+                if (fx < 0) {
+                    fx = 0;
+                }
+
+                if (fx < TILES_Y) {
+                    tiles[x][fx].status = 1;
+
+                    for (int y = TILES_Y - 1; y > fx; --y) {
+                        tiles[x][y].status = 1;
+                    }
+                }
+                ++x;
+
+                if (x >= TILES_X) {
+                    break;
+                }
+            }
+        }
+    } else if (selected_map == sf::Vector2i(3, 1)) {
+        // Use math to generate terrain
+        int x = 0;
+        int sign = 1;
+        int number_of_peaks_and_valleys = 6;
+        float amplitude = 1;
+
+        while (x < TILES_X) {
+            amplitude = rand()%(TILES_Y * 2/3) + 8;
+
+            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.25;
+
+                int fx = static_cast<int> (fx_f);
+
+                if (fx < 0) {
+                    fx = 0;
+                }
+
+                if (fx < TILES_Y) {
+                    tiles[x][fx].status = 1;
+
+                    for (int y = TILES_Y - 1; y > fx; --y) {
+                        tiles[x][y].status = 1;
+                    }
+                }
+                ++x;
+
+                if (x >= TILES_X) {
+                    break;
+                }
+            }
+        }
+    } else {
         // border 1
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
@@ -90,25 +194,25 @@ void TileMap::GenerateTerrain() {
                 }
             }
         }
-    } else if (selected_map == sf::Vector2i(2, 0)) {
-        // border 2
-        for (int x = 0; x < TILES_X; ++x) {
-            for (int y = 0; y < TILES_Y; ++y) {
-                if (x == 0 || x == 1 || x == TILES_X - 1 || x == TILES_X - 2 ||
-                    y == 0 || y == 1 || y == TILES_Y - 1 || y == TILES_Y - 2) {
-                    tiles[x][y].status = 2;
-                }
-            }
-        }
-    } else {
-        for (int x = 0; x < TILES_X; ++x) {
-            for (int y = 0; y < TILES_Y; ++y) {
-                if (y > TILES_Y - 30) {
-                    tiles[x][y].status = 2;
-                }
-            }
-        }
     }
+
+    // border 1
+    /*for (int x = 0; x < TILES_X; ++x) {
+        for (int y = 0; y < TILES_Y; ++y) {
+            if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {
+                tiles[x][y].status = 2;
+            }
+        }
+    }*/
+    // border 2
+    /*for (int x = 0; x < TILES_X; ++x) {
+        for (int y = 0; y < TILES_Y; ++y) {
+            if (x == 0 || x == 1 || x == TILES_X - 1 || x == TILES_X - 2 ||
+                y == 0 || y == 1 || y == TILES_Y - 1 || y == TILES_Y - 2) {
+                tiles[x][y].status = 2;
+            }
+        }
+    }*/
 
     MakeTerrainDrawable();
     load_state = _PopulatingVectorField;

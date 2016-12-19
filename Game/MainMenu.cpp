@@ -8,6 +8,7 @@ MainMenu::MainMenu() {
     PopulateMenuMap();
 }
 
+// Main game loop calls this update function
 void MainMenu::Update() {
     WrapAroundSelected(p1_selected);
     WrapAroundSelected(p2_selected);
@@ -17,72 +18,52 @@ void MainMenu::Update() {
     int offset;
     sf::Vertex* quad_selected;
 
-    switch (menu_state) {
-        case _SelectingMap:
-            debug_string += "Select Map";
-            x = p1_selected.x;
-            y = p1_selected.y;
-            offset = 8;
+    // Player 1's selection box
+    x = p1_selected.x;
+    y = p1_selected.y;
+    offset = 8;
 
-            quad_selected = &vertices[MENU_X * MENU_Y * 4];
+    quad_selected = &vertices[MENU_X * MENU_Y * 4];
 
-            // define its 4 corners
-            quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+    // define its 4 corners
+    quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
 
-            // define its 4 texture coordinates
-            quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-            quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-            quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-            quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
-            break;
-        case _SelectingColor:
-            debug_string += "Select Color";
-            x = p1_selected.x;
-            y = p1_selected.y;
-            offset = 8;
+    // define its 4 texture coordinates
+    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
+    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
+    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
 
-            quad_selected = &vertices[MENU_X * MENU_Y * 4];
+    if (_SelectingMap) {
+        debug_string += "Select Map";
+    } else if (menu_state == _SelectingColor) {
+        debug_string += "Select Color (Player 1 and 2)";
 
-            // define its 4 corners
-            quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+        // Player 2's selection box
+        x = p2_selected.x;
+        y = p2_selected.y;
+        offset = 9;
 
-            // define its 4 texture coordinates
-            quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-            quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-            quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-            quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
+        quad_selected = &vertices[(MENU_X * MENU_Y + 1) * 4];
 
-            x = p2_selected.x;
-            y = p2_selected.y;
-            offset = 9;
+        // define its 4 corners
+        quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
 
-            quad_selected = &vertices[(MENU_X * MENU_Y + 1) * 4];
-
-            // define its 4 corners
-            quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-
-            // define its 4 texture coordinates
-            quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-            quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-            quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-            quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
-            break;
-        default:
-            break;
+        // define its 4 texture coordinates
+        quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
+        quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
+        quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+        quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
     }
-
-
 }
 
+// Populate menu boxes that will be drawn when this object is drawn
 void MainMenu::PopulateMenuMap() {
     p1_selected = sf::Vector2i(0, 0);
     p2_selected = sf::Vector2i(0, 0);
@@ -121,9 +102,10 @@ void MainMenu::PopulateMenuMap() {
     }
 }
 
+// Change texture of menu tiles, position is unchanged
 void MainMenu::PopulateMenuColor() {
     p1_selected = sf::Vector2i(0, 0);
-    p2_selected = sf::Vector2i(3, 0);
+    p2_selected = sf::Vector2i(0, 0);
 
     // load the tileset texture
     if (!menu_textures.loadFromFile(MENU_COLOR_FILE)) {
@@ -142,6 +124,7 @@ void MainMenu::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(vertices, states);
 }
 
+// Make menu movements wrap around all sides
 void MainMenu::WrapAroundSelected(sf::Vector2i &v) {
     if (v.x < 0) {
         v.x = MENU_X - 1;
@@ -156,6 +139,7 @@ void MainMenu::WrapAroundSelected(sf::Vector2i &v) {
     }
 }
 
+// Return P1's current selected coordinates
 sf::Vector2i MainMenu::InputP1Select() {
     sf::Vector2i ret_selected = p1_selected;
     if (menu_state == _SelectingMap) {
@@ -165,40 +149,49 @@ sf::Vector2i MainMenu::InputP1Select() {
     return ret_selected;
 }
 
+// Move P1's selection up
 void MainMenu::InputP1Up() {
     p1_selected.y++;
 }
 
+// Move P1's selection down
 void MainMenu::InputP1Down() {
     p1_selected.y--;
 }
 
+// Move P1's selection left
 void MainMenu::InputP1Left() {
     p1_selected.x--;
 }
 
+// Move P1's selection right
 void MainMenu::InputP1Right() {
     p1_selected.x++;
 }
 
+// Return P2's current selected coordinates
 sf::Vector2i MainMenu::InputP2Select() {
     sf::Vector2i ret_selected = p2_selected;
 
     return ret_selected;
 }
 
+// Move P2's selection up
 void MainMenu::InputP2Up() {
     p2_selected.y++;
 }
 
+// Move P2's selection down
 void MainMenu::InputP2Down() {
     p2_selected.y--;
 }
 
+// Move P2's selection left
 void MainMenu::InputP2Left() {
     p2_selected.x--;
 }
 
+// Move P2's selection right
 void MainMenu::InputP2Right() {
     p2_selected.x++;
 }

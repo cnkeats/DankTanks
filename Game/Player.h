@@ -17,7 +17,7 @@ public:
     void InputRotateCounterClockwise();
     void InputMoveLeft(TileMap* &);
     void InputMoveRight(TileMap* &);
-    void InputSetProjectileType(int i);
+    void InputCycleProjectileType();
     void SetColor(sf::Vector2i);
     void UpdateInfo();
     bool IsTurnOver();
@@ -31,10 +31,12 @@ private:
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
 
+    bool is_real_time;
     bool fired;
     bool is_dead;
     int projectile_type;
     int angle;
+    int fuel;
     float power;
     sf::Vector2i tile_coords;
     std::vector<Projectile*> projectiles;

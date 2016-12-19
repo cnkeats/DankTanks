@@ -5,6 +5,7 @@ Projectile_ImpactSplitBomb::Projectile_ImpactSplitBomb(sf::Vector2f position, sf
     is_split = false;
 }
 
+// Overridden Update() since this projectile has child projectiles
 void Projectile_ImpactSplitBomb::Update(TileMap* &tileMap) {
     if (!is_split) { // Didn't split yet, update main projectile
         Projectile::Update(tileMap);
@@ -23,6 +24,7 @@ void Projectile_ImpactSplitBomb::Update(TileMap* &tileMap) {
     }
 }
 
+// Overridden PostHit() since this projectile creates child projectiles on hit
 void Projectile_ImpactSplitBomb::PostHit(TileMap* &tileMap) {
     is_split = true;
 

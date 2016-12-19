@@ -11,14 +11,15 @@ public:
     ~Application();
 
 private:
-    void InitialSetup();
-    void ProcessInput();
+    void StartNewGame();
+    void CleanUp();
     void Render();
     void UpdateMainMenu();
     void UpdateTerrain();
     void UpdatePlayers();
+    void ProcessInput();
 
-    enum GameState {_MainMenuMap, _MainMenuColor, _RunningP1Turn, _RunningP2Turn, _RunningRealTime};
+    enum GameState {_MainMenuMap, _MainMenuColor, _RunningP1Turn, _RunningP2Turn, _RunningRealTime, _GameOver};
     GameState game_state;
 
     MainMenu *mainMenu;
@@ -27,4 +28,5 @@ private:
     sf::Vector2i selected_map;
     sf::Vector2i selected_p1_color;
     sf::Vector2i selected_p2_color;
+    int winner;
 };

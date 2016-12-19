@@ -4,6 +4,7 @@ Projectile_Tunnel::Projectile_Tunnel(sf::Vector2f position, sf::Vector2f angle) 
     //
 }
 
+// Overriden PostHit() since this projectile creates on tunnel on hit, not a normal circle
 void Projectile_Tunnel::PostHit(TileMap* &tileMap) {
     is_expired = true;
     int tunnel_length = 35;
