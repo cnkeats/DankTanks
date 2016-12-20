@@ -10,7 +10,7 @@ Player::Player(sf::Vector2f position) {
     is_real_time = true;
     fired = false;
     is_dead = false;
-    fuel = 100;
+    fuel = 10000;
     projectile_type = 0;
     angle = 0;
     power = 12;
@@ -79,7 +79,7 @@ void Player::UpdateBarrel() {
 void Player::InputCycleProjectileType() {
     projectile_type++;
 
-    if (projectile_type > 6) {
+    if (projectile_type > 5) {
         projectile_type = 0;
     }
 }
@@ -92,30 +92,28 @@ void Player::InputFire() {
 
         switch (projectile_type) {
             case 0:
-                projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 5.1));
+                projectiles.push_back(new Projectile(position, GetDirectionVector()));
                 break;
             case 1:
-                projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 12.1));
-                break;
-            case 2:
-                for (int i = 0; i < 15; ++i) {
-                    projectiles.push_back(new Projectile_Bomb(position, GetDirectionVector(), 3.1));
-                }
-                break;
-            case 3:
                 projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
                 break;
+            case 2:
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector()));
+                break;
+            case 3:
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 5.1, 0));
+                break;
             case 4:
-                projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 10.1));
+                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
                 break;
             case 5:
                 projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector()));
                 break;
-            case 6:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector()));
-                break;
-            /*case 7:
+            /*case 6:
                 //projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
+                break;
+            case 7:
+                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
                 break;
             case 8:
                 //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));

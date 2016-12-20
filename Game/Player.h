@@ -1,9 +1,8 @@
 #include "Globals.h"
 #include "TileMap.h"
 #include "Projectile.h"
-#include "Projectile_Bomb.h"
+#include "Projectile_Bridge.h"
 #include "Projectile_ImpactSplitBomb.h"
-#include "Projectile_Tile.h"
 #include "Projectile_Teleport.h"
 #include "Projectile_Tunnel.h"
 

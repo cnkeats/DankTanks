@@ -2,6 +2,15 @@
 
 Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
     blast_radius = 1;
+    status_on_hit = -1;
+}
+
+Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
+    //
+}
+
+Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) : Projectile(position, angle, radius, status, radius2, status2) {
+    //
 }
 
 // Overridden IsTeleportedInBounds(), normally just returns false
@@ -15,7 +24,5 @@ bool Projectile_Teleport::IsTeleportedInBounds() {
 
 // Overridden PostHit() since the tile_coord of the hit is moved up 1 to spawn player on top of tile
 void Projectile_Teleport::PostHit(TileMap* &tileMap) {
-    is_expired = true;
-
     --tile_coords.y;
 }
