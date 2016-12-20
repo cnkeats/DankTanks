@@ -79,7 +79,7 @@ void Player::UpdateBarrel() {
 void Player::InputCycleProjectileType() {
     projectile_type++;
 
-    if (projectile_type > 5) {
+    if (projectile_type > 6) {
         projectile_type = 0;
     }
 }
@@ -92,27 +92,27 @@ void Player::InputFire() {
 
         switch (projectile_type) {
             case 0:
-                projectiles.push_back(new Projectile(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile(position, GetDirectionVector())); // normal shot
                 break;
             case 1:
-                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile(position, GetDirectionVector(), 10.1, 1)); // spawns terrain
                 break;
             case 2:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
                 break;
             case 3:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 5.1, 0));
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
                 break;
             case 4:
-                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 5.1, 0)); // tunnel without outer shell
                 break;
             case 5:
+                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
+                break;
+            case 6:
                 projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector()));
                 break;
-            /*case 6:
-                //projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
-                break;
-            case 7:
+            /*case 7:
                 //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
                 break;
             case 8:

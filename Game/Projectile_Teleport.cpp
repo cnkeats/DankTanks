@@ -1,8 +1,10 @@
 #include "Projectile_Teleport.h"
 
 Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
-    blast_radius = 1;
-    status_on_hit = -1;
+    blast_radius = 2.1;
+    status_on_hit = 0;
+    blast_radius_outer = blast_radius + 1;
+    status_on_hit_outer = 2;
 }
 
 Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
