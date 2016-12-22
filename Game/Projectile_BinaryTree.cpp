@@ -25,7 +25,6 @@ void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap) {
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
             is_split = true;
 
-            sf::Vector2f rand_velocity = sf::Vector2f(rand()%8 - 4, rand()%8 - 4);
             sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), velocity, blast_radius, status_on_hit));
             sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
         }
