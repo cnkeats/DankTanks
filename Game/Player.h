@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "TileMap.h"
 #include "Projectile.h"
+#include "Projectile_BinaryTree.h"
 #include "Projectile_Bridge.h"
 #include "Projectile_ImpactSplitBomb.h"
 #include "Projectile_Teleport.h"
@@ -14,6 +15,8 @@ public:
     void InputFire();
     void InputRotateClockwise();
     void InputRotateCounterClockwise();
+    void InputPowerUp();
+    void InputPowerDown();
     void InputMoveLeft(TileMap* &);
     void InputMoveRight(TileMap* &);
     void InputCycleProjectileType();

@@ -1,6 +1,10 @@
 #include "Projectile.h"
 
-Projectile::~Projectile() {}
+Projectile::~Projectile() {
+    for (unsigned int i = 0; i < sub_projectiles.size(); i++) {
+        delete sub_projectiles[i];
+    }
+}
 
 Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     sprite.setSize(sf::Vector2f(2, 2));
@@ -80,6 +84,13 @@ void Projectile::Update(TileMap* &tileMap) {
     } else { // Did split and has no sub_projectiles
         is_expired = true;
     }
+
+    PostUpdate(tileMap);
+}
+
+// This is called after the update function. This is mainly used by derived classed
+void Projectile::PostUpdate(TileMap* &tileMap) {
+    //
 }
 
 // This is called if a hit is detected

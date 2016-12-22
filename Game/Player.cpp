@@ -75,11 +75,26 @@ void Player::UpdateBarrel() {
     sprite_barrel.setRotation(angle);
 }
 
+// Change power
+void Player::InputPowerUp() {
+    if (power < 20) {
+        ++power;
+    }
+}
+
+// Change power
+void Player::InputPowerDown() {
+    if (power > 1) {
+        --power;
+    }
+}
+
+
 // Change projectile type
 void Player::InputCycleProjectileType() {
     projectile_type++;
 
-    if (projectile_type > 6) {
+    if (projectile_type > 7) {
         projectile_type = 0;
     }
 }
@@ -112,10 +127,10 @@ void Player::InputFire() {
             case 6:
                 projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector()));
                 break;
-            /*case 7:
-                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+            case 7:
+                projectiles.push_back(new Projectile_BinaryTree(position, GetDirectionVector()));
                 break;
-            case 8:
+            /*case 8:
                 //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
                 break;
             case 9:
@@ -130,33 +145,29 @@ void Player::InputFire() {
 
 // Rotate barrel clockwise
 void Player::InputRotateClockwise() {
-    if (!fired || is_real_time) {
-        angle += 5;
+    angle += 5;
 
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle >= 360) {
-            angle -= 360;
-        }
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle >= 360) {
+        angle -= 360;
     }
 }
 
 // Rotate barrel counter clockwise
 void Player::InputRotateCounterClockwise() {
-    if (!fired || is_real_time) {
-        angle -= 5;
+    angle -= 5;
 
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle >= 360) {
-            angle -= 360;
-        }
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle >= 360) {
+        angle -= 360;
     }
 }
 
 // Move player left
 void Player::InputMoveLeft(TileMap* &tileMap) {
-    if (fuel > 0) {
+    if (fuel > 0 && (!fired || is_real_time)) {
         if (IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x - 1, tile_coords.y - 1))) {
             if (tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x - 1][tile_coords.y].status == 2) {
                 if (tileMap->tiles[tile_coords.x - 1][tile_coords.y - 1].status == 0) {
@@ -178,7 +189,7 @@ void Player::InputMoveLeft(TileMap* &tileMap) {
 
 // Move player right
 void Player::InputMoveRight(TileMap* &tileMap) {
-    if (fuel > 0) {
+    if (fuel > 0 && (!fired || is_real_time)) {
         if (IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y)) && IsInBounds(sf::Vector2i(tile_coords.x + 2, tile_coords.y - 1))) {
             if (tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 1 || tileMap->tiles[tile_coords.x + 2][tile_coords.y].status == 2) {
                 if (tileMap->tiles[tile_coords.x + 2][tile_coords.y - 1].status == 0) {

@@ -201,6 +201,14 @@ void Application::ProcessInput() {
                 if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
                     players[0]->InputCycleProjectileType();
                 }
+            } else if (event.key.code == sf::Keyboard::Equal) {
+                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                    players[0]->InputPowerUp();
+                }
+            } else if (event.key.code == sf::Keyboard::Dash) {
+                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                    players[0]->InputPowerDown();
+                }
 
             // Player 2 controls
             } else if (event.key.code == sf::Keyboard::Return) { // Fire

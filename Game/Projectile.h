@@ -14,6 +14,7 @@ public:
     sf::Vector2f GetPosition();
 
 protected:
+    virtual void PostUpdate(TileMap* &);
     virtual void Hit(TileMap* &);
     virtual void PostHit(TileMap* &);
     bool IsInBounds(sf::Vector2i);
