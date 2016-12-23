@@ -20,8 +20,8 @@ Application::Application() {
     // Main game loop
     while (window.isOpen()) {
         elapsed_time = clock.restart();
-        //debug_string = toString(elapsed_time.asMicroseconds()) + " / 16666 ";
-        debug_string = "";
+        debug_string = ToString(elapsed_time.asMicroseconds()) + " / 16666 ";
+        //debug_string = "";
 
         while (elapsed_time < TIME_PER_FRAME) {
             ProcessInput();
@@ -44,6 +44,8 @@ void Application::StartNewGame() {
 
     selected_p1_color = sf::Vector2i(-1, -1);
     selected_p2_color = sf::Vector2i(-1, -1);
+
+    winner = -1;
 }
 
 // Deletes
@@ -64,42 +66,45 @@ void Application::Render() {
         case _MainMenuMap:
             window.clear(sf::Color(sf::Color(69, 69, 69, 255)));
             UpdateMainMenu();
-            debugString(debug_string);
             break;
         case _MainMenuColor:
             window.clear(sf::Color(sf::Color(69, 69, 69, 255)));
             UpdateMainMenu();
-            debugString(debug_string);
             break;
         case _RunningP1Turn:
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            debugString(debug_string);
             break;
         case _RunningP2Turn:
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            debugString(debug_string);
             break;
         case _RunningRealTime:
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            debugString(debug_string);
             break;
         case _GameOver:
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            debug_string = "Game Over! Player " + toString(winner) + " won! Press fire to start a new game!";
-            debugString(debug_string);
+            if (winner == 0) {
+                debug_string = "Game Over! The game was a draw! Press fire to start a new game!";
+            } else {
+                debug_string = "Game Over! Player " + ToString(winner) + " won! Press fire to start a new game!";
+            }
+            break;
+        case _Paused:
             break;
         default:
             debug_string = "Game state error";
-            debugString(debug_string);
             break;
+    }
+
+    if (game_state != _Paused) {
+        DrawDebugString(debug_string);
     }
 
     window.display();
@@ -121,14 +126,17 @@ void Application::UpdateTerrain() {
 void Application::UpdatePlayers() {
     for (unsigned int i = 0; i < players.size(); ++i) {
         players[i]->Update(tileMap);
+    }
 
-        if (players[i]->IsDead() && game_state != _GameOver) {
-            if (i == 0) {
-                winner = 2; // player 2 is index 1
-            } else {
-                winner = 1; // player 1 is index 0
-            }
-
+    if (game_state != _GameOver) {
+        if (players[0]->IsDead() && players[1]->IsDead()) {
+            winner = 0;
+            game_state = _GameOver;
+        } else if (players[0]->IsDead()) {
+            winner = 2;
+            game_state = _GameOver;
+        } else if (players[1]->IsDead()) {
+            winner = 1;
             game_state = _GameOver;
         }
     }
@@ -155,8 +163,15 @@ void Application::ProcessInput() {
         if (event.type == sf::Event::Closed) {
             window.close();
         } else if (event.type == sf::Event::KeyPressed) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
                 window.close();
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) { // Pause
+                if (game_state != _Paused) {
+                    pre_paused_game_state = game_state;
+                    game_state = _Paused;
+                } else {
+                    game_state = pre_paused_game_state;
+                }
 
             // Player 1 controls
             } else if (event.key.code == sf::Keyboard::Space) { // Fire

@@ -18,10 +18,7 @@ const float PI = 3.14159265;
 const float PI_OVER_180 = 3.14159265/180.0;
 
 int main() {
-    debug_text.setFont(font);
-    debug_text.setCharacterSize(20);
-    debug_text.setColor(sf::Color::White);
-    debug_text.setPosition(0, 0);
+    CreateDebugString();
 
     srand(time(NULL));
 

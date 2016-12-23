@@ -13,7 +13,7 @@ Player::Player(sf::Vector2f position) {
     fuel = 10000;
     projectile_type = 0;
     angle = 0;
-    power = 12;
+    power = 14;
 
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
     sprite.setOutlineColor(sf::Color(sf::Color::Black));
@@ -92,9 +92,9 @@ void Player::InputPowerDown() {
 
 // Change projectile type
 void Player::InputCycleProjectileType() {
-    projectile_type++;
+    ++projectile_type;
 
-    if (projectile_type > 7) {
+    if (projectile_type > 8) {
         projectile_type = 0;
     }
 }
@@ -119,7 +119,7 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
                 break;
             case 4:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 5.1, 0)); // tunnel without outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 4.1, 0)); // tunnel without outer shell
                 break;
             case 5:
                 projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
@@ -130,10 +130,10 @@ void Player::InputFire() {
             case 7:
                 projectiles.push_back(new Projectile_BinaryTree(position, GetDirectionVector()));
                 break;
-            /*case 8:
-                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
+            case 8:
+                projectiles.push_back(new Projectile_AirSplitBomb(position, GetDirectionVector()));
                 break;
-            case 9:
+            /*case 9:
                 //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
                 break;*/
             default:
@@ -274,8 +274,8 @@ void Player::SetColor(sf::Vector2i v) {
 // Draw the player's info to the screen
 void Player::UpdateInfo() {
     //debug_string += "HP: " + toString(hitpoints);
-    debug_string += "Power: " + toString(power);
-    debug_string += " Angle: " + toString(angle);
-    debug_string += " Projectile: " + toString(projectile_type);
-    debug_string += " Fuel: " + toString(fuel);
+    debug_string += "Power: " + ToString(power);
+    debug_string += " Angle: " + ToString(angle);
+    debug_string += " Projectile: " + ToString(projectile_type);
+    debug_string += " Fuel: " + ToString(fuel);
 }

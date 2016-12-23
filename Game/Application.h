@@ -19,8 +19,9 @@ private:
     void UpdatePlayers();
     void ProcessInput();
 
-    enum GameState {_MainMenuMap, _MainMenuColor, _RunningP1Turn, _RunningP2Turn, _RunningRealTime, _GameOver};
+    enum GameState {_MainMenuMap, _MainMenuColor, _RunningP1Turn, _RunningP2Turn, _RunningRealTime, _GameOver, _Paused};
     GameState game_state;
+    GameState pre_paused_game_state;
 
     MainMenu *mainMenu;
     TileMap *tileMap;

@@ -117,7 +117,56 @@ void TileMap::GenerateTerrain() {
             }
         }
     } else if (selected_map == sf::Vector2i(3, 0)) {
+        // Use math to generate terrain
+        int x = 0;
+        int sign = -1;
+        int number_of_peaks_and_valleys = 6;
+        int inner_coefficient = 4;
+        float amplitude = 1;
+        float amplitude2 = 1;
+
+        while (x < TILES_X) {
+            if (sign > 0) {
+                amplitude = rand()%(TILES_Y * 1/7) + 5;
+                amplitude2 = rand()%(TILES_Y * 1/20) + 1;
+            } else {
+                amplitude = rand()%(TILES_Y * 1/2) + 8;
+                amplitude2 = rand()%(TILES_Y * 1/10) + 1;
+            }
+
+            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.75;
+                fx_f -= sign * amplitude2 * sin(inner_coefficient * x_f) + TILES_Y * 0.1;
+
+                int fx = static_cast<int> (fx_f);
+
+                if (fx < 0) {
+                    fx = 0;
+                }
+
+                if (fx < TILES_Y) {
+                    tiles[x][fx].status = 1;
+
+                    for (int y = TILES_Y - 1; y > fx; --y) {
+                        tiles[x][y].status = 1;
+                    }
+                }
+                ++x;
+
+                if (x >= TILES_X) {
+                    break;
+                }
+            }
+            sign *= -1;
+        }
     } else if (selected_map == sf::Vector2i(0, 1)) {
+        for (int x = 0; x < TILES_X; ++x) {
+            for (int y = 0; y < TILES_Y; ++y) {
+                if (y > TILES_Y - 20 || (x > 19 && x < TILES_X - 20)) {
+                    tiles[x][y].status = 1;
+                }
+            }
+        }
     } else if (selected_map == sf::Vector2i(1, 1)) {
     } else if (selected_map == sf::Vector2i(2, 1)) {
         // Use math to generate terrain
