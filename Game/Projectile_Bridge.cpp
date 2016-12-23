@@ -15,25 +15,24 @@ Projectile_Bridge::Projectile_Bridge(sf::Vector2f position, sf::Vector2f angle, 
 
 // Overridden PostHit() since this projectile creates child projectiles on hit
 void Projectile_Bridge::PostHit(TileMap* &tileMap) {
-    int bridge_length = 100;
+    int bridge_length = TILES_X;
+    int bridge_height = 10;
+    int direction = 1;
 
     if (velocity.x >= 0) { // projectile moving right
-        for (int x = tile_coords.x; x > tile_coords.x - bridge_length; --x) {
-            sf::Vector2i p = sf::Vector2i(x, tile_coords.y);
-
-            if (IsInBounds(p)) {
-                if (tileMap->tiles[p.x][p.y].status != 0 && x < tile_coords.x - 2) {
-                    break;
-                }
-                tileMap->UpdateStatus(p, 2);
-            }
-        }
+        direction = -1;
     } else { // projectile moving left
-        for (int x = tile_coords.x; x < tile_coords.x + bridge_length; ++x) {
-            sf::Vector2i p = sf::Vector2i(x, tile_coords.y);
+        direction = 1;
+    }
+
+    for (int y = 0; y < bridge_height; ++y) {
+        for (int x = 0; x < bridge_length; ++x) {
+            sf::Vector2i p = sf::Vector2i(tile_coords.x + direction * x, tile_coords.y - direction * y);
 
             if (IsInBounds(p)) {
-                if (tileMap->tiles[p.x][p.y].status != 0 && x > tile_coords.x + 2) {
+                if (direction == -1 && tileMap->tiles[p.x][p.y].status != 0 && p.x < tile_coords.x - 2) {
+                    break;
+                } else if (direction == 1 && tileMap->tiles[p.x][p.y].status != 0 && p.x > tile_coords.x + 2) {
                     break;
                 }
                 tileMap->UpdateStatus(p, 2);

@@ -13,14 +13,14 @@ std::string ToString(sf::Vector2i v) {
 }
 
 // Draw debug_string to the screen
-void DrawDebugString(std::string s) {
-    debug_text.setString(s);
-    window.draw(debug_text);
+void DrawDebugString() {
+    text_debug.setString(debug_string);
+    window.draw(text_debug);
 }
 
 void CreateDebugString() {
-    debug_text.setFont(font);
-    debug_text.setCharacterSize(20);
-    debug_text.setColor(sf::Color::White);
-    debug_text.setPosition(0, 0);
+    text_debug.setFont(font);
+    text_debug.setCharacterSize(20);
+    text_debug.setColor(sf::Color::White);
+    text_debug.setPosition(0, 0);
 }

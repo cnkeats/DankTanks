@@ -6,7 +6,7 @@
 
 sf::RenderWindow window;
 sf::Font font;
-sf::Text debug_text;
+sf::Text text_debug;
 std::string debug_string = "";
 std::string MENU_MAP_FILE = "menu_map.png";
 std::string MENU_COLOR_FILE = "menu_color.png";

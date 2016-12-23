@@ -18,16 +18,19 @@ Projectile_AirSplitBomb::Projectile_AirSplitBomb(sf::Vector2f position, sf::Vect
 
 // Overridden PostUpdate() since this projectile creates child projectiles over time
 void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap) {
-    if (!is_split) {
+    if (!parent_expired) {
         --ticks_until_split;
 
         if (ticks_until_split <= 0) {
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
-            is_split = true;
 
-            sf::Vector2f rand_velocity = sf::Vector2f(rand()%4, rand()%8 - 4);
-            sub_projectiles.push_back(new Projectile_AirSplitBomb(sprite.getPosition(), velocity, blast_radius, status_on_hit));
-            sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, 2.1, status_on_hit));
+            if (velocity.x >= 0) {
+                sf::Vector2f rand_velocity = sf::Vector2f(rand()%4, rand()%8 - 4);
+                sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, 2.1, status_on_hit));
+            } else {
+                sf::Vector2f rand_velocity = sf::Vector2f(rand()%4 - 4, rand()%8 - 4);
+                sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, 2.1, status_on_hit));
+            }
         }
     }
 }

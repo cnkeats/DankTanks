@@ -20,8 +20,8 @@ Application::Application() {
     // Main game loop
     while (window.isOpen()) {
         elapsed_time = clock.restart();
-        debug_string = ToString(elapsed_time.asMicroseconds()) + " / 16666 ";
-        //debug_string = "";
+        elapsed_time_string = ToString(elapsed_time.asMicroseconds()) + " / 16666 ";
+        debug_string = "";
 
         while (elapsed_time < TIME_PER_FRAME) {
             ProcessInput();
@@ -46,6 +46,11 @@ void Application::StartNewGame() {
     selected_p2_color = sf::Vector2i(-1, -1);
 
     winner = -1;
+
+    text_elapsed_time.setFont(font);
+    text_elapsed_time.setCharacterSize(20);
+    text_elapsed_time.setColor(sf::Color::White);
+    text_elapsed_time.setPosition(window.getSize().x - 180, 0);
 }
 
 // Deletes
@@ -104,7 +109,8 @@ void Application::Render() {
     }
 
     if (game_state != _Paused) {
-        DrawDebugString(debug_string);
+        DrawDebugString();
+        DrawElapsedTimeString();
     }
 
     window.display();
@@ -279,4 +285,9 @@ void Application::ProcessInput() {
             }
         }
     }
+}
+
+void Application::DrawElapsedTimeString() {
+    text_elapsed_time.setString(elapsed_time_string);
+    window.draw(text_elapsed_time);
 }

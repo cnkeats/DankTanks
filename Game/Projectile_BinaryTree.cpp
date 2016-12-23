@@ -18,15 +18,17 @@ Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f
 
 // Overridden PostUpdate() since this projectile creates child projectiles over time
 void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap) {
-    if (!is_split) {
+    if (!parent_expired) {
         --ticks_until_split;
 
         if (ticks_until_split <= 0) {
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
-            is_split = true;
 
-            sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), velocity, blast_radius, status_on_hit));
-            sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
+            if (velocity.x >= 0) {
+                sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
+            } else {
+                sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit));
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ void MainMenu::Update() {
     quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
     quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
 
-    if (_SelectingMap) {
+    if (menu_state == _SelectingMap) {
         debug_string += "Select Map";
     } else if (menu_state == _SelectingColor) {
         debug_string += "Select Color (Player 1 and 2)";

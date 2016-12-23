@@ -16,8 +16,8 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
-    is_expired = false;
-    is_split = false;
+    parent_expired = false;
+    children_expired = true;
 }
 
 Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, int status) {
@@ -30,8 +30,8 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, 
     status_on_hit = status;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
-    is_expired = false;
-    is_split = false;
+    parent_expired = false;
+    children_expired = true;
 }
 
 Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) {
@@ -44,13 +44,14 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, 
     status_on_hit = status;
     blast_radius_outer = radius2;
     status_on_hit_outer = status2;
-    is_expired = false;
-    is_split = false;
+    parent_expired = false;
+    children_expired = true;
 }
 
 // Main game loop calls players update which calls this update each frame
 void Projectile::Update(TileMap* &tileMap) {
-    if (!is_split) { // Didn't split yet, update main projectile
+    // Parent has not expired
+    if (!parent_expired) {
         tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
         //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
 
@@ -66,13 +67,23 @@ void Projectile::Update(TileMap* &tileMap) {
                 // Draw sprite to screen
                 window.draw(sprite);
             } else { // Hit!
+                parent_expired = true;
                 Hit(tileMap);
             }
-        } else {
-            is_expired = true;
+        } else { // Off screen
+            parent_expired = true;
         }
-    } else if (sub_projectiles.size() > 0) { // Did split and still has sub_projectiles
-        is_expired = false;
+    }
+
+    // Check for children
+    if (sub_projectiles.size() > 0) {
+        children_expired = false;
+    } else {
+        children_expired = true;
+    }
+
+    // Children have not expired
+    if (!children_expired) {
         for (unsigned int i = 0; i < sub_projectiles.size(); i++) {
             sub_projectiles[i]->Update(tileMap);
 
@@ -81,8 +92,6 @@ void Projectile::Update(TileMap* &tileMap) {
                 sub_projectiles.erase(sub_projectiles.begin() + i);
             }
         }
-    } else { // Did split and has no sub_projectiles
-        is_expired = true;
     }
 
     PostUpdate(tileMap);
@@ -117,7 +126,6 @@ void Projectile::Hit(TileMap* &tileMap) {
         }
     }
 
-    is_split = true;
     PostHit(tileMap);
 }
 
@@ -148,5 +156,5 @@ bool Projectile::IsInBounds(sf::Vector2f v) {
 
 // Returns true if this projectile has expired
 bool Projectile::IsExpired() {
-    return is_expired;
+    return (parent_expired && children_expired);
 }

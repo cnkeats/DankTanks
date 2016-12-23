@@ -6,7 +6,7 @@
 
 extern sf::RenderWindow window;
 extern sf::Font font;
-extern sf::Text debug_text;
+extern sf::Text text_debug;
 extern std::string debug_string;
 extern std::string MENU_MAP_FILE;
 extern std::string MENU_COLOR_FILE;
@@ -19,5 +19,5 @@ extern const float PI_OVER_180;
 
 std::string ToString(int);
 std::string ToString(sf::Vector2i);
-void DrawDebugString(std::string);
+void DrawDebugString();
 void CreateDebugString();

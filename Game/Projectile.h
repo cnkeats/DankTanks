@@ -28,6 +28,6 @@ protected:
     float blast_radius_outer;
     int status_on_hit;
     int status_on_hit_outer;
-    bool is_expired;
-    bool is_split;
+    bool parent_expired;
+    bool children_expired;
 };
