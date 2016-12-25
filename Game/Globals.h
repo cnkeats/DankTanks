@@ -21,3 +21,8 @@ std::string ToString(int);
 std::string ToString(sf::Vector2i);
 void DrawDebugString();
 void CreateDebugString();
+
+struct Tile {
+    int status;
+    sf::Vector2f velocity;
+};

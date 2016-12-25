@@ -162,12 +162,53 @@ void TileMap::GenerateTerrain() {
     } else if (selected_map == sf::Vector2i(0, 1)) {
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
-                if (y > TILES_Y - 20 || (x > 19 && x < TILES_X - 20)) {
+                if (x == y || x == -1 * y + TILES_X - 1 || (x >= TILES_Y && y == TILES_Y - 1)) {
                     tiles[x][y].status = 1;
+
+                    for (int y_fill = TILES_Y - 1; y_fill > y; --y_fill) {
+                        tiles[x][y_fill].status = 1;
+                    }
                 }
             }
         }
     } else if (selected_map == sf::Vector2i(1, 1)) {
+        // Use math to generate terrain
+        int x = 0;
+        int sign = -1;
+        int number_of_peaks_and_valleys = 8;
+        float amplitude = 1;
+
+        while (x < TILES_X) {
+            if (sign > 0) {
+                amplitude = rand()%(TILES_Y * 1/5) + 5;
+            } else {
+                amplitude = rand()%(TILES_Y * 2/3) + 8;
+            }
+
+            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
+                float fx_f = sign * amplitude + TILES_Y * 0.75;
+
+                int fx = static_cast<int> (fx_f);
+
+                if (fx < 0) {
+                    fx = 0;
+                }
+
+                if (fx < TILES_Y) {
+                    tiles[x][fx].status = 1;
+
+                    for (int y = TILES_Y - 1; y > fx; --y) {
+                        tiles[x][y].status = 1;
+                    }
+                }
+                ++x;
+
+                if (x >= TILES_X) {
+                    break;
+                }
+            }
+            sign *= -1;
+        }
     } else if (selected_map == sf::Vector2i(2, 1)) {
         // Use math to generate terrain
         int x = 0;
@@ -288,6 +329,7 @@ void TileMap::MakeTerrainDrawable() {
 
     // resize the vertex array to fit the level size
     vertices.setPrimitiveType(sf::Quads);
+    //vertices.setPrimitiveType(sf::LinesStrip);
     vertices.resize(TILES_X * TILES_Y * 4);
 
     // populate the vertex array, with one quad per tile
@@ -315,7 +357,11 @@ void TileMap::MakeTerrainDrawable() {
 }
 
 // Redefine each tile's texture based on its status each frame
-void TileMap::UpdateStatus(sf::Vector2i position, int status) {
+void TileMap::WriteStatus(sf::Vector2i position, int status) {
+    if (!IsInBounds(position)) {
+        return;
+    }
+
     // Pass -1 to leave the tile unaffected
     if (status >= 0) {
         // current tile's status
@@ -338,6 +384,28 @@ void TileMap::UpdateStatus(sf::Vector2i position, int status) {
     }
 }
 
+// Redefine each tile's texture based on its status each frame
+void TileMap::WriteStatus(int x, int y, int status) {
+    WriteStatus(sf::Vector2i(x, y), status);
+}
+
+// Read the status of a tile at a position. Returns (-1, (-1, -1)) if out of bounds
+Tile TileMap::GetTile(sf::Vector2i position) {
+    if (IsInBounds(position)) {
+        return tiles[position.x][position.y];
+    } else {
+        Tile t;
+        t.status = -1;
+        t.velocity = sf::Vector2f(0, 0);
+        return t;
+    }
+}
+
+// Read the status of a tile at a position
+Tile TileMap::GetTile(int x, int y) {
+    return GetTile(sf::Vector2i(x, y));
+}
+
 // Virtual draw
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // apply the tileset texture
@@ -352,9 +420,19 @@ void TileMap::UpdateFallingTiles() {
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = TILES_Y - 1; y >= 0; --y) {
             if (tiles[x][y].status == 0 && tiles[x][y - 1].status == 1) {
-                UpdateStatus(sf::Vector2i(x, y), 1);
-                UpdateStatus(sf::Vector2i(x, y - 1), 0);
+                WriteStatus(sf::Vector2i(x, y), 1);
+                WriteStatus(sf::Vector2i(x, y - 1), 0);
             }
         }
     }
+}
+
+// Returns true if this xy coordinate is in the tile map's range
+bool TileMap::IsInBounds(sf::Vector2i v) {
+    return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y;
+}
+
+// Returns true if this xy coordinate is in the tile map's range
+bool TileMap::IsInBounds(sf::Vector2f v) {
+    return v.x >= 0 && v.x < TILES_X * TILE_SIZE && v.y >= 0 && v.y < TILES_Y * TILE_SIZE;
 }
