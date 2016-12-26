@@ -39,8 +39,8 @@ void Application::StartNewGame() {
     mainMenu = new MainMenu(); // Create menu
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(15 * TILE_SIZE, 0)));
-    players.push_back(new Player(sf::Vector2f((TILES_X - 15) * TILE_SIZE, 0)));
+    players.push_back(new Player(sf::Vector2f(5 * TILE_SIZE, 0)));
+    players.push_back(new Player(sf::Vector2f((TILES_X - 5) * TILE_SIZE, 0)));
 
     selected_p1_color = sf::Vector2i(-1, -1);
     selected_p2_color = sf::Vector2i(-1, -1);

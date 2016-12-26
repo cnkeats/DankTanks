@@ -1,7 +1,7 @@
 #pragma once
 #include "Globals.h"
 
-class TileMap : public sf::Drawable, public sf::Transformable {
+class TileMap : public sf::Drawable {
 public:
     TileMap(sf::Vector2i);
     ~TileMap();

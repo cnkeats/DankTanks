@@ -328,30 +328,13 @@ void TileMap::MakeTerrainDrawable() {
     }
 
     // resize the vertex array to fit the level size
-    vertices.setPrimitiveType(sf::Quads);
-    //vertices.setPrimitiveType(sf::LinesStrip);
-    vertices.resize(TILES_X * TILES_Y * 4);
+    vertices.setPrimitiveType(sf::TrianglesStrip);
+    vertices.resize(TILES_X * TILES_Y * 7);
 
     // populate the vertex array, with one quad per tile
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            // current tile's status
-            int status = tiles[x][y].status;
-
-            // get a pointer to the current tile's quad
-            sf::Vertex* quad = &vertices[(x + y * TILES_X) * 4];
-
-            // define its 4 corners
-            quad[0].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
-            quad[1].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
-            quad[2].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
-            quad[3].position = sf::Vector2f(x * TILE_SIZE, (y + 1) * TILE_SIZE);
-
-            // define its 4 texture coordinates
-            quad[0].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-            quad[1].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
-            quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
-            quad[3].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+            WriteStatus(x, y, tiles[x][y].status);
         }
     }
 }
@@ -362,25 +345,34 @@ void TileMap::WriteStatus(sf::Vector2i position, int status) {
         return;
     }
 
+    int x = position.x;
+    int y = position.y;
+
     // Pass -1 to leave the tile unaffected
     if (status >= 0) {
         // current tile's status
-        tiles[position.x][position.y].status = status;
+        tiles[x][y].status = status;
 
         // get a pointer to the current tile's quad
-        sf::Vertex* quad = &vertices[(position.x + position.y * TILES_X) * 4];
+        sf::Vertex* quad = &vertices[(x + y * TILES_X) * 7];
 
         // define its 4 corners
-        quad[0].position = sf::Vector2f(position.x * TILE_SIZE, position.y * TILE_SIZE);
-        quad[1].position = sf::Vector2f((position.x + 1) * TILE_SIZE, position.y * TILE_SIZE);
-        quad[2].position = sf::Vector2f((position.x + 1) * TILE_SIZE, (position.y + 1) * TILE_SIZE);
-        quad[3].position = sf::Vector2f(position.x * TILE_SIZE, (position.y + 1) * TILE_SIZE);
+        quad[0].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
+        quad[1].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
+        quad[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
+        quad[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+        quad[4].position = sf::Vector2f(x * TILE_SIZE, (y + 1) * TILE_SIZE);
+        quad[5].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
+        quad[6].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
 
         // define its 4 texture coordinates
         quad[0].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-        quad[1].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
-        quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
-        quad[3].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+        quad[1].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
+        quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
+        quad[3].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
+        quad[4].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+        quad[5].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
+        quad[6].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
     }
 }
 
@@ -436,3 +428,4 @@ bool TileMap::IsInBounds(sf::Vector2i v) {
 bool TileMap::IsInBounds(sf::Vector2f v) {
     return v.x >= 0 && v.x < TILES_X * TILE_SIZE && v.y >= 0 && v.y < TILES_Y * TILE_SIZE;
 }
+

@@ -116,10 +116,10 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
                 break;
             case 3:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3.1, 0)); // tunnel without outer shell
                 break;
             case 4:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 4.1, 0)); // tunnel without outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
                 break;
             case 5:
                 projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
