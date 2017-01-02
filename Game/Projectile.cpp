@@ -6,11 +6,8 @@ Projectile::~Projectile() {
     }
 }
 
-Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
-    sprite.setSize(sf::Vector2f(2, 2));
-    sprite.setFillColor(sf::Color::White);
-    sprite.setPosition(position);
-
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle) {
+    position = p;
     velocity = angle;
     blast_radius = 5.1;
     status_on_hit = 0;
@@ -18,13 +15,12 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle) {
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
+
+    PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, int status) {
-    sprite.setSize(sf::Vector2f(2, 2));
-    sprite.setFillColor(sf::Color::White);
-    sprite.setPosition(position);
-
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status) {
+    position = p;
     velocity = angle;
     blast_radius = radius;
     status_on_hit = status;
@@ -32,13 +28,12 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, 
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
+
+    PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) {
-    sprite.setSize(sf::Vector2f(2, 2));
-    sprite.setFillColor(sf::Color::White);
-    sprite.setPosition(position);
-
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status, float radius2, int status2) {
+    position = p;
     velocity = angle;
     blast_radius = radius;
     status_on_hit = status;
@@ -46,14 +41,37 @@ Projectile::Projectile(sf::Vector2f position, sf::Vector2f angle, float radius, 
     status_on_hit_outer = status2;
     parent_expired = false;
     children_expired = true;
+
+    PopulateVertexArray();
+}
+
+// Populate vertex array for drawing
+void Projectile::PopulateVertexArray() {
+    // resize the vertex array to fit the level size
+    vertices.setPrimitiveType(sf::Points);
+    vertices.resize(4);
+
+    sf::Vertex* v = &vertices[0];
+
+    v[0].position = sf::Vector2f(position.x, position.y);
+    v[1].position = sf::Vector2f(position.x + 1, position.y);
+    v[2].position = sf::Vector2f(position.x + 1, position.y + 1);
+    v[3].position = sf::Vector2f(position.x, position.y + 1);
+
+    v[0].color = sf::Color::Cyan;
+    v[1].color = sf::Color::Cyan;
+    v[2].color = sf::Color::Cyan;
+    v[3].color = sf::Color::Cyan;
 }
 
 // Main game loop calls players update which calls this update each frame
 void Projectile::Update(TileMap* &tileMap) {
     // Parent has not expired
     if (!parent_expired) {
-        tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
-        //debug_string += "(" + toString(tile_coords.x) + " " + toString(tile_coords.y) + ")";
+        sf::Vertex* v = &vertices[0];
+        position = v[0].position;
+
+        tile_coords = sf::Vector2i(floor(position.x / TILE_SIZE), floor(position.y / TILE_SIZE));
 
         if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == -1) { // Off screen
             parent_expired = true;
@@ -63,10 +81,16 @@ void Projectile::Update(TileMap* &tileMap) {
             velocity.y += tileMap->GetTile(tile_coords.x, tile_coords.y).velocity.y;
 
             // Move sprite
-            sprite.move(velocity.x, velocity.y);
+            position = sf::Vector2f(position.x + velocity.x, position.y + velocity.y);
 
-            // Draw sprite to screen
-            window.draw(sprite);
+            // get a pointer to the current tile's tile
+            sf::Vertex* v = &vertices[0];
+
+            // define its 4 corners
+            v[0].position = sf::Vector2f(position.x, position.y);
+            v[1].position = sf::Vector2f(position.x + 1, position.y);
+            v[2].position = sf::Vector2f(position.x + 1, position.y + 1);
+            v[3].position = sf::Vector2f(position.x, position.y + 1);
         } else { // Hit a tile
             parent_expired = true;
             Hit(tileMap);
@@ -84,6 +108,7 @@ void Projectile::Update(TileMap* &tileMap) {
     if (!children_expired) {
         for (unsigned int i = 0; i < sub_projectiles.size(); i++) {
             sub_projectiles[i]->Update(tileMap);
+            window.draw(*sub_projectiles[i]);
 
             if (sub_projectiles[i]->IsExpired()) {
                 delete sub_projectiles[i];
@@ -102,7 +127,7 @@ void Projectile::PostUpdate(TileMap* &tileMap) {
 
 // This is called if a hit is detected
 void Projectile::Hit(TileMap* &tileMap) {
-    tileMap->WriteStatus(tile_coords, 0);
+    tileMap->WriteStatus(tile_coords, status_on_hit);
 
     for (int x = -blast_radius; x <= blast_radius; ++x) {
         for (int y = -blast_radius; y <= blast_radius; ++y) {
@@ -145,4 +170,12 @@ sf::Vector2f Projectile::GetPosition() {
 // Returns true if this projectile has expired
 bool Projectile::IsExpired() {
     return (parent_expired && children_expired);
+}
+
+// Virtual draw
+void Projectile::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+    if (!parent_expired) {
+        // draw the vertex array
+        target.draw(vertices, states);
+    }
 }

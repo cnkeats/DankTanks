@@ -26,10 +26,10 @@ void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap) {
 
             if (velocity.x >= 0) {
                 sf::Vector2f rand_velocity = sf::Vector2f(rand()%4, rand()%8 - 4);
-                sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, 2.1, status_on_hit));
+                sub_projectiles.push_back(new Projectile(position, rand_velocity, 2.1, status_on_hit));
             } else {
                 sf::Vector2f rand_velocity = sf::Vector2f(rand()%4 - 4, rand()%8 - 4);
-                sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, 2.1, status_on_hit));
+                sub_projectiles.push_back(new Projectile(position, rand_velocity, 2.1, status_on_hit));
             }
         }
     }

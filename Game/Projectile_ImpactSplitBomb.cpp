@@ -19,6 +19,6 @@ Projectile_ImpactSplitBomb::Projectile_ImpactSplitBomb(sf::Vector2f position, sf
 void Projectile_ImpactSplitBomb::PostHit(TileMap* &tileMap) {
     for (int i = 0; i < 7; ++i) {
         sf::Vector2f rand_velocity = sf::Vector2f(rand()%8 - 4, rand()%8 - 4);
-        sub_projectiles.push_back(new Projectile(sprite.getPosition(), rand_velocity, blast_radius, status_on_hit));
+        sub_projectiles.push_back(new Projectile(position, rand_velocity, blast_radius, status_on_hit));
     }
 }

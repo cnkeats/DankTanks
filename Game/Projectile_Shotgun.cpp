@@ -22,7 +22,7 @@ void Projectile_Shotgun::PostUpdate(TileMap* &tileMap) {
         is_split = true;
 
         for (int i = 0; i <= 5; ++i) {
-            sub_projectiles.push_back(new Projectile(sprite.getPosition(), sf::Vector2f(velocity.x - cos(i), velocity.y - sin(i)), blast_radius, status_on_hit));
+            sub_projectiles.push_back(new Projectile(position, sf::Vector2f(velocity.x - cos(i), velocity.y - sin(i)), blast_radius, status_on_hit));
         }
     }
 }

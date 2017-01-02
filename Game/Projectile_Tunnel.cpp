@@ -18,6 +18,6 @@ Projectile_Tunnel::Projectile_Tunnel(sf::Vector2f position, sf::Vector2f angle, 
 // Overriden PostHit() since this projectile creates on tunnel on hit, not a normal circle
 void Projectile_Tunnel::PostHit(TileMap* &tileMap) {
     for (int i = 0; i < 15; ++i) {
-        sub_projectiles.push_back(new Projectile(sprite.getPosition(), velocity, blast_radius, status_on_hit, blast_radius_outer, status_on_hit_outer));
+        sub_projectiles.push_back(new Projectile(position, velocity, blast_radius, status_on_hit, blast_radius_outer, status_on_hit_outer));
     }
 }

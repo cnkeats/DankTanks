@@ -2,7 +2,7 @@
 #include "Globals.h"
 #include "TileMap.h"
 
-class Projectile {
+class Projectile : public sf::Drawable {
 public:
     Projectile(sf::Vector2f, sf::Vector2f);
     Projectile(sf::Vector2f, sf::Vector2f, float, int);
@@ -17,10 +17,13 @@ protected:
     virtual void PostUpdate(TileMap* &);
     virtual void Hit(TileMap* &);
     virtual void PostHit(TileMap* &);
+    virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
+    void PopulateVertexArray();
 
     std::vector<Projectile*> sub_projectiles;
-    sf::RectangleShape sprite;
+    sf::VertexArray vertices;
     sf::Vector2f velocity;
+    sf::Vector2f position;
     sf::Vector2i tile_coords;
     float blast_radius;
     float blast_radius_outer;

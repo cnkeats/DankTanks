@@ -66,6 +66,7 @@ void Player::Update(TileMap* &tileMap) {
 void Player::UpdateProjectiles(TileMap* &tileMap) {
     for (unsigned int i = 0; i < projectiles.size(); i++) {
         projectiles[i]->Update(tileMap);
+        window.draw(*projectiles[i]);
 
         if (projectiles[i]->IsExpired()) {
             if (projectiles[i]->IsTeleportedInBounds(tileMap)) {

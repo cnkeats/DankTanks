@@ -25,9 +25,9 @@ void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap) {
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 
             if (velocity.x >= 0) {
-                sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
             } else {
-                sub_projectiles.push_back(new Projectile_BinaryTree(sprite.getPosition(), sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit));
             }
         }
     }
