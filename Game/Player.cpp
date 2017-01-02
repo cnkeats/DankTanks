@@ -16,7 +16,7 @@ Player::Player(sf::Vector2f position, int i) {
     fuel = 100;
     budget = 10;
     angle = 0;
-    selected_projectile = 0;
+    selected_projectile = 9;
     selected_projectile_cost = 0;
     selected_projectile_string = ">put proj name here<";
 
@@ -114,7 +114,7 @@ void Player::InputPowerDown() {
 void Player::InputCycleProjectileType() {
     ++selected_projectile;
 
-    if (selected_projectile > 8) {
+    if (selected_projectile > 9) {
         selected_projectile = 0;
     }
 }
@@ -152,6 +152,9 @@ void Player::InputFire() {
                 break;
             case 8:
                 projectiles.push_back(new Projectile_AirSplitBomb(position, GetDirectionVector())); // sparkler
+                break;
+            case 9:
+                projectiles.push_back(new Projectile_Shotgun(position, GetDirectionVector())); // shotgun
                 break;
             default:
                 fired = false;
@@ -281,7 +284,7 @@ void Player::UpdateInfo() {
 
     // Right text
                 s = std::string("")
-                + "\nProjectile: \[" + ToString(selected_projectile) + "\]" + selected_projectile_string
+                + "\nProjectile: [" + ToString(selected_projectile) + "]" + selected_projectile_string
                 + "\nCost:       " + ToString(selected_projectile_cost)
                 + "\nDanka:      " + ToString(budget);
     text_info_right.setString(s);
