@@ -329,7 +329,7 @@ void TileMap::MakeTerrainDrawable() {
 
     // resize the vertex array to fit the level size
     vertices.setPrimitiveType(sf::TrianglesStrip);
-    vertices.resize(TILES_X * TILES_Y * 7);
+    vertices.resize((TILES_X + 3) * TILES_Y * 4);
 
     // populate the vertex array, with one quad per tile
     for (int x = 0; x < TILES_X; ++x) {
@@ -340,7 +340,7 @@ void TileMap::MakeTerrainDrawable() {
 }
 
 // Redefine each tile's texture based on its status each frame
-void TileMap::WriteStatus(sf::Vector2i position, int status) {
+void TileMap::WriteStatus(sf::Vector2i position, int s) {
     if (!IsInBounds(position)) {
         return;
     }
@@ -349,30 +349,36 @@ void TileMap::WriteStatus(sf::Vector2i position, int status) {
     int y = position.y;
 
     // Pass -1 to leave the tile unaffected
-    if (status >= 0) {
+    if (s >= 0) {
         // current tile's status
-        tiles[x][y].status = status;
+        tiles[x][y].status = s;
 
-        // get a pointer to the current tile's quad
-        sf::Vertex* quad = &vertices[(x + y * TILES_X) * 7];
+        // get a pointer to the current tile's tile
+        sf::Vertex* tile = &vertices[(x + y * (TILES_X + 3)) * 4];
 
         // define its 4 corners
-        quad[0].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
-        quad[1].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
-        quad[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
-        quad[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
-        quad[4].position = sf::Vector2f(x * TILE_SIZE, (y + 1) * TILE_SIZE);
-        quad[5].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
-        quad[6].position = sf::Vector2f(x * TILE_SIZE, y * TILE_SIZE);
+        tile[0].position = sf::Vector2f(x * TILE_SIZE      , y * TILE_SIZE);
+        tile[1].position = sf::Vector2f(x * TILE_SIZE      , (y + 1) * TILE_SIZE);
+        tile[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
+        tile[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
 
         // define its 4 texture coordinates
-        quad[0].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-        quad[1].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-        quad[2].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), 0);
-        quad[3].texCoords = sf::Vector2f(TILE_SIZE + (TILE_SIZE * status), TILE_SIZE);
-        quad[4].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
-        quad[5].texCoords = sf::Vector2f(TILE_SIZE * status, 0);
-        quad[6].texCoords = sf::Vector2f(TILE_SIZE * status, TILE_SIZE);
+        tile[0].texCoords = sf::Vector2f(s * TILE_SIZE      , 0);
+        tile[1].texCoords = sf::Vector2f(s * TILE_SIZE      , TILE_SIZE);
+        tile[2].texCoords = sf::Vector2f((s + 1) * TILE_SIZE, 0);
+        tile[3].texCoords = sf::Vector2f((s + 1) * TILE_SIZE, TILE_SIZE);
+
+        // Transparent line wrap verticies
+        // TODO EVEN FEWER TRIANGLES DO IT ZIG ZAG
+        if (x == TILES_X - 1) {
+            tile[4].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+            tile[5].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+            tile[6].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+
+            tile[4].color = sf::Color::Transparent;
+            tile[5].color = sf::Color::Transparent;
+            tile[6].color = sf::Color::Transparent;
+        }
     }
 }
 

@@ -16,19 +16,26 @@ void MainMenu::Update() {
     int x = p1_selected.x;
     int y = p1_selected.y;
     int offset = 8;
-    sf::Vertex* quad_selected = &vertices[MENU_X * MENU_Y * 4];
+    sf::Vertex* quad_selected = &vertices[MENU_X * MENU_Y * 6];
+
+    quad_selected[0].color = sf::Color::Transparent;
+    quad_selected[5].color = sf::Color::Transparent;
 
     // define its 4 corners
-    quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-    quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-    quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-    quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[1].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[2].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[3].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[4].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+    quad_selected[5].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
 
     // define its 4 texture coordinates
-    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
+    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
+    quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
 
     if (menu_state == _SelectingMap) {
         debug_string += "Select Map";
@@ -40,19 +47,26 @@ void MainMenu::Update() {
         y = p2_selected.y;
         offset = 9;
 
-        quad_selected = &vertices[(MENU_X * MENU_Y + 1) * 4];
+        quad_selected = &vertices[(MENU_X * MENU_Y + 1) * 6];
+
+        quad_selected[0].color = sf::Color::Transparent;
+        quad_selected[5].color = sf::Color::Transparent;
 
         // define its 4 corners
-        quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-        quad_selected[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-        quad_selected[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-        quad_selected[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[1].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[2].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[3].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[4].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+        quad_selected[5].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
 
         // define its 4 texture coordinates
-        quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-        quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-        quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-        quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
+        quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+        quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+        quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+        quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
+        quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+        quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
     }
 }
 
@@ -67,28 +81,36 @@ void MainMenu::PopulateMenuMap() {
     }
 
     // resize the vertex array to fit the level size
-    vertices.setPrimitiveType(sf::Quads);
-    vertices.resize((MENU_X * MENU_Y + 2) * 4);
+    vertices.setPrimitiveType(sf::TrianglesStrip);
+    vertices.resize((MENU_X * MENU_Y + 2) * 6);
 
     int offset = 0;
 
     // populate the vertex array, with one quad per tile
     for (int y = 0; y < MENU_Y; ++y) {
         for (int x = 0; x < MENU_X; ++x) {
+            //UpdateTile(x, y, offset);
             // get a pointer to the current tile's quad
-            sf::Vertex* quad = &vertices[(x + y * MENU_X) * 4];
+            sf::Vertex* quad = &vertices[(x + y * MENU_X) * 6];
+
+            quad[0].color = sf::Color::Transparent;
+            quad[5].color = sf::Color::Transparent;
 
             // define its 4 corners
-            quad[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad[1].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad[2].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
-            quad[3].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[0].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[1].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , y * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[2].position = sf::Vector2f(x * MENU_SIZE_X + (x + 1) * PADDING      , (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[3].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, y * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[4].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
+            quad[5].position = sf::Vector2f((x + 1) * MENU_SIZE_X + (x + 1) * PADDING, (y + 1) * MENU_SIZE_Y + (y + 1) * PADDING);
 
             // define its 4 texture coordinates
-            quad[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset, 0);
-            quad[1].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-            quad[2].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-            quad[3].texCoords = sf::Vector2f(MENU_SIZE_X * offset, MENU_SIZE_Y);
+            quad[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+            quad[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
+            quad[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+            quad[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
+            quad[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+            quad[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
 
             offset++;
         }

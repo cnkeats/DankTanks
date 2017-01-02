@@ -12,7 +12,6 @@ extern std::string MENU_MAP_FILE;
 extern std::string MENU_COLOR_FILE;
 extern std::string TILE_FILE;
 extern const int TILE_SIZE;
-extern const int TILE_PADDING;
 extern const int TILES_X;
 extern const int TILES_Y;
 extern const float PI;

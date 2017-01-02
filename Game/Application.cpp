@@ -148,7 +148,7 @@ void Application::UpdatePlayers() {
     }
 
     players[0]->UpdateInfo();
-    debug_string += " ... ";
+    debug_string += "                          ";
     players[1]->UpdateInfo();
 }
 
