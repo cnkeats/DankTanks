@@ -13,7 +13,7 @@ std::string MENU_COLOR_FILE = "menu_color.png";
 std::string TILE_FILE = "tile_15.png";
 const int TILE_SIZE = 15;
 const int TILES_X = 128;     // 1920 / TILE_SIZE (5 = 384, 10 = 192, 15 = 128)
-const int TILES_Y = 72 - 10; // 1080 / TILE_SIZE (5 = 216, 10 = 108, 15 = 72)
+const int TILES_Y = 72 - 6; // 1080 / TILE_SIZE (5 = 216, 10 = 108, 15 = 72)
 const float PI = 3.14159;
 const float PI_OVER_180 = 3.14159 / 180.0;
 

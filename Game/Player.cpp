@@ -6,31 +6,51 @@ Player::~Player() {
     }
 }
 
-Player::Player(sf::Vector2f position) {
+Player::Player(sf::Vector2f position, int i) {
     is_real_time = true;
     fired = false;
     is_dead = false;
-    fuel = 10000;
-    projectile_type = 0;
-    angle = 0;
+    player_index = i;
+    hit_points = 100;
     power = 14;
+    fuel = 100;
+    budget = 10;
+    angle = 0;
+    selected_projectile = 0;
+    selected_projectile_cost = 0;
+    selected_projectile_string = "asdf";
 
+    // Tank body sprite
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
     sprite.setOutlineColor(sf::Color(sf::Color::Black));
     sprite.setOutlineThickness(1);
     sprite.setFillColor(sf::Color::White);
     sprite.setPosition(position);
 
+    // Tank barrel sprite
     sprite_barrel.setSize(sf::Vector2f(1, -TILE_SIZE));
     sprite_barrel.setOutlineColor(sf::Color(sf::Color::Black));
     sprite_barrel.setOutlineThickness(1);
     sprite_barrel.setFillColor(sf::Color::White);
     sprite_barrel.setPosition(sprite.getPosition());
+
+    // Player text left column
+    text_info_left.setFont(font);
+    text_info_left.setCharacterSize(20);
+    text_info_left.setColor(sf::Color::White);
+    text_info_left.setPosition(player_index * window.getSize().x / 2, window.getSize().y - 90);
+
+    // Player text right column
+    text_info_right.setFont(font);
+    text_info_right.setCharacterSize(20);
+    text_info_right.setColor(sf::Color::White);
+    text_info_right.setPosition(player_index * window.getSize().x / 2 + 220, window.getSize().y - 90);
 }
 
 // Main game loop calls this update function
 void Player::Update(TileMap* &tileMap) {
     UpdateProjectiles(tileMap);
+    UpdateInfo();
 
     if (!is_dead) {
         SetTileCoords();
@@ -92,10 +112,10 @@ void Player::InputPowerDown() {
 
 // Change projectile type
 void Player::InputCycleProjectileType() {
-    ++projectile_type;
+    ++selected_projectile;
 
-    if (projectile_type > 8) {
-        projectile_type = 0;
+    if (selected_projectile > 8) {
+        selected_projectile = 0;
     }
 }
 
@@ -105,7 +125,7 @@ void Player::InputFire() {
         fired = true;
         sf::Vector2f position = sf::Vector2f(sprite.getPosition().x + TILE_SIZE, sprite.getPosition().y);
 
-        switch (projectile_type) {
+        switch (selected_projectile) {
             case 0:
                 projectiles.push_back(new Projectile(position, GetDirectionVector())); // normal shot
                 break;
@@ -113,7 +133,7 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile(position, GetDirectionVector(), 10.1, 1)); // spawns terrain
                 break;
             case 2:
-                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector())); // split on impact
                 break;
             case 3:
                 projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3.1, 0)); // tunnel without outer shell
@@ -122,20 +142,17 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
                 break;
             case 5:
-                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector())); // bridge
                 break;
             case 6:
-                projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector())); // teleport
                 break;
             case 7:
-                projectiles.push_back(new Projectile_BinaryTree(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_BinaryTree(position, GetDirectionVector())); // binary tree
                 break;
             case 8:
-                projectiles.push_back(new Projectile_AirSplitBomb(position, GetDirectionVector()));
+                projectiles.push_back(new Projectile_AirSplitBomb(position, GetDirectionVector())); // sparkler
                 break;
-            /*case 9:
-                //projectiles.push_back(new Projectile_Tile(position, GetDirectionVector(), 5.1));
-                break;*/
             default:
                 fired = false;
                 break;
@@ -242,7 +259,7 @@ void Player::SetColor(sf::Vector2i v) {
     } else if (v == sf::Vector2i(2, 1)) {
         color = sf::Color(51, 51, 255, 255); // blue
     } else if (v == sf::Vector2i(3, 1)) {
-        color = sf::Color(51, 51, 51, 255); // black with white outline
+        color = sf::Color(0, 0, 0, 255); // black with white outline
         sprite.setOutlineColor(sf::Color::White);
         sprite_barrel.setOutlineColor(sf::Color::White);
     } else {
@@ -255,9 +272,20 @@ void Player::SetColor(sf::Vector2i v) {
 
 // Draw the player's info to the screen
 void Player::UpdateInfo() {
-    //debug_string += "HP: " + toString(hitpoints);
-    debug_string += "Power: " + ToString(power);
-    debug_string += " Angle: " + ToString(angle);
-    debug_string += " Projectile: " + ToString(projectile_type);
-    debug_string += " Fuel: " + ToString(fuel);
+    // Left text
+    std::string s = "Player " + ToString(player_index + 1)
+                + "\n  Health: " + ToString(hit_points)
+                + "\n  Power:  " + ToString(power)
+                + "\n  Fuel:   " + ToString(fuel);
+    text_info_left.setString(s);
+
+    // Right text
+                s = std::string("")
+                + "\nProjectile: \[" + ToString(selected_projectile) + "\]" + selected_projectile_string
+                + "\nCost:       " + ToString(selected_projectile_cost)
+                + "\nDanka:      " + ToString(budget);
+    text_info_right.setString(s);
+
+    window.draw(text_info_left);
+    window.draw(text_info_right);
 }

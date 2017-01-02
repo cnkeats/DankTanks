@@ -10,7 +10,7 @@
 
 class Player {
 public:
-    Player(sf::Vector2f);
+    Player(sf::Vector2f, int);
     ~Player();
     void Update(TileMap* &);
     void InputFire();
@@ -37,12 +37,19 @@ private:
     bool is_real_time;
     bool fired;
     bool is_dead;
-    int projectile_type;
-    int angle;
-    int fuel;
+    int player_index;
+    int hit_points;
     float power;
+    int fuel;
+    int angle;
+    int budget;
+    int selected_projectile;
+    int selected_projectile_cost;
+    std::string selected_projectile_string;
     sf::Vector2i tile_coords;
     std::vector<Projectile*> projectiles;
     sf::RectangleShape sprite;
     sf::RectangleShape sprite_barrel;
+    sf::Text text_info_left;
+    sf::Text text_info_right;
 };
