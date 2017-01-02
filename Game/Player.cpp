@@ -18,7 +18,7 @@ Player::Player(sf::Vector2f position, int i) {
     angle = 0;
     selected_projectile = 0;
     selected_projectile_cost = 0;
-    selected_projectile_string = "asdf";
+    selected_projectile_string = ">put proj name here<";
 
     // Tank body sprite
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));

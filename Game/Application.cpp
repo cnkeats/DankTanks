@@ -151,8 +151,8 @@ void Application::UpdatePlayers() {
 // Handle user input
 void Application::ProcessInput() {
     if (game_state == _MainMenuColor && selected_p1_color != sf::Vector2i(-1, -1) && selected_p2_color != sf::Vector2i(-1, -1)) {
-        //game_state = _RunningP1Turn;
         game_state = _RunningRealTime;
+        //game_state = _RunningP1Turn;
     } else if (game_state == _RunningP1Turn && players[0]->IsTurnOver()) {
         game_state = _RunningP2Turn;
     } else if (game_state == _RunningP2Turn && players[1]->IsTurnOver()) {
@@ -214,15 +214,15 @@ void Application::ProcessInput() {
                 } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
                     players[0]->InputMoveRight(tileMap);
                 }
-            } else if (event.key.code == sf::Keyboard::RShift) {
+            } else if (event.key.code == sf::Keyboard::RShift) { // Change projectile
                 if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
                     players[0]->InputCycleProjectileType();
                 }
-            } else if (event.key.code == sf::Keyboard::Equal) {
+            } else if (event.key.code == sf::Keyboard::Equal) { // Increase power
                 if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
                     players[0]->InputPowerUp();
                 }
-            } else if (event.key.code == sf::Keyboard::Dash) {
+            } else if (event.key.code == sf::Keyboard::Dash) { // Decrease power
                 if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
                     players[0]->InputPowerDown();
                 }
@@ -247,7 +247,7 @@ void Application::ProcessInput() {
                     mainMenu->InputP1Up();
                 } else if (game_state == _MainMenuColor) {
                     mainMenu->InputP2Up();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                } else if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
                     players[1]->InputRotateClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Numpad5) { // Down
@@ -255,7 +255,7 @@ void Application::ProcessInput() {
                     mainMenu->InputP1Down();
                 } else if (game_state == _MainMenuColor) {
                     mainMenu->InputP2Down();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                } else if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
                     players[1]->InputRotateCounterClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Numpad4) { // Left
@@ -263,7 +263,7 @@ void Application::ProcessInput() {
                     mainMenu->InputP1Left();
                 } else if (game_state == _MainMenuColor) {
                     mainMenu->InputP2Left();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                } else if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
                     players[1]->InputMoveLeft(tileMap);
                 }
             } else if (event.key.code == sf::Keyboard::Numpad6) { // Right
@@ -271,138 +271,24 @@ void Application::ProcessInput() {
                     mainMenu->InputP1Right();
                 } else if (game_state == _MainMenuColor) {
                     mainMenu->InputP2Right();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+                } else if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
                     players[1]->InputMoveRight(tileMap);
                 }
-            } else if (event.key.code == sf::Keyboard::Numpad7) {
-                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
+            } else if (event.key.code == sf::Keyboard::Numpad7) { // Change projectile
+                if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
                     players[1]->InputCycleProjectileType();
+                }
+            } else if (event.key.code == sf::Keyboard::Numpad2) { // Increase power
+                if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
+                    players[1]->InputPowerUp();
+                }
+            } else if (event.key.code == sf::Keyboard::Numpad0) { // Decrease power
+                if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
+                    players[1]->InputPowerDown();
                 }
             }
         }
     }
-
-    // TODO Pi Controls
-    /*while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-            window.close();
-        } else if (event.type == sf::Event::KeyPressed) {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
-                window.close();
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) { // Pause
-                if (game_state != _Paused) {
-                    pre_paused_game_state = game_state;
-                    game_state = _Paused;
-                } else {
-                    game_state = pre_paused_game_state;
-                }
-
-            // Player 1 controls
-            } else if (event.key.code == sf::Keyboard::Space) { // Fire
-                if (game_state == _MainMenuMap) {
-                    selected_map = mainMenu->InputP1Select();
-                    tileMap = new TileMap(selected_map);
-                    game_state = _MainMenuColor;
-                } else if (game_state == _MainMenuColor) {
-                    selected_p1_color = mainMenu->InputP1Select();
-                    players[0]->SetColor(selected_p1_color);
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputFire();
-                } else if (game_state == _GameOver) {
-                    CleanUp();
-                    StartNewGame();
-                }
-            } else if (event.key.code == sf::Keyboard::Up) { // Up
-                if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Up();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputRotateClockwise();
-                }
-            } else if (event.key.code == sf::Keyboard::Down) { // Down
-                if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Down();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputRotateCounterClockwise();
-                }
-            } else if (event.key.code == sf::Keyboard::Left) { // Left
-                if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Left();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputMoveLeft(tileMap);
-                }
-            } else if (event.key.code == sf::Keyboard::Right) { // Right
-                if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Right();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputMoveRight(tileMap);
-                }
-            } else if (event.key.code == sf::Keyboard::RShift) {
-                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputCycleProjectileType();
-                }
-            } else if (event.key.code == sf::Keyboard::Equal) {
-                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputPowerUp();
-                }
-            } else if (event.key.code == sf::Keyboard::Dash) {
-                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[0]->InputPowerDown();
-                }
-
-            // Player 2 controls
-            } else if (event.key.code == sf::Keyboard::Return) { // Fire
-                if (game_state == _MainMenuMap) {
-                    selected_map = mainMenu->InputP1Select();
-                    tileMap = new TileMap(selected_map);
-                    game_state = _MainMenuColor;
-                } else if (game_state == _MainMenuColor) {
-                    selected_p2_color = mainMenu->InputP2Select();
-                    players[1]->SetColor(selected_p2_color);
-                } else if (game_state == _RunningP2Turn || game_state == _RunningRealTime) {
-                    players[1]->InputFire();
-                } else if (game_state == _GameOver) {
-                    CleanUp();
-                    StartNewGame();
-                }
-            } else if (event.key.code == sf::Keyboard::Numpad8) { // Up
-                if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Up();
-                } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Up();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[1]->InputRotateClockwise();
-                }
-            } else if (event.key.code == sf::Keyboard::Numpad5) { // Down
-                if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Down();
-                } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Down();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[1]->InputRotateCounterClockwise();
-                }
-            } else if (event.key.code == sf::Keyboard::Numpad4) { // Left
-                if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Left();
-                } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Left();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[1]->InputMoveLeft(tileMap);
-                }
-            } else if (event.key.code == sf::Keyboard::Numpad6) { // Right
-                if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Right();
-                } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Right();
-                } else if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[1]->InputMoveRight(tileMap);
-                }
-            } else if (event.key.code == sf::Keyboard::Numpad7) {
-                if (game_state == _RunningP1Turn || game_state == _RunningRealTime) {
-                    players[1]->InputCycleProjectileType();
-                }
-            }
-        }
-    }*/
 }
 
 void Application::DrawElapsedTimeString() {
