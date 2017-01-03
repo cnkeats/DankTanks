@@ -1,8 +1,9 @@
 #include "Projectile_Shotgun.h"
+#include "Player.h"
 
 Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
     is_split = false;
-    blast_radius = 2.1;
+    blast_radius = 2;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
@@ -17,7 +18,7 @@ Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle
 }
 
 // Overridden PostUpdate() since this projectile creates child projectiles
-void Projectile_Shotgun::PostUpdate(TileMap* &tileMap) {
+void Projectile_Shotgun::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
     if (!parent_expired && !is_split) {
         is_split = true;
 

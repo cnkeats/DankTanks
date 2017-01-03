@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Projectile.h"
 
 Player::~Player() {
     for (unsigned int i = 0; i < projectiles.size(); i++) {
@@ -13,7 +14,7 @@ Player::Player(sf::Vector2f position, int i) {
     player_index = i;
     hit_points = 100;
     power = 14;
-    fuel = 100;
+    fuel = 1000;
     budget = 10;
     angle = 0;
     selected_projectile = 9;
@@ -48,31 +49,31 @@ Player::Player(sf::Vector2f position, int i) {
 }
 
 // Main game loop calls this update function
-void Player::Update(TileMap* &tileMap) {
-    UpdateProjectiles(tileMap);
+void Player::Update(TileMap* &tileMap, std::vector<Player*> &players) {
+    UpdateProjectiles(tileMap, players);
     UpdateInfo();
 
     if (!is_dead) {
-        SetTileCoords();
+        tile_coords = sf::Vector2i(floor(sprite.getPosition().x / TILE_SIZE), floor(sprite.getPosition().y / TILE_SIZE));
+
         UpdateFallingPlayer(tileMap);
         UpdateBarrel();
 
         window.draw(sprite);
         window.draw(sprite_barrel);
+    } else {
+        text_info_left.setColor(sf::Color::Red);
+        text_info_right.setColor(sf::Color::Red);
     }
 }
 
 // Each player has a vector of projectiles. This calls update on each projectile
-void Player::UpdateProjectiles(TileMap* &tileMap) {
+void Player::UpdateProjectiles(TileMap* &tileMap, std::vector<Player*> &players) {
     for (unsigned int i = 0; i < projectiles.size(); i++) {
-        projectiles[i]->Update(tileMap);
+        projectiles[i]->Update(tileMap, players, player_index);
         window.draw(*projectiles[i]);
 
         if (projectiles[i]->IsExpired()) {
-            if (projectiles[i]->IsTeleportedInBounds(tileMap)) {
-                sprite.setPosition(projectiles[i]->GetPosition());
-            }
-
             delete projectiles[i];
             projectiles.erase(projectiles.begin() + i);
         }
@@ -131,13 +132,13 @@ void Player::InputFire() {
                 projectiles.push_back(new Projectile(position, GetDirectionVector())); // normal shot
                 break;
             case 1:
-                projectiles.push_back(new Projectile(position, GetDirectionVector(), 10.1, 1)); // spawns terrain
+                projectiles.push_back(new Projectile(position, GetDirectionVector(), 5, 1)); // spawns terrain
                 break;
             case 2:
                 projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector())); // split on impact
                 break;
             case 3:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3.1, 0)); // tunnel without outer shell
+                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3, 0)); // tunnel without outer shell
                 break;
             case 4:
                 projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
@@ -233,14 +234,24 @@ bool Player::IsInBounds(sf::Vector2i v) {
     return v.x >= 0 && v.x < TILES_X && v.y >= 0 && v.y < TILES_Y - 1;
 }
 
-// Snap player to grid
-void Player::SetTileCoords() {
-    tile_coords = sf::Vector2i(floor(sprite.getPosition().x/TILE_SIZE), floor(sprite.getPosition().y/TILE_SIZE));
+bool Player::IsOnTile(sf::Vector2i v) {
+    return (v == tile_coords || v == sf::Vector2i(tile_coords.x + 1, tile_coords.y));
 }
 
 // Get unit vector in direction based on angle and multiply by power
 sf::Vector2f Player::GetDirectionVector() {
     return sf::Vector2f(sin(angle * PI_OVER_180) * power, -cos(angle * PI_OVER_180) * power);
+}
+
+void Player::UpdateHitPoints(int damage) {
+    if (!is_dead) {
+        hit_points -= damage;
+
+        if (hit_points <= 0) {
+            hit_points = 0;
+            is_dead = true;
+        }
+    }
 }
 
 // Set the player's color
@@ -272,6 +283,10 @@ void Player::SetColor(sf::Vector2i v) {
 
     sprite.setFillColor(color);
     sprite_barrel.setFillColor(color);
+}
+
+void Player::SetPosition(sf::Vector2i v) {
+    sprite.setPosition(sf::Vector2f(v.x * TILE_SIZE, v.y * TILE_SIZE));
 }
 
 // Draw the player's info to the screen

@@ -1,3 +1,4 @@
+#pragma once
 #include "Globals.h"
 #include "Projectile.h"
 
@@ -7,7 +8,7 @@ public:
     Projectile_Tunnel(sf::Vector2f, sf::Vector2f, float, int);
     Projectile_Tunnel(sf::Vector2f, sf::Vector2f, float, int, float, int);
     virtual ~Projectile_Tunnel() {};
-    virtual void PostHit(TileMap* &);
+    virtual void PostHit(TileMap* &, std::vector<Player*> &, int);
 private:
 
 };

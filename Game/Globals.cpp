@@ -1,7 +1,13 @@
 #include "Globals.h"
 
-// Turns an int into a string
+/*// Turns an int into a string
 std::string ToString(int n) {
+    std::stringstream ss;
+    ss << n;
+    return ss.str();
+}*/
+
+std::string ToString(float n) {
     std::stringstream ss;
     ss << n;
     return ss.str();

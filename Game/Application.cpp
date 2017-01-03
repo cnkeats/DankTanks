@@ -39,8 +39,8 @@ void Application::StartNewGame() {
     mainMenu = new MainMenu(); // Create menu
 
     // Create players
-    players.push_back(new Player(sf::Vector2f(5 * TILE_SIZE, 0), 0));
-    players.push_back(new Player(sf::Vector2f((TILES_X - 5) * TILE_SIZE, 0), 1));
+    players.push_back(new Player(sf::Vector2f(8 * TILE_SIZE, 0), 0));
+    players.push_back(new Player(sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0), 1));
 
     selected_p1_color = sf::Vector2i(-1, -1);
     selected_p2_color = sf::Vector2i(-1, -1);
@@ -131,7 +131,7 @@ void Application::UpdateTerrain() {
 // Update all players
 void Application::UpdatePlayers() {
     for (unsigned int i = 0; i < players.size(); ++i) {
-        players[i]->Update(tileMap);
+        players[i]->Update(tileMap, players);
     }
 
     if (game_state != _GameOver) {

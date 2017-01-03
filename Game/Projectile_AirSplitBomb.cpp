@@ -1,8 +1,9 @@
 #include "Projectile_AirSplitBomb.h"
+#include "Player.h"
 
 Projectile_AirSplitBomb::Projectile_AirSplitBomb(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
-    blast_radius = 6.1;
+    blast_radius = 5;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
@@ -17,7 +18,7 @@ Projectile_AirSplitBomb::Projectile_AirSplitBomb(sf::Vector2f position, sf::Vect
 }
 
 // Overridden PostUpdate() since this projectile creates child projectiles over time
-void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap) {
+void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
     if (!parent_expired) {
         --ticks_until_split;
 

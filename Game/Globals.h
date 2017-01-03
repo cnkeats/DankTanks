@@ -17,7 +17,7 @@ extern const int TILES_Y;
 extern const float PI;
 extern const float PI_OVER_180;
 
-std::string ToString(int);
+std::string ToString(float);
 std::string ToString(sf::Vector2i);
 void DrawDebugString();
 void CreateDebugString();

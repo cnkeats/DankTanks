@@ -13,7 +13,7 @@ class Player {
 public:
     Player(sf::Vector2f, int);
     ~Player();
-    void Update(TileMap* &);
+    void Update(TileMap* &, std::vector<Player*> &);
     void InputFire();
     void InputRotateClockwise();
     void InputRotateCounterClockwise();
@@ -23,15 +23,17 @@ public:
     void InputMoveRight(TileMap* &);
     void InputCycleProjectileType();
     void SetColor(sf::Vector2i);
+    void SetPosition(sf::Vector2i);
     void UpdateInfo();
+    void UpdateHitPoints(int);
     bool IsTurnOver();
     bool IsDead();
+    bool IsOnTile(sf::Vector2i);
 
 private:
-    void UpdateProjectiles(TileMap* &);
+    void UpdateProjectiles(TileMap* &, std::vector<Player*> &players);
     void UpdateFallingPlayer(TileMap* &);
     void UpdateBarrel();
-    void SetTileCoords();
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
 
