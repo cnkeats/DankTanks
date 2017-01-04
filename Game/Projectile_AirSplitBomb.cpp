@@ -23,7 +23,7 @@ void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap, std::vector<Player*>
         --ticks_until_split;
 
         if (ticks_until_split <= 0) {
-            ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
+            ticks_until_split = 2;
 
             if (velocity.x >= 0) {
                 sf::Vector2f rand_velocity = sf::Vector2f(rand()%4, rand()%8 - 4);

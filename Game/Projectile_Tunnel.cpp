@@ -4,7 +4,7 @@
 Projectile_Tunnel::Projectile_Tunnel(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
     blast_radius = 3;
     status_on_hit = 0;
-    blast_radius_outer = blast_radius + 1;
+    blast_radius_outer = blast_radius + 2;
     status_on_hit_outer = 2;
 }
 

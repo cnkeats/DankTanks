@@ -19,7 +19,7 @@ Player::Player(sf::Vector2f position, unsigned int i) {
     angle = 0;
     selected_projectile = 9;
     selected_projectile_cost = 0;
-    selected_projectile_string = ">put proj name here<";
+    selected_projectile_string = "";
 
     // Tank body sprite
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
@@ -125,43 +125,8 @@ void Player::InputCycleProjectileType() {
 void Player::InputFire() {
     if (!fired || is_real_time) {
         fired = true;
-        sf::Vector2f position = sf::Vector2f(sprite.getPosition().x + TILE_SIZE, sprite.getPosition().y);
 
-        switch (selected_projectile) {
-            case 0:
-                projectiles.push_back(new Projectile(position, GetDirectionVector())); // normal shot
-                break;
-            case 1:
-                projectiles.push_back(new Projectile(position, GetDirectionVector(), 5, 1)); // spawns terrain
-                break;
-            case 2:
-                projectiles.push_back(new Projectile_ImpactSplitBomb(position, GetDirectionVector())); // split on impact
-                break;
-            case 3:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector(), 3, 0)); // tunnel without outer shell
-                break;
-            case 4:
-                projectiles.push_back(new Projectile_Tunnel(position, GetDirectionVector())); // tunnel with outer shell
-                break;
-            case 5:
-                projectiles.push_back(new Projectile_Bridge(position, GetDirectionVector())); // bridge
-                break;
-            case 6:
-                projectiles.push_back(new Projectile_Teleport(position, GetDirectionVector())); // teleport
-                break;
-            case 7:
-                projectiles.push_back(new Projectile_BinaryTree(position, GetDirectionVector())); // binary tree
-                break;
-            case 8:
-                projectiles.push_back(new Projectile_AirSplitBomb(position, GetDirectionVector())); // sparkler
-                break;
-            case 9:
-                projectiles.push_back(new Projectile_Shotgun(position, GetDirectionVector())); // shotgun
-                break;
-            default:
-                fired = false;
-                break;
-        }
+        projectiles.push_back(GetProjectileData(selected_projectile).projectile);
     }
 }
 
@@ -292,41 +257,7 @@ void Player::SetPosition(sf::Vector2i v) {
 // Draw the player's info to the screen
 void Player::UpdateInfo() {
     // Set string for projectile name
-    switch (selected_projectile) {
-        case 0:
-            selected_projectile_string = "Bomb";
-            break;
-        case 1:
-            selected_projectile_string = "Tile Bomb";
-            break;
-        case 2:
-            selected_projectile_string = "Impact Splitter";
-            break;
-        case 3:
-            selected_projectile_string = "Tunneler";
-            break;
-        case 4:
-            selected_projectile_string = "Tunneler with shell";
-            break;
-        case 5:
-            selected_projectile_string = "Bridge";
-            break;
-        case 6:
-            selected_projectile_string = "Teleport";
-            break;
-        case 7:
-            selected_projectile_string = "Binary Tree";
-            break;
-        case 8:
-            selected_projectile_string = "Sparkler";
-            break;
-        case 9:
-            selected_projectile_string = "Shotgun";
-            break;
-        default:
-            selected_projectile_string = "ERROR";
-            break;
-    }
+    selected_projectile_string = GetProjectileData(selected_projectile).name;
 
     // Left text
     std::string s = "Player " + ToString(player_index + 1)
@@ -344,4 +275,69 @@ void Player::UpdateInfo() {
 
     window.draw(text_info_left);
     window.draw(text_info_right);
+}
+
+ProjectileData Player::GetProjectileData(int i) {
+    ProjectileData p;
+    sf::Vector2f position = sf::Vector2f(sprite.getPosition().x + TILE_SIZE, sprite.getPosition().y);
+
+    switch (selected_projectile) {
+        case 0:
+            p.name = "Bomb";
+            p.cost = 0;
+            p.projectile = new Projectile(position, GetDirectionVector());
+            break;
+        case 1:
+            p.name = "Tile Bomb";
+            p.cost = 0;
+            p.projectile = new Projectile(position, GetDirectionVector(), 5, 1);
+            break;
+        case 2:
+            p.name = "Shotgun";
+            p.cost = 0;
+            p.projectile = new Projectile_Shotgun(position, GetDirectionVector());
+            break;
+        case 3:
+            p.name = "Impact Split Bomb";
+            p.cost = 0;
+            p.projectile = new Projectile_ImpactSplitBomb(position, GetDirectionVector());
+            break;
+        case 4:
+            p.name = "Tunneler";
+            p.cost = 0;
+            p.projectile = new Projectile_Tunnel(position, GetDirectionVector(), 3, 0);
+            break;
+        case 5:
+            p.name = "Tunneler (with shell)";
+            p.cost = 0;
+            p.projectile = new Projectile_Tunnel(position, GetDirectionVector());
+            break;
+        case 6:
+            p.name = "Bridge";
+            p.cost = 0;
+            p.projectile = new Projectile_Bridge(position, GetDirectionVector());
+            break;
+        case 7:
+            p.name = "Teleport";
+            p.cost = 0;
+            p.projectile = new Projectile_Teleport(position, GetDirectionVector());
+            break;
+        case 8:
+            p.name = "Binary Tree";
+            p.cost = 0;
+            p.projectile = new Projectile_BinaryTree(position, GetDirectionVector());
+            break;
+        case 9:
+            p.name = "Sparkler";
+            p.cost = 0;
+            p.projectile = new Projectile_AirSplitBomb(position, GetDirectionVector());
+            break;
+        default:
+            p.name = "ERROR";
+            p.cost = 0;
+            p.projectile = new Projectile(position, GetDirectionVector());
+            break;
+    }
+
+    return p;
 }

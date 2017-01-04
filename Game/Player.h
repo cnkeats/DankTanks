@@ -9,6 +9,12 @@
 #include "Projectile_Teleport.h"
 #include "Projectile_Tunnel.h"
 
+struct ProjectileData {
+    std::string name;
+    int cost;
+    Projectile *projectile;
+};
+
 class Player {
 public:
     Player(sf::Vector2f, unsigned int);
@@ -36,6 +42,7 @@ private:
     void UpdateBarrel();
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
+    ProjectileData GetProjectileData(int);
 
     bool is_real_time;
     bool fired;

@@ -10,6 +10,6 @@ public:
     virtual ~Projectile_AirSplitBomb() {};
     virtual void PostUpdate(TileMap* &, std::vector<Player*> &, unsigned int);
 private:
-    static const int STARTING_TICKS_UNTIL_SPLIT = 2;
+    static const int STARTING_TICKS_UNTIL_SPLIT = 15;
     int ticks_until_split;
 };

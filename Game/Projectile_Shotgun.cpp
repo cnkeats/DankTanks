@@ -7,14 +7,20 @@ Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
+    starting_life_ticks = 30;
+    life_ticks = starting_life_ticks;
 }
 
 Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
     is_split = false;
+    starting_life_ticks = 30;
+    life_ticks = starting_life_ticks;
 }
 
 Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) : Projectile(position, angle, radius, status, radius2, status2) {
     is_split = false;
+    starting_life_ticks = 30;
+    life_ticks = starting_life_ticks;
 }
 
 // Overridden PostUpdate() since this projectile creates child projectiles
