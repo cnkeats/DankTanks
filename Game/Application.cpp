@@ -45,7 +45,7 @@ void Application::StartNewGame() {
     selected_p1_color = sf::Vector2i(-1, -1);
     selected_p2_color = sf::Vector2i(-1, -1);
 
-    winner = -1;
+    winner_index = -1;
 
     text_elapsed_time.setFont(font);
     text_elapsed_time.setCharacterSize(20);
@@ -95,10 +95,10 @@ void Application::Render() {
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            if (winner == 0) {
+            if (winner_index == 0) {
                 debug_string = "Game Over! The game was a draw! Press fire to start a new game!";
             } else {
-                debug_string = "Game Over! Player " + ToString(winner) + " won! Press fire to start a new game!";
+                debug_string = "Game Over! Player " + ToString(winner_index) + " won! Press fire to start a new game!";
             }
             break;
         case _Paused:
@@ -136,13 +136,13 @@ void Application::UpdatePlayers() {
 
     if (game_state != _GameOver) {
         if (players[0]->IsDead() && players[1]->IsDead()) {
-            winner = 0;
+            winner_index = 0;
             game_state = _GameOver;
         } else if (players[0]->IsDead()) {
-            winner = 2;
+            winner_index = 2;
             game_state = _GameOver;
         } else if (players[1]->IsDead()) {
-            winner = 1;
+            winner_index = 1;
             game_state = _GameOver;
         }
     }

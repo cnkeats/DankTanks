@@ -86,7 +86,7 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
         if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == -1) { // Off screen
             parent_expired = true;
         } else {
-            if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == 0 && !PlayerWasHit(players)) { // Hit nothing
+            if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == 0 && !PlayerWasHit(players, owner_index)) { // Hit nothing
                 // Add velocity from vector field
                 velocity.x += tileMap->GetTile(tile_coords.x, tile_coords.y).velocity.x;
                 velocity.y += tileMap->GetTile(tile_coords.x, tile_coords.y).velocity.y;
@@ -135,12 +135,12 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
 }
 
 // This is called after the update function. This is mainly used by derived classed
-void Projectile::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     //
 }
 
 // This is called if a hit is detected
-void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     // Blast radius, deals damage
     for (float x = -blast_radius; x <= blast_radius; ++x) {
         for (float y = -blast_radius; y <= blast_radius; ++y) {
@@ -178,19 +178,18 @@ void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, int owner
 }
 
 // This is called after the hit function. This is mainly used by derived classed
-void Projectile::PostHit(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     //
 }
 
-bool Projectile::PlayerWasHit(std::vector<Player*> &players) {
-    // This allows you to shoot below yourself
-    if (life_ticks > starting_life_ticks - 3) {
-        return false;
-    }
-
+bool Projectile::PlayerWasHit(std::vector<Player*> &players, unsigned int owner_index) {
     for (unsigned int i = 0; i < players.size(); ++i) {
         if (players[i]->IsOnTile(tile_coords)) { // Hit a player
-            return true;
+            if (i == owner_index && life_ticks > starting_life_ticks - 5) { // don't hit yourself for first 5 frames
+                return false;
+            } else {
+                return true;
+            }
         }
     }
 

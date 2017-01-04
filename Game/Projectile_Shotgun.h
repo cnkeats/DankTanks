@@ -8,7 +8,7 @@ public:
     Projectile_Shotgun(sf::Vector2f, sf::Vector2f, float, int);
     Projectile_Shotgun(sf::Vector2f, sf::Vector2f, float, int, float, int);
     virtual ~Projectile_Shotgun() {};
-    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, int);
+    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, unsigned int);
 private:
     bool is_split;
 };

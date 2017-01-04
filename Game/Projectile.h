@@ -14,12 +14,12 @@ public:
     bool IsExpired();
 
 protected:
-    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, int);
-    virtual void Hit(TileMap* &, std::vector<Player*> &, int);
-    virtual void PostHit(TileMap* &, std::vector<Player*> &, int);
+    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, unsigned int);
+    virtual void Hit(TileMap* &, std::vector<Player*> &, unsigned int);
+    virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int);
     virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
     void PopulateVertexArray();
-    bool PlayerWasHit(std::vector<Player*> &);
+    bool PlayerWasHit(std::vector<Player*> &, unsigned int);
 
     std::vector<Projectile*> sub_projectiles;
     sf::VertexArray vertices;

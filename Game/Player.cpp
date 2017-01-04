@@ -7,7 +7,7 @@ Player::~Player() {
     }
 }
 
-Player::Player(sf::Vector2f position, int i) {
+Player::Player(sf::Vector2f position, unsigned int i) {
     is_real_time = true;
     fired = false;
     is_dead = false;
@@ -291,6 +291,43 @@ void Player::SetPosition(sf::Vector2i v) {
 
 // Draw the player's info to the screen
 void Player::UpdateInfo() {
+    // Set string for projectile name
+    switch (selected_projectile) {
+        case 0:
+            selected_projectile_string = "Bomb";
+            break;
+        case 1:
+            selected_projectile_string = "Tile Bomb";
+            break;
+        case 2:
+            selected_projectile_string = "Impact Splitter";
+            break;
+        case 3:
+            selected_projectile_string = "Tunneler";
+            break;
+        case 4:
+            selected_projectile_string = "Tunneler with shell";
+            break;
+        case 5:
+            selected_projectile_string = "Bridge";
+            break;
+        case 6:
+            selected_projectile_string = "Teleport";
+            break;
+        case 7:
+            selected_projectile_string = "Binary Tree";
+            break;
+        case 8:
+            selected_projectile_string = "Sparkler";
+            break;
+        case 9:
+            selected_projectile_string = "Shotgun";
+            break;
+        default:
+            selected_projectile_string = "ERROR";
+            break;
+    }
+
     // Left text
     std::string s = "Player " + ToString(player_index + 1)
                 + "\n  Health: " + ToString(hit_points)

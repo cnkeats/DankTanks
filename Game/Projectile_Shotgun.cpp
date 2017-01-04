@@ -18,7 +18,7 @@ Projectile_Shotgun::Projectile_Shotgun(sf::Vector2f position, sf::Vector2f angle
 }
 
 // Overridden PostUpdate() since this projectile creates child projectiles
-void Projectile_Shotgun::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile_Shotgun::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     if (!parent_expired && !is_split) {
         is_split = true;
 

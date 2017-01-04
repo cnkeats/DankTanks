@@ -30,7 +30,7 @@ private:
     sf::Vector2i selected_map;
     sf::Vector2i selected_p1_color;
     sf::Vector2i selected_p2_color;
-    int winner;
+    int winner_index;
     std::string elapsed_time_string;
     sf::Text text_elapsed_time;
 };

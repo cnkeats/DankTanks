@@ -11,7 +11,7 @@
 
 class Player {
 public:
-    Player(sf::Vector2f, int);
+    Player(sf::Vector2f, unsigned int);
     ~Player();
     void Update(TileMap* &, std::vector<Player*> &);
     void InputFire();
@@ -40,7 +40,7 @@ private:
     bool is_real_time;
     bool fired;
     bool is_dead;
-    int player_index;
+    unsigned int player_index;
     int hit_points;
     float power;
     int fuel;

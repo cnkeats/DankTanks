@@ -15,7 +15,7 @@ Projectile_Bridge::Projectile_Bridge(sf::Vector2f position, sf::Vector2f angle, 
 }
 
 // Overridden PostHit() since this projectile creates child projectiles on hit
-void Projectile_Bridge::PostHit(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile_Bridge::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     int bridge_length = TILES_X;
     int bridge_height = 3;
     int direction = 1;
