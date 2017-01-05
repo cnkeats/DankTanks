@@ -14,13 +14,14 @@ private:
     void StartNewGame();
     void CleanUp();
     void Render();
+    void UpdateGameLogic();
     void UpdateMainMenu();
     void UpdateTerrain();
     void UpdatePlayers();
     void ProcessInput();
     void DrawElapsedTimeString();
 
-    enum GameState {_MainMenuMap, _MainMenuColor, _RunningP1Turn, _RunningP2Turn, _RunningRealTime, _GameOver, _Paused};
+    enum GameState {_MainMenuMap, _MainMenuColor, _Running, _GameOver, _Paused};
     GameState game_state;
     GameState pre_paused_game_state;
 
@@ -30,7 +31,8 @@ private:
     sf::Vector2i selected_map;
     sf::Vector2i selected_p1_color;
     sf::Vector2i selected_p2_color;
-    int winner_index;
     std::string elapsed_time_string;
     sf::Text text_elapsed_time;
+
+    int winner_index;
 };

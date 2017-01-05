@@ -20,6 +20,7 @@ public:
     Player(sf::Vector2f, unsigned int);
     ~Player();
     void Update(TileMap* &, std::vector<Player*> &);
+
     void InputFire();
     void InputRotateClockwise();
     void InputRotateCounterClockwise();
@@ -28,25 +29,29 @@ public:
     void InputMoveLeft(TileMap* &);
     void InputMoveRight(TileMap* &);
     void InputCycleProjectileType();
+
     void SetColor(sf::Vector2i);
     void SetPosition(sf::Vector2i);
-    void UpdateInfo();
+    void SetActive();
+
     void UpdateHitPoints(int);
+    void UpdateBudget(int);
+    void UpdateOvertime(bool);
+
     bool IsTurnOver();
     bool IsDead();
     bool IsOnTile(sf::Vector2i);
 
 private:
-    void UpdateProjectiles(TileMap* &, std::vector<Player*> &players);
-    void UpdateFallingPlayer(TileMap* &);
-    void UpdateBarrel();
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
-    ProjectileData GetProjectileData(int);
+    ProjectileData GetProjectileData(int, bool);
 
-    bool is_real_time;
-    bool fired;
+    bool is_turn_based;
+    bool is_active;
     bool is_dead;
+    bool is_overtime;
+    bool has_fired;
     unsigned int player_index;
     int hit_points;
     float power;
@@ -55,6 +60,7 @@ private:
     int budget;
     int selected_projectile;
     int selected_projectile_cost;
+    int shot_counter;
     std::string selected_projectile_string;
     sf::Vector2i tile_coords;
     std::vector<Projectile*> projectiles;
