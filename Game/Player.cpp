@@ -8,7 +8,7 @@ Player::~Player() {
 }
 
 Player::Player(sf::Vector2f position, unsigned int i) {
-    is_turn_based = true;
+    is_turn_based = false;
     is_active = !is_turn_based;
     is_dead = false;
     is_overtime = false;
@@ -121,14 +121,16 @@ void Player::Update(TileMap* &tileMap, std::vector<Player*> &players) {
 void Player::SetActive() {
     is_active = true;
 
-    if (is_overtime) {
-        budget += 2;
-    } else {
-        budget += 1;
-    }
+    if (is_turn_based) {
+        if (is_overtime) {
+            budget += 2;
+        } else {
+            budget += 1;
+        }
 
-    if (budget >= 10) { // Cap of 10 budget
-        budget = 10;
+        if (budget >= 10) { // Cap of 10 budget
+            budget = 10;
+        }
     }
 }
 
