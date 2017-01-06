@@ -14,7 +14,6 @@ private:
     void StartNewGame();
     void CleanUp();
     void Render();
-    void UpdateGameLogic();
     void UpdateMainMenu();
     void UpdateTerrain();
     void UpdatePlayers();
@@ -33,6 +32,9 @@ private:
     sf::Vector2i selected_p2_color;
     std::string elapsed_time_string;
     sf::Text text_elapsed_time;
+    sf::Clock game_clock;
+    sf::Clock game_budget_clock;
 
+    bool is_turn_based;
     int winner_index;
 };

@@ -7,8 +7,8 @@ Player::~Player() {
     }
 }
 
-Player::Player(sf::Vector2f position, unsigned int i) {
-    is_turn_based = false;
+Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f position) {
+    is_turn_based = b;
     is_active = !is_turn_based;
     is_dead = false;
     is_overtime = false;
@@ -30,15 +30,15 @@ Player::Player(sf::Vector2f position, unsigned int i) {
     sprite.setSize(sf::Vector2f(TILE_SIZE*2, TILE_SIZE));
     sprite.setOutlineColor(sf::Color(sf::Color::Black));
     sprite.setOutlineThickness(1);
-    sprite.setFillColor(sf::Color::White);
     sprite.setPosition(position);
 
     // Tank barrel sprite
     sprite_barrel.setSize(sf::Vector2f(1, -TILE_SIZE));
     sprite_barrel.setOutlineColor(sf::Color(sf::Color::Black));
     sprite_barrel.setOutlineThickness(1);
-    sprite_barrel.setFillColor(sf::Color::White);
     sprite_barrel.setPosition(sprite.getPosition());
+
+    SetColor(color_index);
 
     // Player text left column
     text_info_left.setFont(font);
@@ -122,16 +122,12 @@ void Player::SetActive() {
     is_active = true;
 
     if (is_turn_based) {
-        if (is_overtime) {
-            budget += 2;
-        } else {
-            budget += 1;
-        }
-
-        if (budget >= 10) { // Cap of 10 budget
-            budget = 10;
-        }
+        AddBudget();
     }
+}
+
+void Player::SetOvertime() {
+    is_overtime = true;
 }
 
 // Change power
@@ -276,6 +272,18 @@ void Player::UpdateHitPoints(int damage) {
             hit_points = 0;
             is_dead = true;
         }
+    }
+}
+
+void Player::AddBudget() {
+    if (is_overtime) {
+        budget += 2;
+    } else {
+        budget += 1;
+    }
+
+    if (budget >= 10) { // Cap of 10 budget
+        budget = 10;
     }
 }
 

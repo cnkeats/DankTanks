@@ -16,7 +16,7 @@ Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle) {
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
     damage = 5;
 
@@ -32,7 +32,7 @@ Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int sta
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
     damage = 5;
 
@@ -48,7 +48,7 @@ Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int sta
     status_on_hit_outer = status2;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
     damage = 5;
 

@@ -17,7 +17,7 @@ struct ProjectileData {
 
 class Player {
 public:
-    Player(sf::Vector2f, unsigned int);
+    Player(unsigned int, bool, sf::Vector2i, sf::Vector2f);
     ~Player();
     void Update(TileMap* &, std::vector<Player*> &);
 
@@ -30,19 +30,20 @@ public:
     void InputMoveRight(TileMap* &);
     void InputCycleProjectileType();
 
-    void SetColor(sf::Vector2i);
     void SetPosition(sf::Vector2i);
     void SetActive();
+    void SetOvertime();
 
     void UpdateHitPoints(int);
-    void UpdateBudget(int);
     void UpdateOvertime(bool);
+    void AddBudget();
 
     bool IsTurnOver();
     bool IsDead();
     bool IsOnTile(sf::Vector2i);
 
 private:
+    void SetColor(sf::Vector2i);
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
     ProjectileData GetProjectileData(int, bool);

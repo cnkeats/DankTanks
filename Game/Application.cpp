@@ -28,7 +28,6 @@ Application::Application() {
             elapsed_time += clock.restart();
         }
 
-        UpdateGameLogic();
         Render();
     }
 }
@@ -39,31 +38,17 @@ void Application::StartNewGame() {
 
     mainMenu = new MainMenu(); // Create menu
 
-    // Create players
-    players.push_back(new Player(sf::Vector2f(8 * TILE_SIZE, 0), 0));
-    players.push_back(new Player(sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0), 1));
+    is_turn_based = false;
 
     selected_p1_color = sf::Vector2i(-1, -1);
     selected_p2_color = sf::Vector2i(-1, -1);
 
-    winner_index = -1;
+    winner_index = -2;
 
     text_elapsed_time.setFont(font);
     text_elapsed_time.setCharacterSize(20);
     text_elapsed_time.setColor(sf::Color::White);
     text_elapsed_time.setPosition(window.getSize().x - 180, 0);
-}
-
-// Deletes
-void Application::CleanUp() {
-    delete tileMap;
-
-    delete mainMenu;
-
-    for (unsigned int i = 0; i < players.size(); ++i) {
-        delete players[i];
-    }
-    players.clear();
 }
 
 // Render based on game state
@@ -86,10 +71,10 @@ void Application::Render() {
             window.clear(sf::Color(sf::Color::Black));
             UpdateTerrain();
             UpdatePlayers();
-            if (winner_index == 0) {
+            if (winner_index == -1) {
                 debug_string = "Game Over! The game was a draw! Press fire to start a new game!";
             } else {
-                debug_string = "Game Over! Player " + ToString(winner_index) + " won! Press fire to start a new game!";
+                debug_string = "Game Over! Player " + ToString(winner_index + 1) + " won! Press fire to start a new game!";
             }
             break;
         case _Paused:
@@ -107,24 +92,22 @@ void Application::Render() {
     window.display();
 }
 
-// Update game_state and other logic
-void Application::UpdateGameLogic() {
-    if (game_state == _MainMenuColor && selected_p1_color != sf::Vector2i(-1, -1) && selected_p2_color != sf::Vector2i(-1, -1)) {
-        game_state = _Running;
-        players[0]->SetActive();
-    } else if (game_state == _Running) {
-        if (players[0]->IsTurnOver()) {
-            players[1]->SetActive();
-        } else if (players[1]->IsTurnOver()) {
-            players[0]->SetActive();
-        }
-    }
-}
-
 // Update main menu which includes map and player color selection
 void Application::UpdateMainMenu() {
     mainMenu->Update();
     window.draw(*mainMenu);
+
+    if (game_state == _MainMenuColor && selected_p1_color != sf::Vector2i(-1, -1) && selected_p2_color != sf::Vector2i(-1, -1)) {
+        game_state = _Running;
+
+        // Create players
+        players.push_back(new Player(0, is_turn_based, selected_p1_color, sf::Vector2f(8 * TILE_SIZE, 0)));
+        players.push_back(new Player(1, is_turn_based, selected_p2_color, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
+
+        players[0]->SetActive();
+        game_clock.restart();
+        game_budget_clock.restart();
+    }
 }
 
 // Update terrain using 2D array and tiles
@@ -135,18 +118,48 @@ void Application::UpdateTerrain() {
 
 // Update all players
 void Application::UpdatePlayers() {
+    debug_string += "Game Clock: " + ToString(game_clock.getElapsedTime().asSeconds()) + "\n" + ToString(game_budget_clock.getElapsedTime().asSeconds());
+
+    // In real time mode, every 5 seconds add budget
+    if (!is_turn_based && game_budget_clock.getElapsedTime().asSeconds() >= 5) {
+        game_budget_clock.restart();
+
+        for (unsigned int i = 0; i < players.size(); ++i) {
+            players[i]->AddBudget();
+        }
+    }
+
+    // In real time mode, after 60 seconds enter overtime
+    if (!is_turn_based && game_clock.getElapsedTime().asSeconds() >= 60) {
+        for (unsigned int i = 0; i < players.size(); ++i) {
+            players[i]->SetOvertime();
+        }
+    }
+
+    // Update all players
     for (unsigned int i = 0; i < players.size(); ++i) {
         players[i]->Update(tileMap, players);
     }
 
-    if (game_state != _GameOver) {
+    // Game logic
+    if (game_state == _Running) {
+        // Set active player for turn based
+        if (is_turn_based) {
+            if (players[0]->IsTurnOver()) {
+                players[1]->SetActive();
+            } else if (players[1]->IsTurnOver()) {
+                players[0]->SetActive();
+            }
+        }
+
+        // Gameover logic
         if (players[0]->IsDead() && players[1]->IsDead()) {
+            winner_index = -1;
+            game_state = _GameOver;
+        } else if (players[1]->IsDead()) {
             winner_index = 0;
             game_state = _GameOver;
         } else if (players[0]->IsDead()) {
-            winner_index = 2;
-            game_state = _GameOver;
-        } else if (players[1]->IsDead()) {
             winner_index = 1;
             game_state = _GameOver;
         }
@@ -179,7 +192,6 @@ void Application::ProcessInput() {
                     game_state = _MainMenuColor;
                 } else if (game_state == _MainMenuColor) {
                     selected_p1_color = mainMenu->InputP1Select();
-                    players[0]->SetColor(selected_p1_color);
                 } else if (game_state == _Running) {
                     players[0]->InputFire();
                 } else if (game_state == _GameOver) {
@@ -231,7 +243,6 @@ void Application::ProcessInput() {
                     game_state = _MainMenuColor;
                 } else if (game_state == _MainMenuColor) {
                     selected_p2_color = mainMenu->InputP2Select();
-                    players[1]->SetColor(selected_p2_color);
                 } else if (game_state == _Running) {
                     players[1]->InputFire();
                 } else if (game_state == _GameOver) {
@@ -290,4 +301,16 @@ void Application::ProcessInput() {
 void Application::DrawElapsedTimeString() {
     text_elapsed_time.setString(elapsed_time_string);
     window.draw(text_elapsed_time);
+}
+
+// Deletes
+void Application::CleanUp() {
+    delete tileMap;
+
+    delete mainMenu;
+
+    for (unsigned int i = 0; i < players.size(); ++i) {
+        delete players[i];
+    }
+    players.clear();
 }
