@@ -10,5 +10,5 @@ public:
     virtual ~Projectile_Tunnel() {};
     virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int, std::vector<Explosion*> &);
 private:
-
+    int remaining_hits;
 };

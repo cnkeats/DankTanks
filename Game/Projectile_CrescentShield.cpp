@@ -24,23 +24,34 @@ Projectile_CrescentShield::Projectile_CrescentShield(sf::Vector2f p, sf::Vector2
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
-// Overridden PostUpdate() since this projectile creates child projectiles over time
+// Overridden PostUpdate()
 void Projectile_CrescentShield::PostUpdate(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     --ticks_until_split;
 
     if (ticks_until_split <= 0) {
         parent_expired = true;
     } else if (ticks_until_split == 1) {
-        Hit(tile_map, players, owner_index, explosions);
-
-        float denom = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-        sf::Vector2f unit_vector;
-        unit_vector.x = velocity.x / denom;
-        unit_vector.y = velocity.y / denom;
-
-        sf::Vector2f sub_position;
-        sub_position.x = position.x - blast_radius * TILE_SIZE / 2 * unit_vector.x;
-        sub_position.y = position.y - blast_radius * TILE_SIZE / 2 * unit_vector.y;
-        sub_projectiles.push_back(new Projectile(sub_position, sf::Vector2f(0, 0), blast_radius, 0, 0));
+        Hit(tile_map, players, owner_index, explosions); // Create a floating chunk of terrain
+        CrescentHit(tile_map, players, owner_index, explosions); // Destroy another circle next to it to leave a crescent
     }
+}
+
+// Overridden PostHit()
+void Projectile_CrescentShield::PostHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
+    if (ticks_until_split > 1) {
+        CrescentHit(tile_map, players, owner_index, explosions);
+    }
+}
+
+// Draw another explosion to subtract from the previous hit to leave a crescent
+void Projectile_CrescentShield::CrescentHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
+    float denom = sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
+    sf::Vector2f unit_vector;
+    unit_vector.x = velocity.x / denom;
+    unit_vector.y = velocity.y / denom;
+
+    sf::Vector2f sub_position;
+    sub_position.x = position.x - blast_radius * TILE_SIZE / 2 * unit_vector.x;
+    sub_position.y = position.y - blast_radius * TILE_SIZE / 2 * unit_vector.y;
+    sub_projectiles.push_back(new Projectile(sub_position, sf::Vector2f(0, 0), blast_radius, 0, 0));
 }

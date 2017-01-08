@@ -24,7 +24,7 @@ Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v, flo
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
-// Overridden PostUpdate() since this projectile creates child projectiles over time
+// Overridden PostUpdate()
 void Projectile_BinaryTree::PostUpdate(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     if (!parent_expired) {
         --ticks_until_split;

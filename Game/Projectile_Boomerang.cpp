@@ -18,6 +18,7 @@ Projectile_Boomerang::Projectile_Boomerang(sf::Vector2f p, sf::Vector2f v, float
     original_velocity = velocity;
 }
 
+// Overridden PostUpdate()
 void Projectile_Boomerang::PostUpdate(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     if (starting_life_ticks - life_ticks > 30) {
         velocity.x -= original_velocity.x / 50;

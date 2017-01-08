@@ -9,6 +9,7 @@
 #include "Projectile_Bridge.h"
 #include "Projectile_Cardinal.h"
 #include "Projectile_CrescentShield.h"
+#include "Projectile_Digger.h"
 #include "Projectile_ImpactSplitBomb.h"
 #include "Projectile_Shotgun.h"
 #include "Projectile_Teleport.h"

@@ -16,11 +16,11 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
     player_index = i;
     hit_points = 100;
     power = 14;
-    fuel = 1000;
-    budget = 4000;
+    fuel = 100;
+    budget = 4;
     angle = 0;
     shot_counter = 0;
-    selected_projectile = 13;
+    selected_projectile = 0;
 
     ProjectileData p = GetProjectileData(selected_projectile, false);
     selected_projectile_string = p.name;
@@ -160,7 +160,7 @@ void Player::InputCycleProjectileType() {
     if (is_active) {
         ++selected_projectile;
 
-        if (selected_projectile > 13) {
+        if (selected_projectile > 14) {
             selected_projectile = 0;
         }
 
@@ -338,6 +338,7 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
     sf::Vector2f position = sf::Vector2f(sprite.getPosition().x + TILE_SIZE, sprite.getPosition().y);
 
     switch (projectile_index) {
+        // Bottom tier
         case 0:
             p.name = "Bomb";
             p.cost = 0;
@@ -352,6 +353,8 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
                 p.projectile = new Projectile(position, GetDirectionVector(), 3.2, 1, 10);
             }
             break;
+
+        // Low tier
         case 2:
             p.name = "Shotgun";
             p.cost = 2;
@@ -374,66 +377,79 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             }
             break;
         case 5:
-            p.name = "Tunneler (with shell)";
-            p.cost = 6;
-            if (return_projectile) {
-                p.projectile = new Projectile_Tunnel(position, GetDirectionVector());
-            }
-            break;
-        case 6:
             p.name = "Bridge";
-            p.cost = 6;
+            p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Bridge(position, GetDirectionVector());
             }
             break;
-        case 7:
-            p.name = "Teleport";
-            p.cost = 6;
-            if (return_projectile) {
-                p.projectile = new Projectile_Teleport(position, GetDirectionVector());
-            }
-            break;
-        case 8:
-            p.name = "Binary Tree";
-            p.cost = 10;
-            if (return_projectile) {
-                p.projectile = new Projectile_BinaryTree(position, GetDirectionVector());
-            }
-            break;
-        case 9:
-            p.name = "Sparkler";
-            p.cost = 10;
-            if (return_projectile) {
-                p.projectile = new Projectile_AirSplitBomb(position, GetDirectionVector());
-            }
-            break;
-        case 10:
+        case 6:
             p.name = "Boomerang";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Boomerang(position, GetDirectionVector());
             }
             break;
-        case 11:
+        case 7:
             p.name = "Bouncer";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Bouncer(position, GetDirectionVector());
             }
             break;
-        case 12:
+        case 8:
             p.name = "Crescent Shield";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_CrescentShield(position, GetDirectionVector());
             }
             break;
+
+        // Mid tier
+        case 9:
+            p.name = "Tunneler (with shell)";
+            p.cost = 6;
+            if (return_projectile) {
+                p.projectile = new Projectile_Tunnel(position, GetDirectionVector());
+            }
+            break;
+        case 10:
+            p.name = "Teleport";
+            p.cost = 6;
+            if (return_projectile) {
+                p.projectile = new Projectile_Teleport(position, GetDirectionVector());
+            }
+            break;
+
+        // Top tier
+        case 11:
+            p.name = "Binary Tree";
+            p.cost = 10;
+            if (return_projectile) {
+                p.projectile = new Projectile_BinaryTree(position, GetDirectionVector());
+            }
+            break;
+        case 12:
+            p.name = "Sparkler";
+            p.cost = 10;
+            if (return_projectile) {
+                p.projectile = new Projectile_AirSplitBomb(position, GetDirectionVector());
+            }
+            break;
         case 13:
             p.name = "Cardinal";
-            p.cost = 2;
+            p.cost = 10;
             if (return_projectile) {
                 p.projectile = new Projectile_Cardinal(position, GetDirectionVector());
+            }
+            break;
+
+        // Coming soon
+        case 14:
+            p.name = "Digger";
+            p.cost = 6;
+            if (return_projectile) {
+                p.projectile = new Projectile_Digger(position, GetDirectionVector());
             }
             break;
         default:
@@ -444,6 +460,9 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             }
             break;
     }
+
+    // Debug, 0 cost for all
+    //p.cost = 0;
 
     return p;
 }

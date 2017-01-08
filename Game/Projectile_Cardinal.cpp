@@ -15,7 +15,7 @@ Projectile_Cardinal::Projectile_Cardinal(sf::Vector2f p, sf::Vector2f v, float r
     //
 }
 
-// Overridden PostHit() since this projectile creates child projectiles on hit
+// Overridden PostHit()
 void Projectile_Cardinal::PostHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     int inner = 2;
     int outer = 3;

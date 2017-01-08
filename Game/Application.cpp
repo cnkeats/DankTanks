@@ -184,8 +184,12 @@ void Application::ProcessInput() {
                 } else {
                     game_state = pre_paused_game_state;
                 }
-            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) { // Pause
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) { // End game to start over
                 game_state = _GameOver;
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { // Debug, add budget
+                for (unsigned int i = 0; i < players.size(); ++i) {
+                    players[i]->AddBudget();
+                }
 
 
             // Player 1 controls

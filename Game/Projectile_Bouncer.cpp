@@ -17,7 +17,7 @@ Projectile_Bouncer::Projectile_Bouncer(sf::Vector2f p, sf::Vector2f v, float r, 
     //
 }
 
-// Overridden PostHit() since this projectile creates child projectiles on hit
+// Overridden PostHit()
 void Projectile_Bouncer::PostHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     sf::Vector2f rand_velocity = sf::Vector2f(rand()%12 - 6, rand()%12 - 6);
     sub_projectiles.push_back(new Projectile_Bouncer(position, rand_velocity, blast_radius, status_on_hit, damage));

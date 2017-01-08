@@ -3,7 +3,7 @@
 Explosion::~Explosion() {}
 
 Explosion::Explosion(sf::Vector2f p, float r) {
-    life_ticks = 15;
+    life_ticks = 10;
     radius_increment = r * TILE_SIZE / life_ticks;
 
     sprite.setPosition(p);
