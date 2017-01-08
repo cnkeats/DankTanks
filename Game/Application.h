@@ -24,8 +24,8 @@ private:
     GameState game_state;
     GameState pre_paused_game_state;
 
-    MainMenu *mainMenu;
-    TileMap *tileMap;
+    MainMenu *main_menu;
+    TileMap *tile_map;
     std::vector<Player*> players;
     sf::Vector2i selected_map;
     sf::Vector2i selected_p1_color;

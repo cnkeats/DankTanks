@@ -20,7 +20,7 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
     budget = 4000;
     angle = 0;
     shot_counter = 0;
-    selected_projectile = 0;
+    selected_projectile = 12;
 
     ProjectileData p = GetProjectileData(selected_projectile, false);
     selected_projectile_string = p.name;
@@ -54,10 +54,10 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
 }
 
 // Main game loop calls this update function
-void Player::Update(TileMap* &tileMap, std::vector<Player*> &players) {
+void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
     // Update projectiles
     for (unsigned int i = 0; i < projectiles.size(); i++) {
-        projectiles[i]->Update(tileMap, players, player_index, explosions);
+        projectiles[i]->Update(tile_map, players, player_index, explosions);
         window.draw(*projectiles[i]);
 
         if (projectiles[i]->IsExpired()) {
@@ -82,7 +82,7 @@ void Player::Update(TileMap* &tileMap, std::vector<Player*> &players) {
         tile_coords = sf::Vector2i(floor(sprite.getPosition().x / TILE_SIZE), floor(sprite.getPosition().y / TILE_SIZE));
 
         // Draw tank body (check if it falls)
-        if (tileMap->GetTile(tile_coords.x, tile_coords.y + 1).status == 0 && tileMap->GetTile(tile_coords.x + 1, tile_coords.y + 1).status == 0) {
+        if (tile_map->GetTile(tile_coords.x, tile_coords.y + 1).status == 0 && tile_map->GetTile(tile_coords.x + 1, tile_coords.y + 1).status == 0) {
             sprite.move(0, TILE_SIZE);
         }
 
@@ -160,7 +160,7 @@ void Player::InputCycleProjectileType() {
     if (is_active) {
         ++selected_projectile;
 
-        if (selected_projectile > 9) {
+        if (selected_projectile > 12) {
             selected_projectile = 0;
         }
 
@@ -220,12 +220,12 @@ void Player::InputRotateCounterClockwise() {
 }
 
 // Move player left
-void Player::InputMoveLeft(TileMap* &tileMap) {
+void Player::InputMoveLeft(TileMap* &tile_map) {
     if (is_active && fuel > 0) {
-        if (tileMap->GetTile(tile_coords.x - 1, tile_coords.y).status > 0 && tileMap->GetTile(tile_coords.x - 1, tile_coords.y - 1).status == 0) {
+        if (tile_map->GetTile(tile_coords.x - 1, tile_coords.y).status > 0 && tile_map->GetTile(tile_coords.x - 1, tile_coords.y - 1).status == 0) {
             --fuel;
             sprite.move(-TILE_SIZE, -TILE_SIZE);
-        } else if (tileMap->GetTile(tile_coords.x - 1, tile_coords.y).status == 0) {
+        } else if (tile_map->GetTile(tile_coords.x - 1, tile_coords.y).status == 0) {
             --fuel;
             sprite.move(-TILE_SIZE, 0);
         }
@@ -233,12 +233,12 @@ void Player::InputMoveLeft(TileMap* &tileMap) {
 }
 
 // Move player right
-void Player::InputMoveRight(TileMap* &tileMap) {
+void Player::InputMoveRight(TileMap* &tile_map) {
     if (is_active && fuel > 0) {
-        if (tileMap->GetTile(tile_coords.x + 2, tile_coords.y).status > 0 && tileMap->GetTile(tile_coords.x + 2, tile_coords.y - 1).status == 0) {
+        if (tile_map->GetTile(tile_coords.x + 2, tile_coords.y).status > 0 && tile_map->GetTile(tile_coords.x + 2, tile_coords.y - 1).status == 0) {
             --fuel;
             sprite.move(TILE_SIZE, -TILE_SIZE);
-        } else if (tileMap->GetTile(tile_coords.x + 2, tile_coords.y).status == 0) {
+        } else if (tile_map->GetTile(tile_coords.x + 2, tile_coords.y).status == 0) {
             --fuel;
             sprite.move(TILE_SIZE, 0);
         }
@@ -406,6 +406,27 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             p.cost = 10;
             if (return_projectile) {
                 p.projectile = new Projectile_AirSplitBomb(position, GetDirectionVector());
+            }
+            break;
+        case 10:
+            p.name = "Boomerang";
+            p.cost = 2;
+            if (return_projectile) {
+                p.projectile = new Projectile_Boomerang(position, GetDirectionVector());
+            }
+            break;
+        case 11:
+            p.name = "Bouncer";
+            p.cost = 2;
+            if (return_projectile) {
+                p.projectile = new Projectile_Bouncer(position, GetDirectionVector());
+            }
+            break;
+        case 12:
+            p.name = "Crescent Shield";
+            p.cost = 2;
+            if (return_projectile) {
+                p.projectile = new Projectile_CrescentShield(position, GetDirectionVector());
             }
             break;
         default:

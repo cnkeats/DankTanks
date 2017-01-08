@@ -18,10 +18,10 @@ Projectile_Teleport::Projectile_Teleport(sf::Vector2f p, sf::Vector2f v, float r
 }
 
 // Overridden PostHit() since the tile_coord of the hit is moved up 1 to spawn player on top of tile
-void Projectile_Teleport::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
+void Projectile_Teleport::PostHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     --tile_coords.y;
 
-    if (tileMap->GetTile(tile_coords.x, tile_coords.y).status >= 0 && tileMap->GetTile(tile_coords.x + 1, tile_coords.y).status >= 0) {
+    if (tile_map->GetTile(tile_coords.x, tile_coords.y).status >= 0 && tile_map->GetTile(tile_coords.x + 1, tile_coords.y).status >= 0) {
         players[owner_index]->SetPosition(tile_coords);
     }
 }

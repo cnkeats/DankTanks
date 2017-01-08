@@ -36,7 +36,7 @@ Application::Application() {
 void Application::StartNewGame() {
     game_state = _MainMenuMap; // Initialize game state
 
-    mainMenu = new MainMenu(); // Create menu
+    main_menu = new MainMenu(); // Create menu
 
     is_turn_based = false;
 
@@ -94,8 +94,8 @@ void Application::Render() {
 
 // Update main menu which includes map and player color selection
 void Application::UpdateMainMenu() {
-    mainMenu->Update();
-    window.draw(*mainMenu);
+    main_menu->Update();
+    window.draw(*main_menu);
 
     if (game_state == _MainMenuColor && selected_p1_color != sf::Vector2i(-1, -1) && selected_p2_color != sf::Vector2i(-1, -1)) {
         game_state = _Running;
@@ -112,8 +112,8 @@ void Application::UpdateMainMenu() {
 
 // Update terrain using 2D array and tiles
 void Application::UpdateTerrain() {
-    tileMap->Update();
-    window.draw(*tileMap);
+    tile_map->Update();
+    window.draw(*tile_map);
 }
 
 // Update all players
@@ -138,7 +138,7 @@ void Application::UpdatePlayers() {
 
     // Update all players
     for (unsigned int i = 0; i < players.size(); ++i) {
-        players[i]->Update(tileMap, players);
+        players[i]->Update(tile_map, players);
     }
 
     // Game logic
@@ -191,11 +191,11 @@ void Application::ProcessInput() {
             // Player 1 controls
             } else if (event.key.code == sf::Keyboard::Space) { // Fire
                 if (game_state == _MainMenuMap) {
-                    selected_map = mainMenu->InputP1Select();
-                    tileMap = new TileMap(selected_map);
+                    selected_map = main_menu->InputP1Select();
+                    tile_map = new TileMap(selected_map);
                     game_state = _MainMenuColor;
                 } else if (game_state == _MainMenuColor) {
-                    selected_p1_color = mainMenu->InputP1Select();
+                    selected_p1_color = main_menu->InputP1Select();
                 } else if (game_state == _Running) {
                     players[0]->InputFire();
                 } else if (game_state == _GameOver) {
@@ -204,27 +204,27 @@ void Application::ProcessInput() {
                 }
             } else if (event.key.code == sf::Keyboard::Up) { // Up
                 if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Up();
+                    main_menu->InputP1Up();
                 } else if (game_state == _Running) {
                     players[0]->InputRotateClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Down) { // Down
                 if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Down();
+                    main_menu->InputP1Down();
                 } else if (game_state == _Running) {
                     players[0]->InputRotateCounterClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Left) { // Left
                 if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Left();
+                    main_menu->InputP1Left();
                 } else if (game_state == _Running) {
-                    players[0]->InputMoveLeft(tileMap);
+                    players[0]->InputMoveLeft(tile_map);
                 }
             } else if (event.key.code == sf::Keyboard::Right) { // Right
                 if (game_state == _MainMenuMap || game_state == _MainMenuColor) {
-                    mainMenu->InputP1Right();
+                    main_menu->InputP1Right();
                 } else if (game_state == _Running) {
-                    players[0]->InputMoveRight(tileMap);
+                    players[0]->InputMoveRight(tile_map);
                 }
             } else if (event.key.code == sf::Keyboard::RShift) { // Change projectile
                 if (game_state == _Running) {
@@ -242,11 +242,11 @@ void Application::ProcessInput() {
             // Player 2 controls
             } else if (event.key.code == sf::Keyboard::Return) { // Fire
                 if (game_state == _MainMenuMap) {
-                    selected_map = mainMenu->InputP1Select();
-                    tileMap = new TileMap(selected_map);
+                    selected_map = main_menu->InputP1Select();
+                    tile_map = new TileMap(selected_map);
                     game_state = _MainMenuColor;
                 } else if (game_state == _MainMenuColor) {
-                    selected_p2_color = mainMenu->InputP2Select();
+                    selected_p2_color = main_menu->InputP2Select();
                 } else if (game_state == _Running) {
                     players[1]->InputFire();
                 } else if (game_state == _GameOver) {
@@ -255,35 +255,35 @@ void Application::ProcessInput() {
                 }
             } else if (event.key.code == sf::Keyboard::Numpad8) { // Up
                 if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Up();
+                    main_menu->InputP1Up();
                 } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Up();
+                    main_menu->InputP2Up();
                 } else if (game_state == _Running) {
                     players[1]->InputRotateClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Numpad5) { // Down
                 if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Down();
+                    main_menu->InputP1Down();
                 } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Down();
+                    main_menu->InputP2Down();
                 } else if (game_state == _Running) {
                     players[1]->InputRotateCounterClockwise();
                 }
             } else if (event.key.code == sf::Keyboard::Numpad4) { // Left
                 if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Left();
+                    main_menu->InputP1Left();
                 } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Left();
+                    main_menu->InputP2Left();
                 } else if (game_state == _Running) {
-                    players[1]->InputMoveLeft(tileMap);
+                    players[1]->InputMoveLeft(tile_map);
                 }
             } else if (event.key.code == sf::Keyboard::Numpad6) { // Right
                 if (game_state == _MainMenuMap) {
-                    mainMenu->InputP1Right();
+                    main_menu->InputP1Right();
                 } else if (game_state == _MainMenuColor) {
-                    mainMenu->InputP2Right();
+                    main_menu->InputP2Right();
                 } else if (game_state == _Running) {
-                    players[1]->InputMoveRight(tileMap);
+                    players[1]->InputMoveRight(tile_map);
                 }
             } else if (event.key.code == sf::Keyboard::Numpad7) { // Change projectile
                 if (game_state == _Running) {
@@ -309,9 +309,9 @@ void Application::DrawElapsedTimeString() {
 
 // Deletes
 void Application::CleanUp() {
-    delete tileMap;
+    delete tile_map;
 
-    delete mainMenu;
+    delete main_menu;
 
     for (unsigned int i = 0; i < players.size(); ++i) {
         delete players[i];
