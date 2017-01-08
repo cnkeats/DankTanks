@@ -20,7 +20,7 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
     budget = 4000;
     angle = 0;
     shot_counter = 0;
-    selected_projectile = 12;
+    selected_projectile = 13;
 
     ProjectileData p = GetProjectileData(selected_projectile, false);
     selected_projectile_string = p.name;
@@ -160,7 +160,7 @@ void Player::InputCycleProjectileType() {
     if (is_active) {
         ++selected_projectile;
 
-        if (selected_projectile > 12) {
+        if (selected_projectile > 13) {
             selected_projectile = 0;
         }
 
@@ -427,6 +427,13 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_CrescentShield(position, GetDirectionVector());
+            }
+            break;
+        case 13:
+            p.name = "Cardinal";
+            p.cost = 2;
+            if (return_projectile) {
+                p.projectile = new Projectile_Cardinal(position, GetDirectionVector());
             }
             break;
         default:

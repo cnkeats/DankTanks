@@ -7,6 +7,7 @@
 #include "Projectile_Boomerang.h"
 #include "Projectile_Bouncer.h"
 #include "Projectile_Bridge.h"
+#include "Projectile_Cardinal.h"
 #include "Projectile_CrescentShield.h"
 #include "Projectile_ImpactSplitBomb.h"
 #include "Projectile_Shotgun.h"
