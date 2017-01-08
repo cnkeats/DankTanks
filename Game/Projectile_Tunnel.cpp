@@ -18,11 +18,8 @@ Projectile_Tunnel::Projectile_Tunnel(sf::Vector2f p, sf::Vector2f v, float r, in
 }
 
 // Overriden PostHit() since this projectile creates on tunnel on hit, not a normal circle
-void Projectile_Tunnel::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
-    for (int i = 0; i < 5; ++i) {
+void Projectile_Tunnel::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
+    for (int i = 0; i < 8; ++i) {
         sub_projectiles.push_back(new Projectile(position, velocity, blast_radius, status_on_hit, damage, blast_radius_outer, status_on_hit_outer));
     }
-
-    // Stronger projectile at the very end
-    sub_projectiles.push_back(new Projectile(position, velocity, blast_radius * 2, status_on_hit, damage * 2, blast_radius_outer, status_on_hit_outer));
 }

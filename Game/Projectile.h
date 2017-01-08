@@ -1,6 +1,7 @@
 #pragma once
 #include "Globals.h"
 #include "TileMap.h"
+#include "Explosion.h"
 
 class Player;
 
@@ -10,13 +11,13 @@ public:
     Projectile(sf::Vector2f, sf::Vector2f, float, int, int);
     Projectile(sf::Vector2f, sf::Vector2f, float, int, int, float, int);
     virtual ~Projectile();
-    virtual void Update(TileMap* &, std::vector<Player*> &, int);
+    virtual void Update(TileMap* &, std::vector<Player*> &, int, std::vector<Explosion*> &);
     bool IsExpired();
 
 protected:
-    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, unsigned int);
-    virtual void Hit(TileMap* &, std::vector<Player*> &, unsigned int);
-    virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int);
+    virtual void PostUpdate(TileMap* &, std::vector<Player*> &, unsigned int, std::vector<Explosion*> &);
+    virtual void Hit(TileMap* &, std::vector<Player*> &, unsigned int, std::vector<Explosion*> &);
+    virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int, std::vector<Explosion*> &);
     virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
     void PopulateVertexArray();
     bool PlayerWasHit(std::vector<Player*> &, unsigned int);

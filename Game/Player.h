@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "TileMap.h"
+#include "Explosion.h"
 #include "Projectile.h"
 #include "Projectile_AirSplitBomb.h"
 #include "Projectile_BinaryTree.h"
@@ -64,6 +65,7 @@ private:
     int shot_counter;
     std::string selected_projectile_string;
     sf::Vector2i tile_coords;
+    std::vector<Explosion*> explosions;
     std::vector<Projectile*> projectiles;
     sf::RectangleShape sprite;
     sf::RectangleShape sprite_barrel;

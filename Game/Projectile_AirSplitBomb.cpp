@@ -19,7 +19,7 @@ Projectile_AirSplitBomb::Projectile_AirSplitBomb(sf::Vector2f p, sf::Vector2f v,
 }
 
 // Overridden PostUpdate() since this projectile creates child projectiles over time
-void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+void Projectile_AirSplitBomb::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     if (!parent_expired) {
         --ticks_until_split;
 

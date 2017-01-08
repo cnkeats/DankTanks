@@ -18,7 +18,7 @@ Projectile_ImpactSplitBomb::Projectile_ImpactSplitBomb(sf::Vector2f p, sf::Vecto
 }
 
 // Overridden PostHit() since this projectile creates child projectiles on hit
-void Projectile_ImpactSplitBomb::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+void Projectile_ImpactSplitBomb::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     for (int i = 0; i < 7; ++i) {
         sf::Vector2f rand_velocity = sf::Vector2f(rand()%8 - 4, rand()%8 - 4);
         sub_projectiles.push_back(new Projectile(position, rand_velocity, blast_radius, status_on_hit, damage / 2));

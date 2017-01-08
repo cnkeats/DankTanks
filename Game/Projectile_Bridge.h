@@ -8,7 +8,7 @@ public:
     Projectile_Bridge(sf::Vector2f, sf::Vector2f, float, int, int);
     Projectile_Bridge(sf::Vector2f, sf::Vector2f, float, int, int, float, int);
     virtual ~Projectile_Bridge() {};
-    virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int);
+    virtual void PostHit(TileMap* &, std::vector<Player*> &, unsigned int, std::vector<Explosion*> &);
 private:
 
 };

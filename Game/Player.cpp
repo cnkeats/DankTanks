@@ -57,12 +57,23 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
 void Player::Update(TileMap* &tileMap, std::vector<Player*> &players) {
     // Update projectiles
     for (unsigned int i = 0; i < projectiles.size(); i++) {
-        projectiles[i]->Update(tileMap, players, player_index);
+        projectiles[i]->Update(tileMap, players, player_index, explosions);
         window.draw(*projectiles[i]);
 
         if (projectiles[i]->IsExpired()) {
             delete projectiles[i];
             projectiles.erase(projectiles.begin() + i);
+        }
+    }
+
+    // Update explosions
+    for (unsigned int i = 0; i < explosions.size(); i++) {
+        explosions[i]->Update();
+        //window.draw(*explosions[i]);
+
+        if (explosions[i]->IsExpired()) {
+            delete explosions[i];
+            explosions.erase(explosions.begin() + i);
         }
     }
 
