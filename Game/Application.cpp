@@ -174,6 +174,7 @@ void Application::ProcessInput() {
         if (event.type == sf::Event::Closed) {
             window.close();
         } else if (event.type == sf::Event::KeyPressed) {
+            // Universal controls
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
                 window.close();
             } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) { // Pause
@@ -183,6 +184,9 @@ void Application::ProcessInput() {
                 } else {
                     game_state = pre_paused_game_state;
                 }
+            } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) { // Pause
+                game_state = _GameOver;
+
 
             // Player 1 controls
             } else if (event.key.code == sf::Keyboard::Space) { // Fire

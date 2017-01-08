@@ -7,8 +7,8 @@ class Player;
 class Projectile : public sf::Drawable {
 public:
     Projectile(sf::Vector2f, sf::Vector2f);
-    Projectile(sf::Vector2f, sf::Vector2f, float, int);
-    Projectile(sf::Vector2f, sf::Vector2f, float, int, float, int);
+    Projectile(sf::Vector2f, sf::Vector2f, float, int, int);
+    Projectile(sf::Vector2f, sf::Vector2f, float, int, int, float, int);
     virtual ~Projectile();
     virtual void Update(TileMap* &, std::vector<Player*> &, int);
     bool IsExpired();
@@ -22,6 +22,7 @@ protected:
     bool PlayerWasHit(std::vector<Player*> &, unsigned int);
 
     std::vector<Projectile*> sub_projectiles;
+    sf::Texture tile_textures;
     sf::VertexArray vertices;
     sf::Vector2f velocity;
     sf::Vector2f position;

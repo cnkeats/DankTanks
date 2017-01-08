@@ -1,18 +1,19 @@
 #include "Projectile_Teleport.h"
 #include "Player.h"
 
-Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
-    blast_radius = 2;
+Projectile_Teleport::Projectile_Teleport(sf::Vector2f p, sf::Vector2f v) : Projectile(p, v) {
+    blast_radius = 2.4;
     status_on_hit = 0;
     blast_radius_outer = blast_radius + 1;
     status_on_hit_outer = 2;
+    damage = 10;
 }
 
-Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
+Projectile_Teleport::Projectile_Teleport(sf::Vector2f p, sf::Vector2f v, float r, int s, int d) : Projectile(p, v, r, s, d) {
     //
 }
 
-Projectile_Teleport::Projectile_Teleport(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) : Projectile(position, angle, radius, status, radius2, status2) {
+Projectile_Teleport::Projectile_Teleport(sf::Vector2f p, sf::Vector2f v, float r, int s, int d, float r2, int s2) : Projectile(p, v, r, s, d, r2, s2) {
     //
 }
 

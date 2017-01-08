@@ -7,10 +7,10 @@ Projectile::~Projectile() {
     }
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v) {
     position = p;
-    velocity = angle;
-    blast_radius = 3;
+    velocity = v;
+    blast_radius = 3.2;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
@@ -18,39 +18,39 @@ Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle) {
     children_expired = true;
     starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
-    damage = 5;
+    damage = 10;
 
     PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v, float r, int s, int d) {
     position = p;
-    velocity = angle;
-    blast_radius = radius;
-    status_on_hit = status;
+    velocity = v;
+    blast_radius = r;
+    status_on_hit = s;
+    damage = d;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
     starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
-    damage = 5;
 
     PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status, float radius2, int status2) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v, float r, int s, int d, float r2, int s2) {
     position = p;
-    velocity = angle;
-    blast_radius = radius;
-    status_on_hit = status;
-    blast_radius_outer = radius2;
-    status_on_hit_outer = status2;
+    velocity = v;
+    blast_radius = r;
+    status_on_hit = s;
+    damage = d;
+    blast_radius_outer = r2;
+    status_on_hit_outer = s2;
     parent_expired = false;
     children_expired = true;
     starting_life_ticks = 300;
     life_ticks = starting_life_ticks;
-    damage = 5;
 
     PopulateVertexArray();
 }
@@ -142,18 +142,20 @@ void Projectile::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, un
 // This is called if a hit is detected
 void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
     // Blast radius, deals damage
-    for (float x = -blast_radius; x <= blast_radius; ++x) {
-        for (float y = -blast_radius; y <= blast_radius; ++y) {
+    for (int y = -blast_radius; y <= blast_radius; ++y) {
+        for (int x = -blast_radius; x <= blast_radius; ++x) {
             sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
 
-            if (x*x + y*y < (blast_radius + 0.1)*(blast_radius + 0.1)) {
+            if (x*x + y*y < blast_radius*blast_radius) {
                 tileMap->WriteStatus(p, status_on_hit);
 
                 for (unsigned int i = 0; i < players.size(); ++i) {
                     if (players[i]->IsOnTile(p)) { // Player is on this tile
-                        float dmg = damage + (blast_radius - abs(x) - abs(y)); // damage + modifier (based on distance from center)
+                        int dmg = damage - floor(abs(x) + abs(y)); // damage - xy offset
                         if (dmg > 0) {
                             players[i]->UpdateHitPoints(dmg);
+                        } else {
+                            players[i]->UpdateHitPoints(1);
                         }
                     }
                 }
@@ -163,8 +165,8 @@ void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, unsigned 
 
     // Outer radius, doesn't deal damage
     if (blast_radius_outer > 0) {
-        for (float x = -blast_radius_outer; x <= blast_radius_outer; ++x) {
-            for (float y = -blast_radius_outer; y <= blast_radius_outer; ++y) {
+        for (int x = -blast_radius_outer; x <= blast_radius_outer; ++x) {
+            for (int y = -blast_radius_outer; y <= blast_radius_outer; ++y) {
                 sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
 
                 if (x*x + y*y < blast_radius_outer*blast_radius_outer && x*x + y*y > blast_radius*blast_radius && tileMap->GetTile(p.x, p.y).status > 0) {

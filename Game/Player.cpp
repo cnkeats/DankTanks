@@ -17,7 +17,7 @@ Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f po
     hit_points = 100;
     power = 14;
     fuel = 1000;
-    budget = 4;
+    budget = 4000;
     angle = 0;
     shot_counter = 0;
     selected_projectile = 0;
@@ -338,7 +338,7 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             p.name = "Tile Bomb";
             p.cost = 0;
             if (return_projectile) {
-                p.projectile = new Projectile(position, GetDirectionVector(), 5, 1);
+                p.projectile = new Projectile(position, GetDirectionVector(), 3.2, 1, 10);
             }
             break;
         case 2:
@@ -359,7 +359,7 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             p.name = "Tunneler";
             p.cost = 2;
             if (return_projectile) {
-                p.projectile = new Projectile_Tunnel(position, GetDirectionVector(), 3, 0);
+                p.projectile = new Projectile_Tunnel(position, GetDirectionVector(), 3.2, 0, 3);
             }
             break;
         case 5:

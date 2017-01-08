@@ -1,19 +1,20 @@
 #include "Projectile_BinaryTree.h"
 #include "Player.h"
 
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v) : Projectile(p, v) {
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
-    blast_radius = 2;
+    blast_radius = 2.1;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
+    damage = 6;
 }
 
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v, float r, int s, int d) : Projectile(p, v, r, s, d) {
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) : Projectile(position, angle, radius, status, radius2, status2) {
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v, float r, int s, int d, float r2, int s2) : Projectile(p, v, r, s, d, r2, s2) {
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
@@ -26,9 +27,9 @@ void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap, std::vector<Player*> &
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 
             if (velocity.x >= 0) {
-                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit, damage));
             } else {
-                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit, damage));
             }
         }
     }
