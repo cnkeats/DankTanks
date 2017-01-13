@@ -10,8 +10,8 @@ all: Tanks
 %.o: %.h
 	$(CXX) -c $< -o $@
 
-Tanks: main.o Globals.o Application.o MainMenu.o TileMap.o Player.o Projectile.o Projectile_AirSplitBomb.o Projectile_BinaryTree.o Projectile_Bridge.o Projectile_ImpactSplitBomb.o Projectile_Teleport.o Projectile_Tunnel.o
-	$(CXX) -o Tanks main.o Globals.o Application.o MainMenu.o TileMap.o Player.o Projectile.o Projectile_AirSplitBomb.o Projectile_BinaryTree.o Projectile_Bridge.o Projectile_ImpactSplitBomb.o Projectile_Teleport.o Projectile_Tunnel.o $(LIBS)
+Tanks: main.o Globals.o Application.o Explosion.o MainMenu.o TileMap.o Player.o Projectile.o Projectile_AirSplitBomb.o Projectile_BinaryTree.o Projectile_Boomerang.o Projectile_Bouncer.o Projectile_Bridge.o Projectile_Cardinal.o Projectile_CrescentShield.o Projectile_Digger.o Projectile_ImpactSplitBomb.o Projectile_Shotgun.o Projectile_Teleport.o Projectile_Tunnel.o
+	$(CXX) -o Tanks main.o Globals.o Application.o Explosion.o MainMenu.o TileMap.o Player.o Projectile.o Projectile_AirSplitBomb.o Projectile_BinaryTree.o Projectile_Boomerang.o Projectile_Bouncer.o Projectile_Bridge.o Projectile_Cardinal.o Projectile_CrescentShield.o Projectile_Digger.o Projectile_ImpactSplitBomb.o Projectile_Shotgun.o Projectile_Teleport.o Projectile_Tunnel.o $(LIBS)
 
 clean:
 	$(RM) Tanks *.o

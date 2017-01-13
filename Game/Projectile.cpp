@@ -191,6 +191,8 @@ bool Projectile::PlayerWasHit(std::vector<Player*> &players, unsigned int owner_
         if (players[i]->IsOnTile(tile_coords)) { // Hit a player
             if (i == owner_index && life_ticks > starting_life_ticks - 5) { // don't hit yourself for first 5 frames
                 return false;
+            } else if (life_ticks > starting_life_ticks - 1) { // direct hit bug otherwise if projectile spawns children
+                return false;
             } else {
                 return true;
             }
