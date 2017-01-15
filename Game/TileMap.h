@@ -3,7 +3,7 @@
 
 class TileMap : public sf::Drawable {
 public:
-    TileMap(sf::Vector2i);
+    TileMap(int);
     ~TileMap();
     void Update();
     void WriteStatus(sf::Vector2i, int);
@@ -26,5 +26,5 @@ private:
     std::vector< std::vector<Tile> > tiles;
     sf::VertexArray vertices;
     sf::Texture tile_textures;
-    sf::Vector2i selected_map;
+    int selected_map;
 };

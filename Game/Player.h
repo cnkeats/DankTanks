@@ -23,7 +23,7 @@ struct ProjectileData {
 
 class Player {
 public:
-    Player(unsigned int, bool, sf::Vector2i, sf::Vector2f);
+    Player(unsigned int, bool, int, sf::Vector2f);
     ~Player();
     void Update(TileMap* &, std::vector<Player*> &);
 
@@ -49,7 +49,7 @@ public:
     bool IsOnTile(sf::Vector2i);
 
 private:
-    void SetColor(sf::Vector2i);
+    void SetColor(int);
     bool IsInBounds(sf::Vector2i);
     sf::Vector2f GetDirectionVector();
     ProjectileData GetProjectileData(int, bool);

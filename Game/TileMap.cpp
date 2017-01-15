@@ -2,7 +2,7 @@
 
 TileMap::~TileMap() {}
 
-TileMap::TileMap(sf::Vector2i selected) {
+TileMap::TileMap(int selected) {
     load_state = _GeneratingTerrain;
     selected_map = selected;
 }
@@ -43,8 +43,8 @@ void TileMap::GenerateTerrain() {
         }
     }
 
-    if (selected_map == sf::Vector2i(0, 0)) { // ??? Add 2 sine waves
-        // Use math to generate terrain
+    // Use math to generate terrain
+    if (selected_map == 0) { // Combine 2 sine waves
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -86,7 +86,7 @@ void TileMap::GenerateTerrain() {
             }
             sign *= -1;
         }
-    } else if (selected_map == sf::Vector2i(1, 0)) { // Flat, static
+    } else if (selected_map == 1) { // Flat, static
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
                 if (y > TILES_Y - 20) {
@@ -94,14 +94,7 @@ void TileMap::GenerateTerrain() {
                 }
             }
         }
-    //} else if (selected_map == sf::Vector2i(2, 0)) {
-        // TODO
-    //} else if (selected_map == sf::Vector2i(3, 0)) {
-        // TODO
-    //} else if (selected_map == sf::Vector2i(0, 1)) {
-        // TODO
-    } else if (selected_map == sf::Vector2i(1, 1)) { // Square wave
-        // Use math to generate terrain
+    } else if (selected_map == 2) { // Square Wave
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -138,8 +131,7 @@ void TileMap::GenerateTerrain() {
             }
             sign *= -1;
         }
-    } else if (selected_map == sf::Vector2i(2, 1)) { // All peaks
-        // Use math to generate terrain
+    } else if (selected_map == 3) { // All peaks
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -171,41 +163,7 @@ void TileMap::GenerateTerrain() {
                 }
             }
         }
-    } else if (selected_map == sf::Vector2i(3, 1)) { // All valleys
-        // Use math to generate terrain
-        int x = 0;
-        int sign = 1;
-        int number_of_peaks_and_valleys = rand()%5 + 3;
-        float amplitude = 1;
-
-        while (x < TILES_X) {
-            amplitude = rand()%(TILES_Y * 3/5) + 10;
-
-            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
-                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.25;
-
-                int fx = static_cast<int> (fx_f);
-
-                if (fx < 0) {
-                    fx = 0;
-                }
-
-                if (fx < TILES_Y) {
-                    tiles[x][fx].status = 1;
-
-                    for (int y = TILES_Y - 1; y > fx; --y) {
-                        tiles[x][y].status = 1;
-                    }
-                }
-                ++x;
-
-                if (x >= TILES_X) {
-                    break;
-                }
-            }
-        }
-    } else {
-        // border 1
+    } else { // Border only
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
                 if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {

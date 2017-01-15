@@ -5,9 +5,13 @@ Player::~Player() {
     for (unsigned int i = 0; i < projectiles.size(); i++) {
         delete projectiles[i];
     }
+
+    for (unsigned int i = 0; i < explosions.size(); i++) {
+        delete explosions[i];
+    }
 }
 
-Player::Player(unsigned int i, bool b, sf::Vector2i color_index, sf::Vector2f position) {
+Player::Player(unsigned int i, bool b, int color_index, sf::Vector2f position) {
     is_turn_based = b;
     is_active = !is_turn_based;
     is_dead = false;
@@ -303,30 +307,40 @@ void Player::SetPosition(sf::Vector2i v) {
 }
 
 // Set the player's color
-void Player::SetColor(sf::Vector2i v) {
+void Player::SetColor(int i) {
     sf::Color color;
 
     // A truth table of colors!
-    if (v == sf::Vector2i(0, 0)) {
-        color = sf::Color(255, 255, 255, 255); // white
-    } else if (v == sf::Vector2i(1, 0)) {
-        color = sf::Color(255, 255, 51, 255); // yellow
-    } else if (v == sf::Vector2i(2, 0)) {
-        color = sf::Color(255, 51, 255, 255); // magenta
-    } else if (v == sf::Vector2i(3, 0)) {
-        color = sf::Color(255, 51, 51, 255); // red
-    } else if (v == sf::Vector2i(0, 1)) {
-        color = sf::Color(51, 255, 255, 255); // cyan
-    } else if (v == sf::Vector2i(1, 1)) {
-        color = sf::Color(51, 255, 51, 255); // green
-    } else if (v == sf::Vector2i(2, 1)) {
-        color = sf::Color(51, 51, 255, 255); // blue
-    } else if (v == sf::Vector2i(3, 1)) {
-        color = sf::Color(0, 0, 0, 255); // black with white outline
-        sprite.setOutlineColor(sf::Color::White);
-        sprite_barrel.setOutlineColor(sf::Color::White);
-    } else {
-        color = sf::Color::White;
+    switch (i) {
+        case 0:
+            color = sf::Color(255, 255, 255, 255); // white
+            break;
+        case 1:
+            color = sf::Color(255, 255, 51, 255); // yellow
+            break;
+        case 2:
+            color = sf::Color(255, 51, 255, 255); // magenta
+            break;
+        case 3:
+            color = sf::Color(255, 51, 51, 255); // red
+            break;
+        case 4:
+            color = sf::Color(51, 255, 255, 255); // cyan
+            break;
+        case 5:
+            color = sf::Color(51, 255, 51, 255); // green
+            break;
+        case 6:
+            color = sf::Color(51, 51, 255, 255); // blue
+            break;
+        case 7:
+            color = sf::Color(0, 0, 0, 255); // black with white outline
+            sprite.setOutlineColor(sf::Color::White);
+            sprite_barrel.setOutlineColor(sf::Color::White);
+            break;
+        default:
+            color = sf::Color(255, 255, 255, 255); // white
+            break;
     }
 
     sprite.setFillColor(color);
