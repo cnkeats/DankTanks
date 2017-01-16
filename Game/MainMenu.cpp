@@ -6,15 +6,15 @@ MainMenu::MainMenu() {
     PopulateMenuClass();
 
     r_map.setFillColor(sf::Color::White);
-    r_map.setPosition(sf::Vector2f(448, 106));
+    r_map.setPosition(sf::Vector2f(448, PADDING));
     r_map.setSize(sf::Vector2f(1024, 576));
 
     r_p1.setFillColor(sf::Color::Red);
-    r_p1.setPosition(sf::Vector2f(PADDING, 106));
+    r_p1.setPosition(sf::Vector2f(PADDING, PADDING));
     r_p1.setSize(sf::Vector2f(845, 475));
 
     r_p2.setFillColor(sf::Color::Blue);
-    r_p2.setPosition(sf::Vector2f(845 + 2 * PADDING, 106));
+    r_p2.setPosition(sf::Vector2f(845 + 2 * PADDING, PADDING));
     r_p2.setSize(sf::Vector2f(845, 475));
     //r_p2.setTexture(&menu_textures);
 }
@@ -96,7 +96,7 @@ void MainMenu::PopulateMenuMap() {
     p2_selected = 0;
 
     // Load texture for map selections
-    if (!menu_textures.loadFromFile(MENU_MAP_FILE)) {
+    if (!menu_textures.loadFromFile(MENU_COLOR_FILE)) {
         //TODO
     }
 }
@@ -151,22 +151,22 @@ void MainMenu::PopulateMenuClass() {
     }
 
     // Define texture for player 1's selector brackets
-    offset = 8;
+    offset = 0;
     sf::Vertex* quad_selected = &vertices[MENU_X * 6];
 
     quad_selected[0].color = sf::Color::Transparent;
     quad_selected[5].color = sf::Color::Transparent;
 
     // define its 4 texture coordinates
-    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
-    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
-    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
-    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-    quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-    quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y * 2);
+    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y * 2);
+    quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y * 2);
 
     // Define texture for player 2's selector brackets
-    offset = 9;
+    offset = 1;
 
     quad_selected = &vertices[(MENU_X + 1) * 6];
 
@@ -174,12 +174,12 @@ void MainMenu::PopulateMenuClass() {
     quad_selected[5].color = sf::Color::Transparent;
 
     // define its 4 texture coordinates
-    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
-    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , 0);
-    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
-    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), 0);
-    quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
-    quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[0].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+    quad_selected[1].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y);
+    quad_selected[2].texCoords = sf::Vector2f(MENU_SIZE_X * offset                , MENU_SIZE_Y * 2);
+    quad_selected[3].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y);
+    quad_selected[4].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y * 2);
+    quad_selected[5].texCoords = sf::Vector2f(MENU_SIZE_X + (MENU_SIZE_X * offset), MENU_SIZE_Y * 2);
 }
 
 // Virtual draw

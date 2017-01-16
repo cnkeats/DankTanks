@@ -38,7 +38,7 @@ void Application::StartNewGame() {
 
     main_menu = new MainMenu(); // Create menu
 
-    is_turn_based = false;
+    is_turn_based = true;
 
     selected_map = -1;
     selected_p1_class = -1;
