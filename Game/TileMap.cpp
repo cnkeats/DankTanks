@@ -192,7 +192,7 @@ void TileMap::PopulateVectorField() {
 // Create actual drawable map using a vertex array
 void TileMap::MakeTerrainDrawable() {
     // load the tileset texture
-    if (!tile_textures.loadFromFile(TILE_FILE)) {
+    if (!tile_textures.loadFromFile("tile_15.png")) {
         //TODO
     }
 

@@ -96,7 +96,7 @@ void MainMenu::PopulateMenuMap() {
     p2_selected = 0;
 
     // Load texture for map selections
-    if (!menu_textures.loadFromFile(MENU_COLOR_FILE)) {
+    if (!menu_textures.loadFromFile("menu_map.png")) {
         //TODO
     }
 }
@@ -113,7 +113,7 @@ void MainMenu::PopulateMenuClass() {
     p2_selected = 0;
 
     // Load texture for class selections
-    if (!menu_textures.loadFromFile(MENU_COLOR_FILE)) {
+    if (!menu_textures.loadFromFile("menu_class.png")) {
         //TODO
     }
 
