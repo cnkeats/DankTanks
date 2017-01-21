@@ -164,7 +164,7 @@ void Player::InputCycleProjectileType() {
     if (is_active) {
         ++selected_projectile;
 
-        if (selected_projectile > 14) {
+        if (selected_projectile > 13) {
             selected_projectile = 0;
         }
 

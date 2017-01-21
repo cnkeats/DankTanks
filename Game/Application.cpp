@@ -28,6 +28,7 @@ Application::Application() {
             elapsed_time += clock.restart();
         }
 
+        //ProcessInput();
         Render();
     }
 }
@@ -61,6 +62,7 @@ void Application::StartNewGame() {
     tile_map = new TileMap(game_package.map_index);
 
     // Create players
+    players.clear();
     players.push_back(new Player(0, is_turn_based, game_package.p1_class_index, game_package.p1_color_index, sf::Vector2f(8 * TILE_SIZE, 0)));
     players.push_back(new Player(1, is_turn_based, game_package.p2_class_index, game_package.p2_color_index, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
 
@@ -287,6 +289,151 @@ void Application::ProcessInput() {
             }
         }
     }
+
+
+    // Universal controls
+    /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
+        window.close();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) { // Pause
+        if (game_state != _Paused) {
+            pre_paused_game_state = game_state;
+            game_state = _Paused;
+        } else {
+            game_state = pre_paused_game_state;
+        }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) { // End game to start over
+        if (game_state == _Running) {
+            game_state = _GameOver;
+        }
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { // Debug, add budget
+        for (unsigned int i = 0; i < players.size(); ++i) {
+            for (int n = 0; n < 10; ++n) {
+                players[i]->AddBudget();
+            }
+        }
+    }
+
+    if (game_state == _MainMenu) {
+        // Player 1 controls
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { // Fire
+            game_package = main_menu->InputP1Select();
+
+            if (game_package.map_index != -1) {
+                StartNewGame();
+            }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) { // Up
+            main_menu->InputP1Up();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) { // Down
+            main_menu->InputP1Down();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { // Left
+            main_menu->InputP1Left();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { // Right
+            main_menu->InputP1Right();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)) { // Change projectile
+            main_menu->InputP1Back();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)) { // Increase power
+            // Cycle color up
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)) { // Decrease power
+            // Cycle color down
+        }
+
+        // Player 2 controls
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { // Fire
+            game_package = main_menu->InputP2Select();
+
+            if (game_package.map_index != -1) {
+                StartNewGame();
+            }
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) { // Up
+            main_menu->InputP2Up();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5)) { // Down
+            main_menu->InputP2Down();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) { // Left
+            main_menu->InputP2Left();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6)) { // Right
+            main_menu->InputP2Right();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7)) { // Change projectile
+            main_menu->InputP2Back();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) { // Increase power
+            // Cycle color up
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0)) { // Decrease power
+            // Cycle color down
+        }
+    } else if (game_state == _Running) {
+        // Player 1 controls
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { // Fire
+            players[0]->InputFire();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) { // Up
+            players[0]->InputRotateClockwise();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) { // Down
+            players[0]->InputRotateCounterClockwise();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { // Left
+            players[0]->InputMoveLeft(tile_map);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { // Right
+            players[0]->InputMoveRight(tile_map);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)) { // Change projectile
+            players[0]->InputCycleProjectileType();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)) { // Increase power
+            players[0]->InputPowerUp();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)) { // Decrease power
+            players[0]->InputPowerDown();
+        }
+
+        // Player 2 controls
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { // Fire
+            players[1]->InputFire();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) { // Up
+            players[1]->InputRotateClockwise();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5)) { // Down
+            players[1]->InputRotateCounterClockwise();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) { // Left
+            players[1]->InputMoveLeft(tile_map);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6)) { // Right
+            players[1]->InputMoveRight(tile_map);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7)) { // Change projectile
+            players[1]->InputCycleProjectileType();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) { // Increase power
+            players[1]->InputPowerUp();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0)) { // Decrease power
+            players[1]->InputPowerDown();
+        }
+    } else if (game_state == _GameOver) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+            CleanUp();
+            StartNewMenu();
+        }
+    }*/
 }
 
 void Application::DrawElapsedTimeString() {
@@ -303,5 +450,4 @@ void Application::CleanUp() {
     for (unsigned int i = 0; i < players.size(); ++i) {
         delete players[i];
     }
-    players.clear();
 }

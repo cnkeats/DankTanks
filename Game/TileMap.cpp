@@ -1,8 +1,6 @@
 #include "TileMap.h"
 
-TileMap::~TileMap() {
-    tiles.clear();
-}
+TileMap::~TileMap() {}
 
 TileMap::TileMap(int selected) {
     load_state = _GeneratingTerrain;
@@ -205,13 +203,23 @@ void TileMap::MakeTerrainDrawable() {
     // populate the vertex array, with one quad per tile
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            WriteStatus(x, y, tiles[x][y].status);
+            WriteStatus(sf::Vector2i(x, y), tiles[x][y].status, true);
         }
     }
 }
 
 // Redefine each tile's texture based on its status each frame
-void TileMap::WriteStatus(sf::Vector2i position, int s) {
+void TileMap::WriteStatus(int x, int y, int status) {
+    WriteStatus(sf::Vector2i(x, y), status, false);
+}
+
+// Redefine each tile's texture based on its status each frame
+void TileMap::WriteStatus(sf::Vector2i position, int status) {
+    WriteStatus(position, status, false);
+}
+
+// Redefine each tile's texture based on its status each frame
+void TileMap::WriteStatus(sf::Vector2i position, int s, bool do_position) {
     if (!IsInBounds(position)) {
         return;
     }
@@ -227,11 +235,13 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
         // get a pointer to the current tile's tile
         sf::Vertex* tile = &vertices[(x + y * (TILES_X + 3)) * 4];
 
-        // define its 4 corners
-        tile[0].position = sf::Vector2f(x * TILE_SIZE      , y * TILE_SIZE);
-        tile[1].position = sf::Vector2f(x * TILE_SIZE      , (y + 1) * TILE_SIZE);
-        tile[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
-        tile[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+        if (do_position) {
+            // define its 4 corners
+            tile[0].position = sf::Vector2f(x * TILE_SIZE      , y * TILE_SIZE);
+            tile[1].position = sf::Vector2f(x * TILE_SIZE      , (y + 1) * TILE_SIZE);
+            tile[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
+            tile[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+        }
 
         // define its 4 texture coordinates
         tile[0].texCoords = sf::Vector2f(s * TILE_SIZE      , 0);
@@ -242,9 +252,11 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
         // Transparent line wrap verticies
         // TODO EVEN FEWER TRIANGLES DO IT ZIG ZAG
         if (x == TILES_X - 1) {
-            tile[4].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
-            tile[5].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
-            tile[6].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+            if (do_position) {
+                tile[4].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                tile[5].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+                tile[6].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+            }
 
             tile[4].color = sf::Color::Transparent;
             tile[5].color = sf::Color::Transparent;
@@ -253,9 +265,9 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
     }
 }
 
-// Redefine each tile's texture based on its status each frame
-void TileMap::WriteStatus(int x, int y, int status) {
-    WriteStatus(sf::Vector2i(x, y), status);
+// Read the status of a tile at a position
+Tile TileMap::GetTile(int x, int y) {
+    return GetTile(sf::Vector2i(x, y));
 }
 
 // Read the status of a tile at a position. Returns (-1, (-1, -1)) if out of bounds
@@ -268,11 +280,6 @@ Tile TileMap::GetTile(sf::Vector2i position) {
         t.velocity = sf::Vector2f(0, 0);
         return t;
     }
-}
-
-// Read the status of a tile at a position
-Tile TileMap::GetTile(int x, int y) {
-    return GetTile(sf::Vector2i(x, y));
 }
 
 // Virtual draw

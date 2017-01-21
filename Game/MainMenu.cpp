@@ -78,11 +78,11 @@ void MainMenu::Update() {
         window.draw(*selectors[i]);
     }
 
-    debug_string += "\n" + ToString(game_package.p1_class_index) + " ";
-    debug_string += ToString(game_package.p2_class_index) + " ";
+    debug_string += "\nP1: " + ToString(game_package.p1_class_index) + " ";
     debug_string += ToString(game_package.p1_color_index) + " ";
+    debug_string += "\nP2: " + ToString(game_package.p2_class_index) + " ";
     debug_string += ToString(game_package.p2_color_index) + " ";
-    debug_string += ToString(game_package.map_index) + " ";
+    debug_string += "\nMap: " + ToString(game_package.map_index) + " ";
 }
 
 // Change texture of menu tiles, position is unchanged
