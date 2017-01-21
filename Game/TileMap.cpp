@@ -1,6 +1,8 @@
 #include "TileMap.h"
 
-TileMap::~TileMap() {}
+TileMap::~TileMap() {
+    tiles.clear();
+}
 
 TileMap::TileMap(int selected) {
     load_state = _GeneratingTerrain;
@@ -57,7 +59,7 @@ void TileMap::GenerateTerrain() {
                 amplitude = rand()%(TILES_Y * 1/6) + 3;
                 amplitude2 = rand()%(TILES_Y * 1/20) + 1;
             } else {
-                amplitude = rand()%(TILES_Y * 3/5) + 7;
+                amplitude = rand()%(TILES_Y * 1/2) + 7;
                 amplitude2 = rand()%(TILES_Y * 1/20) + 1;
             }
 
@@ -285,7 +287,7 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 // Move each tile down 1 tile per frame if space exists below it
 void TileMap::UpdateFallingTiles() {
     for (int x = 0; x < TILES_X; ++x) {
-        for (int y = TILES_Y - 1; y >= 0; --y) {
+        for (int y = TILES_Y - 1; y > 0; --y) {
             if (tiles[x][y].status == 0 && tiles[x][y - 1].status == 1) {
                 WriteStatus(sf::Vector2i(x, y), 1);
                 WriteStatus(sf::Vector2i(x, y - 1), 0);

@@ -11,13 +11,13 @@ Player::~Player() {
     }
 }
 
-Player::Player(unsigned int i, bool b, int color_index, sf::Vector2f position) {
-    is_turn_based = b;
-    is_active = !is_turn_based;
+Player::Player(unsigned int _index, bool _turn_based, int _class, int _color, sf::Vector2f position) {
     is_dead = false;
     is_overtime = false;
     has_fired = false;
-    player_index = i;
+    player_index = _index;
+    is_turn_based = _turn_based;
+    is_active = !is_turn_based;
     hit_points = 100;
     power = 14;
     fuel = 100;
@@ -42,7 +42,7 @@ Player::Player(unsigned int i, bool b, int color_index, sf::Vector2f position) {
     sprite_barrel.setOutlineThickness(1);
     sprite_barrel.setPosition(sprite.getPosition());
 
-    SetColor(color_index);
+    SetColor(_color);
 
     // Player text left column
     text_info_left.setFont(font);
@@ -313,25 +313,25 @@ void Player::SetColor(int i) {
     // A truth table of colors!
     switch (i) {
         case 0:
-            color = sf::Color(255, 255, 255, 255); // white
-            break;
-        case 1:
-            color = sf::Color(255, 255, 51, 255); // yellow
-            break;
-        case 2:
-            color = sf::Color(255, 51, 255, 255); // magenta
-            break;
-        case 3:
-            color = sf::Color(255, 51, 51, 255); // red
-            break;
-        case 4:
             color = sf::Color(51, 255, 255, 255); // cyan
             break;
-        case 5:
+        case 1:
+            color = sf::Color(255, 51, 255, 255); // magenta
+            break;
+        case 2:
+            color = sf::Color(255, 255, 51, 255); // yellow
+            break;
+        case 3:
             color = sf::Color(51, 255, 51, 255); // green
             break;
-        case 6:
+        case 4:
+            color = sf::Color(255, 51, 51, 255); // red
+            break;
+        case 5:
             color = sf::Color(51, 51, 255, 255); // blue
+            break;
+        case 6:
+            color = sf::Color(255, 255, 255, 255); // white
             break;
         case 7:
             color = sf::Color(0, 0, 0, 255); // black with white outline
@@ -353,65 +353,65 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
 
     switch (projectile_index) {
         // Bottom tier
-        case 0:
+        case 0: // Direct hit 19
             p.name = "Bomb";
             p.cost = 0;
             if (return_projectile) {
                 p.projectile = new Projectile(position, GetDirectionVector());
             }
             break;
-        case 1:
+        case 1: // Direct hit 19
             p.name = "Tile Bomb";
-            p.cost = 0;
+            p.cost = 2;
             if (return_projectile) {
-                p.projectile = new Projectile(position, GetDirectionVector(), 3.2, 1, 10);
+                p.projectile = new Projectile(position, GetDirectionVector(), 6.2, 1, 10);
             }
             break;
 
         // Low tier
-        case 2:
+        case 2: // Direct hit ~41
             p.name = "Shotgun";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Shotgun(position, GetDirectionVector());
             }
             break;
-        case 3:
+        case 3: // Direct hit ~32
             p.name = "Impact Split Bomb";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_ImpactSplitBomb(position, GetDirectionVector());
             }
             break;
-        case 4:
+        case 4: // Direct hit ~24
             p.name = "Tunneler";
             p.cost = 2;
             if (return_projectile) {
-                p.projectile = new Projectile_Tunnel(position, GetDirectionVector(), 3.2, 0, 3);
+                p.projectile = new Projectile_Tunnel(position, GetDirectionVector(), 3.2, 0, 6);
             }
             break;
-        case 5:
+        case 5: // Direct hit 1
             p.name = "Bridge";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Bridge(position, GetDirectionVector());
             }
             break;
-        case 6:
+        case 6: // Direct hit 39
             p.name = "Boomerang";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Boomerang(position, GetDirectionVector());
             }
             break;
-        case 7:
+        case 7: // Direct hit ~11
             p.name = "Bouncer";
             p.cost = 2;
             if (return_projectile) {
                 p.projectile = new Projectile_Bouncer(position, GetDirectionVector());
             }
             break;
-        case 8:
+        case 8: // Direct hit 11
             p.name = "Crescent Shield";
             p.cost = 2;
             if (return_projectile) {
@@ -420,14 +420,14 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             break;
 
         // Mid tier
-        case 9:
+        case 9: // Direct hit ~74
             p.name = "Tunneler (with shell)";
             p.cost = 6;
             if (return_projectile) {
                 p.projectile = new Projectile_Tunnel(position, GetDirectionVector());
             }
             break;
-        case 10:
+        case 10: // Direct hit 19
             p.name = "Teleport";
             p.cost = 6;
             if (return_projectile) {
@@ -436,21 +436,21 @@ ProjectileData Player::GetProjectileData(int projectile_index, bool return_proje
             break;
 
         // Top tier
-        case 11:
+        case 11: // Direct hit 50+
             p.name = "Binary Tree";
             p.cost = 10;
             if (return_projectile) {
                 p.projectile = new Projectile_BinaryTree(position, GetDirectionVector());
             }
             break;
-        case 12:
+        case 12: // Direct hit 50+
             p.name = "Sparkler";
             p.cost = 10;
             if (return_projectile) {
                 p.projectile = new Projectile_AirSplitBomb(position, GetDirectionVector());
             }
             break;
-        case 13:
+        case 13: // Direct hit 80
             p.name = "Cardinal";
             p.cost = 10;
             if (return_projectile) {

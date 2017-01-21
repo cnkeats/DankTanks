@@ -23,7 +23,7 @@ struct ProjectileData {
 
 class Player {
 public:
-    Player(unsigned int, bool, int, sf::Vector2f);
+    Player(unsigned int, bool, int, int, sf::Vector2f);
     ~Player();
     void Update(TileMap* &, std::vector<Player*> &);
 

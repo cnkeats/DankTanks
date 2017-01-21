@@ -1,42 +1,70 @@
 #include "Globals.h"
 
-class MainMenu : public sf::Drawable, public sf::Transformable {
+struct GameStartingCollection {
+    int p1_class_index = -1;
+    int p2_class_index = -1;
+    int p1_color_index = -1;
+    int p2_color_index = -1;
+    int map_index = -1;
+};
+
+class MainMenu {
 public:
     MainMenu();
     ~MainMenu();
     void Update();
-    int InputP1Select();
+    GameStartingCollection InputP1Select();
     void InputP1Up();
     void InputP1Down();
     void InputP1Left();
     void InputP1Right();
-    int InputP2Select();
+    void InputP1Back();
+
+    GameStartingCollection InputP2Select();
     void InputP2Up();
     void InputP2Down();
     void InputP2Left();
     void InputP2Right();
+    void InputP2Back();
 
 private:
-    virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
-    void PopulateMenuMap();
-    void PopulateMenuClass();
-    void WrapAroundSelected(int &);
+    void PopulateClasses();
+    void PopulateMaps();
+    void UpdateP1Selection();
+    void UpdateP2Selection();
 
     enum MenuState {_SelectingClass, _SelectingMap};
     MenuState menu_state;
 
     static const int MENU_X = 4;
-    static const int MENU_SIZE_X = 384;
-    static const int MENU_SIZE_Y = 216;
+    static const int THUMBNAIL_SIZE_X = 384;
+    static const int THUMBNAIL_SIZE_Y = 216;
+    static const int CLASS_PREVIEW_SIZE_X = 845;
+    static const int CLASS_PREVIEW_SIZE_Y = 475;
+    static const int MAP_PREVIEW_SIZE_X = 1024;
+    static const int MAP_PREVIEW_SIZE_Y = 576;
     static const int PADDING = 77;
-    bool p1_selected_class;
-    bool p2_selected_class;
     int p1_selected;
     int p2_selected;
-    sf::VertexArray vertices;
-    sf::Texture menu_textures;
+    GameStartingCollection game_package;
 
-    sf::RectangleShape r_map;
-    sf::RectangleShape r_p1;
-    sf::RectangleShape r_p2;
+    // Selectors
+    std::vector<sf::Texture*> selector_textures;
+    std::vector<sf::RectangleShape*> selectors;
+
+    // Class tiles at bottom
+    std::vector<sf::Texture*> class_textures;
+    std::vector<sf::RectangleShape*> class_tiles;
+
+    // Class previews
+    std::vector<sf::Texture*> class_preview_textures;
+    std::vector<sf::RectangleShape*> class_previews;
+
+    // Map tiles at bottom
+    std::vector<sf::Texture*> map_textures;
+    std::vector<sf::RectangleShape*> map_tiles;
+
+    // Map preview
+    std::vector<sf::Texture*> map_preview_textures;
+    sf::RectangleShape map_preview;
 };

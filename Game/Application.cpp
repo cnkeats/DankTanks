@@ -11,7 +11,7 @@ Application::Application() {
 
     font.loadFromFile("Cousine-Regular.ttf"); // Load a font for sf::Text
 
-    StartNewGame();
+    StartNewMenu();
 
     static const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f); // Use a fixed time step, 60 fps
     sf::Clock clock;
@@ -33,16 +33,18 @@ Application::Application() {
 }
 
 // Creates a menu and 2 players
-void Application::StartNewGame() {
+void Application::StartNewMenu() {
     game_state = _MainMenu; // Initialize game state
 
     main_menu = new MainMenu(); // Create menu
 
-    is_turn_based = true;
+    is_turn_based = false;
 
-    selected_map = -1;
-    selected_p1_class = -1;
-    selected_p2_class = -1;
+    game_package.p1_class_index = -1;
+    game_package.p2_class_index = -1;
+    game_package.p1_color_index = -1;
+    game_package.p2_color_index = -1;
+    game_package.map_index = -1;
 
     winner_index = -2;
 
@@ -50,6 +52,21 @@ void Application::StartNewGame() {
     text_elapsed_time.setCharacterSize(20);
     text_elapsed_time.setColor(sf::Color::White);
     text_elapsed_time.setPosition(window.getSize().x - 180, 0);
+}
+
+void Application::StartNewGame() {
+    game_state = _Running;
+
+    // Create map
+    tile_map = new TileMap(game_package.map_index);
+
+    // Create players
+    players.push_back(new Player(0, is_turn_based, game_package.p1_class_index, game_package.p1_color_index, sf::Vector2f(8 * TILE_SIZE, 0)));
+    players.push_back(new Player(1, is_turn_based, game_package.p2_class_index, game_package.p2_color_index, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
+
+    players[0]->SetActive();
+    game_clock.restart();
+    game_budget_clock.restart();
 }
 
 // Render based on game state
@@ -92,19 +109,6 @@ void Application::Render() {
 // Update main menu which includes map and player color selection
 void Application::UpdateMainMenu() {
     main_menu->Update();
-    window.draw(*main_menu);
-
-    if (game_state == _MainMenu && selected_map != -1) {
-        game_state = _Running;
-
-        // Create players
-        players.push_back(new Player(0, is_turn_based, selected_p1_class, sf::Vector2f(8 * TILE_SIZE, 0)));
-        players.push_back(new Player(1, is_turn_based, selected_p2_class, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
-
-        players[0]->SetActive();
-        game_clock.restart();
-        game_budget_clock.restart();
-    }
 }
 
 // Update terrain using 2D array and tiles
@@ -182,7 +186,9 @@ void Application::ProcessInput() {
                     game_state = pre_paused_game_state;
                 }
             } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) { // End game to start over
-                game_state = _GameOver;
+                if (game_state == _Running) {
+                    game_state = _GameOver;
+                }
             } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) { // Debug, add budget
                 for (unsigned int i = 0; i < players.size(); ++i) {
                     for (int n = 0; n < 10; ++n) {
@@ -194,11 +200,10 @@ void Application::ProcessInput() {
             if (game_state == _MainMenu) {
                 // Player 1 controls
                 if (event.key.code == sf::Keyboard::Space) { // Fire
-                    if (selected_p1_class == -1 || selected_p2_class == -1) {
-                        selected_p1_class = main_menu->InputP1Select();
-                    } else if (selected_map == -1) {
-                        selected_map = main_menu->InputP1Select();
-                        tile_map = new TileMap(selected_map);
+                    game_package = main_menu->InputP1Select();
+
+                    if (game_package.map_index != -1) {
+                        StartNewGame();
                     }
                 } else if (event.key.code == sf::Keyboard::Up) { // Up
                     main_menu->InputP1Up();
@@ -209,7 +214,7 @@ void Application::ProcessInput() {
                 } else if (event.key.code == sf::Keyboard::Right) { // Right
                     main_menu->InputP1Right();
                 } else if (event.key.code == sf::Keyboard::RShift) { // Change projectile
-                    // Nothing?
+                    main_menu->InputP1Back();
                 } else if (event.key.code == sf::Keyboard::Equal) { // Increase power
                     // Cycle color up
                 } else if (event.key.code == sf::Keyboard::Dash) { // Decrease power
@@ -217,11 +222,10 @@ void Application::ProcessInput() {
 
                 // Player 2 controls
                 } else if (event.key.code == sf::Keyboard::Return) { // Fire
-                    if (selected_p1_class == -1 || selected_p2_class == -1) {
-                        selected_p2_class = main_menu->InputP2Select();
-                    } else if (selected_map == -1) {
-                        selected_map = main_menu->InputP2Select();
-                        tile_map = new TileMap(selected_map);
+                    game_package = main_menu->InputP2Select();
+
+                    if (game_package.map_index != -1) {
+                        StartNewGame();
                     }
                 } else if (event.key.code == sf::Keyboard::Numpad8) { // Up
                     main_menu->InputP2Up();
@@ -232,7 +236,7 @@ void Application::ProcessInput() {
                 } else if (event.key.code == sf::Keyboard::Numpad6) { // Right
                     main_menu->InputP2Right();
                 } else if (event.key.code == sf::Keyboard::Numpad7) { // Change projectile
-                    // Nothing?
+                    main_menu->InputP2Back();
                 } else if (event.key.code == sf::Keyboard::Numpad2) { // Increase power
                     // Cycle color up
                 } else if (event.key.code == sf::Keyboard::Numpad0) { // Decrease power
@@ -278,7 +282,7 @@ void Application::ProcessInput() {
             } else if (game_state == _GameOver) {
                 if (event.key.code == sf::Keyboard::Space || event.key.code == sf::Keyboard::Return) {
                     CleanUp();
-                    StartNewGame();
+                    StartNewMenu();
                 }
             }
         }

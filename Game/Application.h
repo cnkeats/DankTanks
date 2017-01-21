@@ -11,6 +11,7 @@ public:
     ~Application();
 
 private:
+    void StartNewMenu();
     void StartNewGame();
     void CleanUp();
     void Render();
@@ -27,13 +28,11 @@ private:
     MainMenu *main_menu;
     TileMap *tile_map;
     std::vector<Player*> players;
-    int selected_map;
-    int selected_p1_class;
-    int selected_p2_class;
     std::string elapsed_time_string;
     sf::Text text_elapsed_time;
     sf::Clock game_clock;
     sf::Clock game_budget_clock;
+    GameStartingCollection game_package;
 
     bool is_turn_based;
     int winner_index;
