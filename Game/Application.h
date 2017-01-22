@@ -1,5 +1,6 @@
 #include <math.h>
 #include "Globals.h"
+#include "GameStartingInfo.h"
 #include "MainMenu.h"
 #include "TileMap.h"
 #include "Player.h"
@@ -32,7 +33,7 @@ private:
     sf::Text text_elapsed_time;
     sf::Clock game_clock;
     sf::Clock game_budget_clock;
-    GameStartingCollection game_package;
+    GameStartingInfo game_starter;
 
     bool is_turn_based;
     int winner_index;

@@ -45,7 +45,7 @@ MainMenu::MainMenu() {
 // Main game loop calls this update function
 void MainMenu::Update() {
     // If both players have selected a class, go to map selection
-    if (menu_state == _SelectingClass && game_package.p1_class_index != -1 && game_package.p2_class_index != -1) {
+    if (menu_state == _SelectingClass && game_starter.ClassesAreSelected()) {
         PopulateMaps();
     }
 
@@ -78,11 +78,7 @@ void MainMenu::Update() {
         window.draw(*selectors[i]);
     }
 
-    debug_string += "\nP1: " + ToString(game_package.p1_class_index) + " ";
-    debug_string += ToString(game_package.p1_color_index) + " ";
-    debug_string += "\nP2: " + ToString(game_package.p2_class_index) + " ";
-    debug_string += ToString(game_package.p2_color_index) + " ";
-    debug_string += "\nMap: " + ToString(game_package.map_index) + " ";
+    debug_string += "\n" + game_starter.toString();
 }
 
 // Change texture of menu tiles, position is unchanged
@@ -141,11 +137,7 @@ void MainMenu::PopulateClasses() {
     p1_selected = 0;
     p2_selected = 0;
 
-    game_package.p1_class_index = -1;
-    game_package.p2_class_index = -1;
-    game_package.p1_color_index = -1;
-    game_package.p2_color_index = -1;
-    game_package.map_index = -1;
+    game_starter.Reset();
 
     UpdateP1Selection();
     UpdateP2Selection();
@@ -229,22 +221,22 @@ void MainMenu::UpdateP2Selection() {
 }
 
 // Return P1's current selected coordinates
-GameStartingCollection MainMenu::InputP1Select() {
+GameStartingInfo MainMenu::InputP1Select() {
     if (menu_state == _SelectingClass) {
-        game_package.p1_class_index = p1_selected;
-        game_package.p1_color_index = p1_selected;
+        game_starter.p1_class_index = p1_selected;
+        game_starter.p1_color_index = p1_selected;
     } else if (menu_state == _SelectingMap) {
-        game_package.map_index = p1_selected;
+        game_starter.map_index = p1_selected;
     }
 
-    return game_package;
+    return game_starter;
 }
 
 // Input back button
 void MainMenu::InputP1Back() {
     if (menu_state == _SelectingClass) {
-        game_package.p1_class_index = -1;
-        game_package.p1_color_index = -1;
+        game_starter.p1_class_index = -1;
+        game_starter.p1_color_index = -1;
     } else if (menu_state == _SelectingMap) {
         PopulateClasses();
     }
@@ -262,7 +254,7 @@ void MainMenu::InputP1Down() {
 
 // Move P1's selection left
 void MainMenu::InputP1Left() {
-    if (menu_state == _SelectingClass && game_package.p1_class_index == -1) {
+    if (menu_state == _SelectingClass && game_starter.p1_class_index == -1) {
         p1_selected--;
         UpdateP1Selection();
     } else if (menu_state == _SelectingMap) {
@@ -275,7 +267,7 @@ void MainMenu::InputP1Left() {
 
 // Move P1's selection right
 void MainMenu::InputP1Right() {
-    if (menu_state == _SelectingClass && game_package.p1_class_index == -1) {
+    if (menu_state == _SelectingClass && game_starter.p1_class_index == -1) {
         p1_selected++;
         UpdateP1Selection();
     } else if (menu_state == _SelectingMap) {
@@ -287,22 +279,22 @@ void MainMenu::InputP1Right() {
 }
 
 // Return P2's current selected coordinates
-GameStartingCollection MainMenu::InputP2Select() {
+GameStartingInfo MainMenu::InputP2Select() {
     if (menu_state == _SelectingClass) {
-        game_package.p2_class_index = p2_selected;
-        game_package.p2_color_index = p2_selected;
+        game_starter.p2_class_index = p2_selected;
+        game_starter.p2_color_index = p2_selected;
     } else if (menu_state == _SelectingMap) {
-        game_package.map_index = p2_selected;
+        game_starter.map_index = p2_selected;
     }
 
-    return game_package;
+    return game_starter;
 }
 
 // Input back button
 void MainMenu::InputP2Back() {
     if (menu_state == _SelectingClass) {
-        game_package.p2_class_index = -1;
-        game_package.p2_color_index = -1;
+        game_starter.p2_class_index = -1;
+        game_starter.p2_color_index = -1;
     } else if (menu_state == _SelectingMap) {
         PopulateClasses();
     }
@@ -328,7 +320,7 @@ void MainMenu::InputP2Down() {
 
 // Move P2's selection left
 void MainMenu::InputP2Left() {
-    if (menu_state == _SelectingClass && game_package.p2_class_index == -1) {
+    if (menu_state == _SelectingClass && game_starter.p2_class_index == -1) {
         p2_selected--;
         UpdateP2Selection();
     } else if (menu_state == _SelectingMap) {
@@ -341,7 +333,7 @@ void MainMenu::InputP2Left() {
 
 // Move P2's selection right
 void MainMenu::InputP2Right() {
-    if (menu_state == _SelectingClass && game_package.p2_class_index == -1) {
+    if (menu_state == _SelectingClass && game_starter.p2_class_index == -1) {
         p2_selected++;
         UpdateP2Selection();
     } else if (menu_state == _SelectingMap) {

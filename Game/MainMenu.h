@@ -1,26 +1,19 @@
 #include "Globals.h"
-
-struct GameStartingCollection {
-    int p1_class_index = -1;
-    int p2_class_index = -1;
-    int p1_color_index = -1;
-    int p2_color_index = -1;
-    int map_index = -1;
-};
+#include "GameStartingInfo.h"
 
 class MainMenu {
 public:
     MainMenu();
     ~MainMenu();
     void Update();
-    GameStartingCollection InputP1Select();
+    GameStartingInfo InputP1Select();
     void InputP1Up();
     void InputP1Down();
     void InputP1Left();
     void InputP1Right();
     void InputP1Back();
 
-    GameStartingCollection InputP2Select();
+    GameStartingInfo InputP2Select();
     void InputP2Up();
     void InputP2Down();
     void InputP2Left();
@@ -46,7 +39,7 @@ private:
     static const int PADDING = 77;
     int p1_selected;
     int p2_selected;
-    GameStartingCollection game_package;
+    GameStartingInfo game_starter;
 
     // Selectors
     std::vector<sf::Texture*> selector_textures;

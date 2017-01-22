@@ -47,11 +47,7 @@ void Application::StartNewMenu() {
 
     is_turn_based = false;
 
-    game_package.p1_class_index = -1;
-    game_package.p2_class_index = -1;
-    game_package.p1_color_index = -1;
-    game_package.p2_color_index = -1;
-    game_package.map_index = -1;
+    game_starter.Reset();
 
     winner_index = -2;
 
@@ -65,12 +61,12 @@ void Application::StartNewGame() {
     game_state = _Running;
 
     // Create map
-    tile_map = new TileMap(game_package.map_index);
+    tile_map = new TileMap(game_starter.map_index);
 
     // Create players
     players.clear();
-    players.push_back(new Player(0, is_turn_based, game_package.p1_class_index, game_package.p1_color_index, sf::Vector2f(8 * TILE_SIZE, 0)));
-    players.push_back(new Player(1, is_turn_based, game_package.p2_class_index, game_package.p2_color_index, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
+    players.push_back(new Player(0, is_turn_based, game_starter.p1_class_index, game_starter.p1_color_index, sf::Vector2f(8 * TILE_SIZE, 0)));
+    players.push_back(new Player(1, is_turn_based, game_starter.p2_class_index, game_starter.p2_color_index, sf::Vector2f((TILES_X - 10) * TILE_SIZE, 0)));
 
     players[0]->SetActive();
     game_clock.restart();
@@ -208,9 +204,9 @@ void Application::ProcessInput() {
             if (game_state == _MainMenu) {
                 // Player 1 controls
                 if (event.key.code == sf::Keyboard::Space) { // Fire
-                    game_package = main_menu->InputP1Select();
+                    game_starter = main_menu->InputP1Select();
 
-                    if (game_package.map_index != -1) {
+                    if (game_starter.map_index != -1) {
                         StartNewGame();
                     }
                 } else if (event.key.code == sf::Keyboard::Up) { // Up
@@ -230,9 +226,9 @@ void Application::ProcessInput() {
 
                 // Player 2 controls
                 } else if (event.key.code == sf::Keyboard::Return) { // Fire
-                    game_package = main_menu->InputP2Select();
+                    game_starter = main_menu->InputP2Select();
 
-                    if (game_package.map_index != -1) {
+                    if (game_starter.map_index != -1) {
                         StartNewGame();
                     }
                 } else if (event.key.code == sf::Keyboard::Numpad8) { // Up
@@ -325,9 +321,9 @@ void Application::ProcessInput() {
     if (game_state == _MainMenu) {
         // Player 1 controls
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { // Fire
-            game_package = main_menu->InputP1Select();
+            game_starter = main_menu->InputP1Select();
 
-            if (game_package.map_index != -1) {
+            if (game_starter.map_index != -1) {
                 StartNewGame();
             }
         }
@@ -355,9 +351,9 @@ void Application::ProcessInput() {
 
         // Player 2 controls
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { // Fire
-            game_package = main_menu->InputP2Select();
+            game_starter = main_menu->InputP2Select();
 
-            if (game_package.map_index != -1) {
+            if (game_starter.map_index != -1) {
                 StartNewGame();
             }
         }
