@@ -1,4 +1,5 @@
 #include "Application.h"
+//#include "wiringPi.h" // Required on pi
 
 Application::~Application() {
     CleanUp();
@@ -6,6 +7,11 @@ Application::~Application() {
 
 // Main game loop
 Application::Application() {
+    // Required on pi
+    //if (wiringPiSetupGpio() == -1) {
+        //TODO
+    //}
+
     window.create(sf::VideoMode(1, 1), "Dank Tanks!", sf::Style::Fullscreen); // Create window
     window.setMouseCursorVisible(false);
 
