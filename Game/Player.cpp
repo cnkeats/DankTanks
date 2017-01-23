@@ -28,7 +28,7 @@ Player::Player(unsigned int _index, bool _turn_based, int _class, int _color, sf
 
     for (int i = 0; i < 8; ++i) {
         input_status[i] = false;
-        input_cooldown[i] = 0;
+        input_cooldown[i] = 10;
     }
 
     ProjectileData p = GetProjectileData(selected_projectile, false);
@@ -95,7 +95,7 @@ void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
             }
         }
 
-        // Input is
+        // Input is queued and takes action now
         if (input_status[0] && input_cooldown[0] == 0) { // (left) Move left
             input_status[0] = false;
             input_cooldown[0] = 10;
@@ -122,7 +122,7 @@ void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
 
         if (input_status[4] && input_cooldown[4] == 0) { // (top left) Fire
             input_status[4] = false;
-            input_cooldown[4] = 120;
+            input_cooldown[4] = 180;
             InputFire();
         }
 
@@ -167,7 +167,12 @@ void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
 
     // Draw player info
     // Left text
-    std::string s = "Player " + ToString(player_index + 1)
+    std::string is_active_str = "";
+    if (is_active) {
+        is_active_str += " (active)";
+    }
+
+    std::string s = "Player " + ToString(player_index + 1) + is_active_str
                 + "\n  Health: " + ToString(hit_points)
                 + "\n  Power:  " + ToString(power)
                 + "\n  Fuel:   " + ToString(fuel);
@@ -181,10 +186,6 @@ void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
 
     if (is_overtime == true) {
         s += " (OVERTIME x2)";
-    }
-
-    if (is_active) {
-        s += " (active)";
     }
 
     text_info_right.setString(s);

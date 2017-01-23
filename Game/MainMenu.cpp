@@ -49,6 +49,8 @@ void MainMenu::Update() {
         PopulateMaps();
     }
 
+    UpdateInput();
+
     if (menu_state == _SelectingClass) {
         debug_string += "Select Color (Player 1 and 2)";
 
@@ -61,6 +63,9 @@ void MainMenu::Update() {
         for (unsigned int i = 0; i < class_previews.size(); ++i) {
             window.draw(*class_previews[i]);
         }
+
+        window.draw(p1_color_rectangle);
+        window.draw(p2_color_rectangle);
     } else if (menu_state == _SelectingMap) {
         debug_string += "Select Map";
 
@@ -79,6 +84,124 @@ void MainMenu::Update() {
     }
 
     debug_string += "\n" + game_starter.toString();
+}
+
+// Update input
+void MainMenu::UpdateInput() {
+    // Decrease cooldown counters
+    for (int i = 0; i < 8; ++i) {
+        if (p1_input_cooldown[i] > 0) {
+            --p1_input_cooldown[i];
+        }
+
+        if (p2_input_cooldown[i] > 0) {
+            --p2_input_cooldown[i];
+        }
+    }
+
+    // P1
+    // Input is queued and takes action now
+    if (p1_input_status[0] && p1_input_cooldown[0] == 0) { // (left)
+        p1_input_status[0] = false;
+        p1_input_cooldown[0] = 10;
+        InputP1Left();
+    }
+
+    // Input is
+    if (p1_input_status[1] && p1_input_cooldown[1] == 0) { // (right)
+        p1_input_status[1] = false;
+        p1_input_cooldown[1] = 10;
+        InputP1Right();
+    }
+
+    // Input is
+    if (p1_input_status[2] && p1_input_cooldown[2] == 0) { // (up)
+        p1_input_status[2] = false;
+        p1_input_cooldown[2] = 10;
+        InputP1Up();
+    }
+
+    // Input is
+    if (p1_input_status[3] && p1_input_cooldown[3] == 0) { // (down)
+        p1_input_status[3] = false;
+        p1_input_cooldown[3] = 10;
+        InputP1Down();
+    }
+
+    // There's a spot for [4] but select is different so it's left out
+
+    // Input is
+    if (p1_input_status[5] && p1_input_cooldown[5] == 0) { // (top right)
+        p1_input_status[5] = false;
+        p1_input_cooldown[5] = 10;
+        InputP1ColorUp();
+    }
+
+    // Input is
+    if (p1_input_status[6] && p1_input_cooldown[6] == 0) { // (bottom left)
+        p1_input_status[6] = false;
+        p1_input_cooldown[6] = 10;
+        InputP1Back();
+    }
+
+    // Input is
+    if (p1_input_status[7] && p1_input_cooldown[7] == 0) { // (bottom right)
+        p1_input_status[7] = false;
+        p1_input_cooldown[7] = 10;
+        InputP1ColorDown();
+    }
+
+    // P2
+    // Input is queued and takes action now
+    if (p2_input_status[0] && p2_input_cooldown[0] == 0) { // (left)
+        p2_input_status[0] = false;
+        p2_input_cooldown[0] = 10;
+        InputP2Left();
+    }
+
+    // Input is
+    if (p2_input_status[1] && p2_input_cooldown[1] == 0) { // (right)
+        p2_input_status[1] = false;
+        p2_input_cooldown[1] = 10;
+        InputP2Right();
+    }
+
+    // Input is
+    if (p2_input_status[2] && p2_input_cooldown[2] == 0) { // (up)
+        p2_input_status[2] = false;
+        p2_input_cooldown[2] = 10;
+        InputP2Up();
+    }
+
+    // Input is
+    if (p2_input_status[3] && p2_input_cooldown[3] == 0) { // (down)
+        p2_input_status[3] = false;
+        p2_input_cooldown[3] = 10;
+        InputP2Down();
+    }
+
+    // There's a spot for [4] but select is different so it's left out
+
+    // Input is
+    if (p2_input_status[5] && p2_input_cooldown[5] == 0) { // (top right)
+        p2_input_status[5] = false;
+        p2_input_cooldown[5] = 10;
+        InputP2ColorUp();
+    }
+
+    // Input is
+    if (p2_input_status[6] && p2_input_cooldown[6] == 0) { // (bottom left)
+        p2_input_status[6] = false;
+        p2_input_cooldown[6] = 10;
+        InputP2Back();
+    }
+
+    // Input is
+    if (p2_input_status[7] && p2_input_cooldown[7] == 0) { // (bottom right)
+        p2_input_status[7] = false;
+        p2_input_cooldown[7] = 10;
+        InputP2ColorDown();
+    }
 }
 
 // Change texture of menu tiles, position is unchanged
@@ -139,8 +262,26 @@ void MainMenu::PopulateClasses() {
 
     game_starter.Reset();
 
+    p1_color_rectangle.setSize(sf::Vector2f(50, 50));
+    p1_color_rectangle.setPosition(sf::Vector2f(PADDING, PADDING));
+    p1_color_rectangle.setOutlineColor(sf::Color::Black);
+    p1_color_rectangle.setOutlineThickness(-1);
+    SetColor(p1_color_rectangle, game_starter.p1_color_index);
+
+    p2_color_rectangle.setSize(sf::Vector2f(50, 50));
+    p2_color_rectangle.setPosition(sf::Vector2f(CLASS_PREVIEW_SIZE_X + PADDING * 2, PADDING));
+    p2_color_rectangle.setFillColor(sf::Color(51, 255, 255, 255));
+    p2_color_rectangle.setOutlineColor(sf::Color::Black);
+    p2_color_rectangle.setOutlineThickness(-1);
+    SetColor(p2_color_rectangle, game_starter.p2_color_index);
+
     UpdateP1Selection();
     UpdateP2Selection();
+
+    for (int i = 0; i < 8; ++i) {
+        p1_input_status[i] = false;
+        p1_input_cooldown[i] = 10;
+    }
 }
 
 // Populate menu boxes that will be drawn when this object is drawn
@@ -184,6 +325,11 @@ void MainMenu::PopulateMaps() {
 
     UpdateP1Selection();
     UpdateP2Selection();
+
+    for (int i = 0; i < 8; ++i) {
+        p1_input_status[i] = false;
+        p1_input_cooldown[i] = 10;
+    }
 }
 
 // Make menu movements wrap around all sides
@@ -220,36 +366,11 @@ void MainMenu::UpdateP2Selection() {
     }
 }
 
-// Return P1's current selected coordinates
-GameStartingInfo MainMenu::InputP1Select() {
-    if (menu_state == _SelectingClass) {
-        game_starter.p1_class_index = p1_selected;
-        game_starter.p1_color_index = p1_selected;
-    } else if (menu_state == _SelectingMap) {
-        game_starter.map_index = p1_selected;
+// Input for all P1
+void MainMenu::InputP1(int input_index) {
+    if (p1_input_cooldown[input_index] < 2) {
+        p1_input_status[input_index] = true;
     }
-
-    return game_starter;
-}
-
-// Input back button
-void MainMenu::InputP1Back() {
-    if (menu_state == _SelectingClass) {
-        game_starter.p1_class_index = -1;
-        game_starter.p1_color_index = -1;
-    } else if (menu_state == _SelectingMap) {
-        PopulateClasses();
-    }
-}
-
-// Move P1's selection up
-void MainMenu::InputP1Up() {
-    //p1_selected.y++;
-}
-
-// Move P1's selection down
-void MainMenu::InputP1Down() {
-    //p1_selected.y--;
 }
 
 // Move P1's selection left
@@ -278,43 +399,74 @@ void MainMenu::InputP1Right() {
     }
 }
 
-// Return P2's current selected coordinates
-GameStartingInfo MainMenu::InputP2Select() {
-    if (menu_state == _SelectingClass) {
-        game_starter.p2_class_index = p2_selected;
-        game_starter.p2_color_index = p2_selected;
-    } else if (menu_state == _SelectingMap) {
-        game_starter.map_index = p2_selected;
+// Move P1's selection up
+void MainMenu::InputP1Up() {
+    //p1_selected.y++;
+}
+
+// Move P1's selection down
+void MainMenu::InputP1Down() {
+    //p1_selected.y--;
+}
+
+// Return P1's current selected coordinates
+GameStartingInfo MainMenu::InputP1Select() {
+    if (p1_input_cooldown[4] == 0) {
+        p1_input_cooldown[4] = 10;
+
+        if (menu_state == _SelectingClass) {
+            game_starter.p1_class_index = p1_selected;
+        } else if (menu_state == _SelectingMap) {
+            game_starter.map_index = p1_selected;
+        }
     }
 
     return game_starter;
 }
 
-// Input back button
-void MainMenu::InputP2Back() {
+// Input P1's color up
+void MainMenu::InputP1ColorUp() {
+    if (menu_state == _SelectingClass && game_starter.p1_class_index == -1) {
+        game_starter.p1_color_index++;
+
+        if (game_starter.p1_color_index > 7) {
+            game_starter.p1_color_index = 0;
+        }
+
+        SetColor(p1_color_rectangle, game_starter.p1_color_index);
+    } else if (menu_state == _SelectingMap) {
+        //
+    }
+}
+
+// Input P1's back button
+void MainMenu::InputP1Back() {
     if (menu_state == _SelectingClass) {
-        game_starter.p2_class_index = -1;
-        game_starter.p2_color_index = -1;
+        game_starter.p1_class_index = -1;
     } else if (menu_state == _SelectingMap) {
         PopulateClasses();
     }
 }
 
-// Move P2's selection up
-void MainMenu::InputP2Up() {
-    if (menu_state == _SelectingClass) {
-        //p2_selected.y++;
+// Input P1's color down
+void MainMenu::InputP1ColorDown() {
+    if (menu_state == _SelectingClass && game_starter.p1_class_index == -1) {
+        game_starter.p1_color_index--;
+
+        if (game_starter.p1_color_index < 0) {
+            game_starter.p1_color_index = 7;
+        }
+
+        SetColor(p1_color_rectangle, game_starter.p1_color_index);
     } else if (menu_state == _SelectingMap) {
-        //p1_selected.y++;
+        //
     }
 }
 
-// Move P2's selection down
-void MainMenu::InputP2Down() {
-    if (menu_state == _SelectingClass) {
-        //p2_selected.y--;
-    } else if (menu_state == _SelectingMap) {
-        //p1_selected.y--;
+// Input for all P2
+void MainMenu::InputP2(int input_index) {
+    if (p2_input_cooldown[input_index] < 2) {
+        p2_input_status[input_index] = true;
     }
 }
 
@@ -341,5 +493,121 @@ void MainMenu::InputP2Right() {
         p2_selected++;
         UpdateP1Selection();
         UpdateP2Selection();
+    }
+}
+
+// Move P2's selection up
+void MainMenu::InputP2Up() {
+    if (menu_state == _SelectingClass) {
+        //p2_selected.y++;
+    } else if (menu_state == _SelectingMap) {
+        //p1_selected.y++;
+    }
+}
+
+// Move P2's selection down
+void MainMenu::InputP2Down() {
+    if (menu_state == _SelectingClass) {
+        //p2_selected.y--;
+    } else if (menu_state == _SelectingMap) {
+        //p1_selected.y--;
+    }
+}
+
+// Return P2's current selected coordinates
+GameStartingInfo MainMenu::InputP2Select() {
+    if (p2_input_cooldown[4] == 0) {
+        p2_input_cooldown[4] = 10;
+
+        if (menu_state == _SelectingClass) {
+            game_starter.p2_class_index = p2_selected;
+        } else if (menu_state == _SelectingMap) {
+            game_starter.map_index = p2_selected;
+        }
+    }
+
+    return game_starter;
+}
+
+// Input P2's color down
+void MainMenu::InputP2ColorUp() {
+    if (menu_state == _SelectingClass && game_starter.p2_class_index == -1) {
+        game_starter.p2_color_index++;
+
+        if (game_starter.p2_color_index > 7) {
+            game_starter.p2_color_index = 0;
+        }
+
+        SetColor(p2_color_rectangle, game_starter.p2_color_index);
+    } else if (menu_state == _SelectingMap) {
+        //
+    }
+}
+
+// Input P2's back button
+void MainMenu::InputP2Back() {
+    if (menu_state == _SelectingClass) {
+        game_starter.p2_class_index = -1;
+    } else if (menu_state == _SelectingMap) {
+        PopulateClasses();
+    }
+}
+
+// Input P2's color down
+void MainMenu::InputP2ColorDown() {
+    if (menu_state == _SelectingClass && game_starter.p2_class_index == -1) {
+        game_starter.p2_color_index--;
+
+        if (game_starter.p2_color_index < 0) {
+            game_starter.p2_color_index = 7;
+        }
+
+        SetColor(p2_color_rectangle, game_starter.p2_color_index);
+    } else if (menu_state == _SelectingMap) {
+        //
+    }
+}
+
+// Set the player's color
+void MainMenu::SetColor(sf::RectangleShape &r, int i) {
+    sf::Color color;
+
+    // A truth table of colors!
+    switch (i) {
+        case 0:
+            r.setFillColor(sf::Color(51, 255, 255, 255)); // cyan
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 1:
+            r.setFillColor(sf::Color(255, 51, 255, 255)); // magenta
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 2:
+            r.setFillColor(sf::Color(255, 255, 51, 255)); // yellow
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 3:
+            r.setFillColor(sf::Color(51, 255, 51, 255)); // green
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 4:
+            r.setFillColor(sf::Color(255, 51, 51, 255)); // red
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 5:
+            r.setFillColor(sf::Color(51, 51, 255, 255)); // blue
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 6:
+            r.setFillColor(sf::Color(255, 255, 255, 255)); // white
+            r.setOutlineColor(sf::Color::Black);
+            break;
+        case 7:
+            r.setFillColor(sf::Color(0, 0, 0, 255)); // black with white outline
+            r.setOutlineColor(sf::Color::White);
+            break;
+        default:
+            r.setFillColor(sf::Color(255, 255, 255, 255)); // white
+            break;
     }
 }

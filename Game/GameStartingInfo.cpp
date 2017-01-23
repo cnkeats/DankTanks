@@ -9,8 +9,8 @@ GameStartingInfo::GameStartingInfo() {
 void GameStartingInfo::Reset() {
     p1_class_index = -1;
     p2_class_index = -1;
-    p1_color_index = -1;
-    p2_color_index = -1;
+    p1_color_index = 4;
+    p2_color_index = 0;
     map_index = -1;
 }
 
