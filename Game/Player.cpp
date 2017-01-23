@@ -19,12 +19,17 @@ Player::Player(unsigned int _index, bool _turn_based, int _class, int _color, sf
     is_turn_based = _turn_based;
     is_active = !is_turn_based;
     hit_points = 100;
-    power = 14;
+    power = 70;
     fuel = 100;
     budget = 4;
     angle = 0;
     shot_counter = 0;
     selected_projectile = 0;
+
+    for (int i = 0; i < 8; ++i) {
+        input_status[i] = false;
+        input_cooldown[i] = 0;
+    }
 
     ProjectileData p = GetProjectileData(selected_projectile, false);
     selected_projectile_string = p.name;
@@ -83,6 +88,62 @@ void Player::Update(TileMap* &tile_map, std::vector<Player*> &players) {
 
     // If player is alive, update and draw it
     if (!is_dead) {
+        // Decrease cooldown counters
+        for (int i = 0; i < 8; ++i) {
+            if (input_cooldown[i] > 0) {
+                --input_cooldown[i];
+            }
+        }
+
+        // Input is
+        if (input_status[0] && input_cooldown[0] == 0) { // (left) Move left
+            input_status[0] = false;
+            input_cooldown[0] = 10;
+            InputMoveLeft(tile_map);
+        }
+
+        if (input_status[1] && input_cooldown[1] == 0) { // (right) Move right
+            input_status[1] = false;
+            input_cooldown[1] = 10;
+            InputMoveRight(tile_map);
+        }
+
+        if (input_status[2] && input_cooldown[2] == 0) { // (up) Rotate clockwise
+            input_status[2] = false;
+            input_cooldown[2] = 1;
+            InputRotateClockwise();
+        }
+
+        if (input_status[3] && input_cooldown[3] == 0) { // (down) Rotate counterclockwise
+            input_status[3] = false;
+            input_cooldown[3] = 1;
+            InputRotateCounterClockwise();
+        }
+
+        if (input_status[4] && input_cooldown[4] == 0) { // (top left) Fire
+            input_status[4] = false;
+            input_cooldown[4] = 120;
+            InputFire();
+        }
+
+        if (input_status[5] && input_cooldown[5] == 0) { // (top right) Power up
+            input_status[5] = false;
+            input_cooldown[5] = 3;
+            InputPowerUp();
+        }
+
+        if (input_status[6] && input_cooldown[6] == 0) { // (bottom left) Cycle projectile
+            input_status[6] = false;
+            input_cooldown[6] = 10;
+            InputCycleProjectileType();
+        }
+
+        if (input_status[7] && input_cooldown[7] == 0) { // (bottom right) Power down
+            input_status[7] = false;
+            input_cooldown[7] = 3;
+            InputPowerDown();
+        }
+
         tile_coords = sf::Vector2i(floor(sprite.getPosition().x / TILE_SIZE), floor(sprite.getPosition().y / TILE_SIZE));
 
         // Draw tank body (check if it falls)
@@ -145,87 +206,16 @@ void Player::SetOvertime() {
     is_overtime = true;
 }
 
-// Change power
-void Player::InputPowerUp() {
-    if (is_active && power < 20) {
-        ++power;
-    }
-}
-
-// Change power
-void Player::InputPowerDown() {
-    if (is_active && power > 1) {
-        --power;
-    }
-}
-
-// Change projectile type
-void Player::InputCycleProjectileType() {
-    if (is_active) {
-        ++selected_projectile;
-
-        if (selected_projectile > 13) {
-            selected_projectile = 0;
-        }
-
-        ProjectileData p = GetProjectileData(selected_projectile, false);
-        selected_projectile_string = p.name;
-        selected_projectile_cost = p.cost;
-    }
-}
-
-// Add a projectile to the projectile vector when fire button is pressed
-void Player::InputFire() {
-    if (is_active) {
-        ProjectileData p = GetProjectileData(selected_projectile, false);
-
-        if (budget >= p.cost) {
-            if (is_turn_based) {
-                has_fired = true;
-                is_active = false;
-                ++shot_counter;
-
-                if (shot_counter == 10) {
-                    is_overtime = true;
-                }
-            }
-
-            p = GetProjectileData(selected_projectile, true);
-            projectiles.push_back(p.projectile);
-            budget -= p.cost;
-        }
-    }
-}
-
-// Rotate barrel clockwise
-void Player::InputRotateClockwise() {
-    if (is_active) {
-        angle += 5;
-
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle >= 360) {
-            angle -= 360;
-        }
-    }
-}
-
-// Rotate barrel counter clockwise
-void Player::InputRotateCounterClockwise() {
-    if (is_active) {
-        angle -= 5;
-
-        if (angle < 0) {
-            angle += 360;
-        } else if (angle >= 360) {
-            angle -= 360;
-        }
+// Set input to true for a command
+void Player::Input(int input_index) {
+    if (is_active && input_cooldown[input_index] < 2) {
+        input_status[input_index] = true;
     }
 }
 
 // Move player left
 void Player::InputMoveLeft(TileMap* &tile_map) {
-    if (is_active && fuel > 0) {
+    if (fuel > 0) {
         if (tile_map->GetTile(tile_coords.x - 1, tile_coords.y).status > 0 && tile_map->GetTile(tile_coords.x - 1, tile_coords.y - 1).status == 0) {
             --fuel;
             sprite.move(-TILE_SIZE, -TILE_SIZE);
@@ -238,7 +228,7 @@ void Player::InputMoveLeft(TileMap* &tile_map) {
 
 // Move player right
 void Player::InputMoveRight(TileMap* &tile_map) {
-    if (is_active && fuel > 0) {
+    if (fuel > 0) {
         if (tile_map->GetTile(tile_coords.x + 2, tile_coords.y).status > 0 && tile_map->GetTile(tile_coords.x + 2, tile_coords.y - 1).status == 0) {
             --fuel;
             sprite.move(TILE_SIZE, -TILE_SIZE);
@@ -246,6 +236,76 @@ void Player::InputMoveRight(TileMap* &tile_map) {
             --fuel;
             sprite.move(TILE_SIZE, 0);
         }
+    }
+}
+
+// Rotate barrel clockwise
+void Player::InputRotateClockwise() {
+    angle += 1;
+
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle >= 360) {
+        angle -= 360;
+    }
+}
+
+// Rotate barrel counter clockwise
+void Player::InputRotateCounterClockwise() {
+    angle -= 1;
+
+    if (angle < 0) {
+        angle += 360;
+    } else if (angle >= 360) {
+        angle -= 360;
+    }
+}
+
+// Add a projectile to the projectile vector when fire button is pressed
+void Player::InputFire() {
+    ProjectileData p = GetProjectileData(selected_projectile, false);
+
+    if (budget >= p.cost) {
+        if (is_turn_based) {
+            has_fired = true;
+            is_active = false;
+            ++shot_counter;
+
+            if (shot_counter == 10) {
+                is_overtime = true;
+            }
+        }
+
+        p = GetProjectileData(selected_projectile, true);
+        projectiles.push_back(p.projectile);
+        budget -= p.cost;
+    }
+}
+
+// Change power
+void Player::InputPowerUp() {
+    if (power < 100) {
+        ++power;
+    }
+}
+
+// Change projectile type
+void Player::InputCycleProjectileType() {
+    ++selected_projectile;
+
+    if (selected_projectile > 13) {
+        selected_projectile = 0;
+    }
+
+    ProjectileData p = GetProjectileData(selected_projectile, false);
+    selected_projectile_string = p.name;
+    selected_projectile_cost = p.cost;
+}
+
+// Change power
+void Player::InputPowerDown() {
+    if (power > 0) {
+        --power;
     }
 }
 
@@ -276,7 +336,7 @@ bool Player::IsOnTile(sf::Vector2i v) {
 
 // Get unit vector in direction based on angle and multiply by power
 sf::Vector2f Player::GetDirectionVector() {
-    return sf::Vector2f(sin(angle * PI_OVER_180) * power, -cos(angle * PI_OVER_180) * power);
+    return sf::Vector2f(sin(angle * PI_OVER_180) * power / 5, -cos(angle * PI_OVER_180) * power / 5);
 }
 
 void Player::UpdateHitPoints(int damage) {

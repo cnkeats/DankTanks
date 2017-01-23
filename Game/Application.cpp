@@ -34,7 +34,6 @@ Application::Application() {
             elapsed_time += clock.restart();
         }
 
-        //ProcessInput();
         Render();
     }
 }
@@ -173,7 +172,7 @@ void Application::UpdatePlayers() {
 
 // Handle user input
 void Application::ProcessInput() {
-    sf::Event event;
+    /*sf::Event event;
 
     while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -290,11 +289,11 @@ void Application::ProcessInput() {
                 }
             }
         }
-    }
+    }*/
 
 
     // Universal controls
-    /*if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) { // Close window
         window.close();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) { // Pause
@@ -380,62 +379,62 @@ void Application::ProcessInput() {
         }
     } else if (game_state == _Running) {
         // Player 1 controls
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { // Fire
-            players[0]->InputFire();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) { // Up
-            players[0]->InputRotateClockwise();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) { // Down
-            players[0]->InputRotateCounterClockwise();
-        }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) { // Left
-            players[0]->InputMoveLeft(tile_map);
+            players[0]->Input(0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) { // Right
-            players[0]->InputMoveRight(tile_map);
+            players[0]->Input(1);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)) { // Change projectile
-            players[0]->InputCycleProjectileType();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) { // Up
+            players[0]->Input(2);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) { // Down
+            players[0]->Input(3);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) { // Fire
+            players[0]->Input(4);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Equal)) { // Increase power
-            players[0]->InputPowerUp();
+            players[0]->Input(5);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::RShift)) { // Change projectile
+            players[0]->Input(6);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Dash)) { // Decrease power
-            players[0]->InputPowerDown();
+            players[0]->Input(7);
         }
 
         // Player 2 controls
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { // Fire
-            players[1]->InputFire();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) { // Up
-            players[1]->InputRotateClockwise();
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5)) { // Down
-            players[1]->InputRotateCounterClockwise();
-        }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad4)) { // Left
-            players[1]->InputMoveLeft(tile_map);
+            players[1]->Input(0);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad6)) { // Right
-            players[1]->InputMoveRight(tile_map);
+            players[1]->Input(1);
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7)) { // Change projectile
-            players[1]->InputCycleProjectileType();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad8)) { // Up
+            players[1]->Input(2);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad5)) { // Down
+            players[1]->Input(3);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) { // Fire
+            players[1]->Input(4);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad2)) { // Increase power
-            players[1]->InputPowerUp();
+            players[1]->Input(5);
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad7)) { // Change projectile
+            players[1]->Input(6);
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Numpad0)) { // Decrease power
-            players[1]->InputPowerDown();
+            players[1]->Input(7);
         }
     } else if (game_state == _GameOver) {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
             CleanUp();
             StartNewMenu();
         }
-    }*/
+    }
 }
 
 void Application::DrawElapsedTimeString() {
