@@ -37,4 +37,7 @@ private:
 
     bool is_turn_based;
     int winner_index;
+
+    static const int p1_pins[9] = {19, 26, 20, 21, 16, 13, 12,  6, 5}; // The 9th is the center button
+    static const int p2_pins[9] = {27, 18, 17,  4, 25, 23, 24, 22, 5}; // The 9th is the center button
 };
