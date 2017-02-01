@@ -3,19 +3,20 @@
 
 class TileMap : public sf::Drawable {
 public:
-    TileMap(sf::Vector2i);
+    TileMap(int);
     ~TileMap();
     void Update();
-    void WriteStatus(sf::Vector2i, int);
     void WriteStatus(int, int, int);
-    Tile GetTile(sf::Vector2i);
+    void WriteStatus(sf::Vector2i, int);
     Tile GetTile(int, int);
+    Tile GetTile(sf::Vector2i);
 
 private:
     void GenerateTerrain();
     void MakeTerrainDrawable();
     void PopulateVectorField();
     void UpdateFallingTiles();
+    void WriteStatus(sf::Vector2i, int, bool);
     virtual void draw(sf::RenderTarget&, sf::RenderStates) const;
     bool IsInBounds(sf::Vector2i);
     bool IsInBounds(sf::Vector2f);
@@ -26,5 +27,5 @@ private:
     std::vector< std::vector<Tile> > tiles;
     sf::VertexArray vertices;
     sf::Texture tile_textures;
-    sf::Vector2i selected_map;
+    int selected_map;
 };

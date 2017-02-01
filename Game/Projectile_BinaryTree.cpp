@@ -1,24 +1,31 @@
 #include "Projectile_BinaryTree.h"
 #include "Player.h"
 
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle) : Projectile(position, angle) {
-    ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
-    blast_radius = 2;
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v) : Projectile(p, v) {
+    blast_radius = 2.1;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
-}
-
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle, float radius, int status) : Projectile(position, angle, radius, status) {
+    damage = 6;
+    starting_life_ticks = 300;
+    life_ticks = starting_life_ticks;
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
-Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f position, sf::Vector2f angle, float radius, int status, float radius2, int status2) : Projectile(position, angle, radius, status, radius2, status2) {
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v, float r, int s, int d) : Projectile(p, v, r, s, d) {
+    starting_life_ticks = 300;
+    life_ticks = starting_life_ticks;
     ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 }
 
-// Overridden PostUpdate() since this projectile creates child projectiles over time
-void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+Projectile_BinaryTree::Projectile_BinaryTree(sf::Vector2f p, sf::Vector2f v, float r, int s, int d, float r2, int s2) : Projectile(p, v, r, s, d, r2, s2) {
+    starting_life_ticks = 300;
+    life_ticks = starting_life_ticks;
+    ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
+}
+
+// Overridden PostUpdate()
+void Projectile_BinaryTree::PostUpdate(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     if (!parent_expired) {
         --ticks_until_split;
 
@@ -26,9 +33,9 @@ void Projectile_BinaryTree::PostUpdate(TileMap* &tileMap, std::vector<Player*> &
             ticks_until_split = STARTING_TICKS_UNTIL_SPLIT;
 
             if (velocity.x >= 0) {
-                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x + 1, velocity.y - 0.1), blast_radius, status_on_hit, damage));
             } else {
-                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit));
+                sub_projectiles.push_back(new Projectile_BinaryTree(position, sf::Vector2f(velocity.x - 1, velocity.y - 0.1), blast_radius, status_on_hit, damage));
             }
         }
     }

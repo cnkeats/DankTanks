@@ -8,9 +8,6 @@ sf::RenderWindow window;
 sf::Font font;
 sf::Text text_debug;
 std::string debug_string = "";
-std::string MENU_MAP_FILE = "menu_map.png";
-std::string MENU_COLOR_FILE = "menu_color.png";
-std::string TILE_FILE = "tile_15.png";
 const int TILE_SIZE = 15;
 const int TILES_X = 128;     // 1920 / TILE_SIZE (5 = 384, 10 = 192, 15 = 128)
 const int TILES_Y = 72 - 6; // 1080 / TILE_SIZE (5 = 216, 10 = 108, 15 = 72)

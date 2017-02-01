@@ -2,7 +2,14 @@
 
 This is a game. The initial idea was based off of the old tanks game... we'll see what it ends up looking like.
 
+# Setup
 
-## Setup
+Check out the official tutorials:
+http://www.sfml-dev.org/tutorials/2.4/
 
-This part of the README is under construction because setting up DankTanks is currently a decent process.
+I use CodeBlocks (IDE) and here's the tutorial I followed to set it up on Windows:
+http://www.sfml-dev.org/tutorials/2.4/start-cb.php
+
+# Updates
+
+![Screenshot 1/7/2017](http://i.imgur.com/mc4syWh.png)

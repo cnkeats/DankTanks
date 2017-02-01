@@ -7,50 +7,50 @@ Projectile::~Projectile() {
     }
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v) {
     position = p;
-    velocity = angle;
-    blast_radius = 3;
+    velocity = v;
+    blast_radius = 3.2;
     status_on_hit = 0;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 360;
     life_ticks = starting_life_ticks;
-    damage = 5;
+    damage = 10;
 
     PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v, float r, int s, int d) {
     position = p;
-    velocity = angle;
-    blast_radius = radius;
-    status_on_hit = status;
+    velocity = v;
+    blast_radius = r;
+    status_on_hit = s;
+    damage = d;
     blast_radius_outer = 0;
     status_on_hit_outer = 0;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 360;
     life_ticks = starting_life_ticks;
-    damage = 5;
 
     PopulateVertexArray();
 }
 
-Projectile::Projectile(sf::Vector2f p, sf::Vector2f angle, float radius, int status, float radius2, int status2) {
+Projectile::Projectile(sf::Vector2f p, sf::Vector2f v, float r, int s, int d, float r2, int s2) {
     position = p;
-    velocity = angle;
-    blast_radius = radius;
-    status_on_hit = status;
-    blast_radius_outer = radius2;
-    status_on_hit_outer = status2;
+    velocity = v;
+    blast_radius = r;
+    status_on_hit = s;
+    damage = d;
+    blast_radius_outer = r2;
+    status_on_hit_outer = s2;
     parent_expired = false;
     children_expired = true;
-    starting_life_ticks = 240;
+    starting_life_ticks = 360;
     life_ticks = starting_life_ticks;
-    damage = 5;
 
     PopulateVertexArray();
 }
@@ -75,7 +75,7 @@ void Projectile::PopulateVertexArray() {
 }
 
 // Main game loop calls players update which calls this update each frame
-void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int owner_index) {
+void Projectile::Update(TileMap* &tile_map, std::vector<Player*> &players, int owner_index, std::vector<Explosion*> &explosions) {
     // Parent has not expired
     if (!parent_expired) {
         sf::Vertex* v = &vertices[0];
@@ -83,13 +83,13 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
 
         tile_coords = sf::Vector2i(floor(position.x / TILE_SIZE), floor(position.y / TILE_SIZE));
 
-        if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == -1) { // Off screen
+        if (tile_map->GetTile(tile_coords.x, tile_coords.y).status == -1) { // Off screen
             parent_expired = true;
         } else {
-            if (tileMap->GetTile(tile_coords.x, tile_coords.y).status == 0 && !PlayerWasHit(players, owner_index)) { // Hit nothing
+            if (tile_map->GetTile(tile_coords.x, tile_coords.y).status == 0 && !PlayerWasHit(players, owner_index)) { // Hit nothing
                 // Add velocity from vector field
-                velocity.x += tileMap->GetTile(tile_coords.x, tile_coords.y).velocity.x;
-                velocity.y += tileMap->GetTile(tile_coords.x, tile_coords.y).velocity.y;
+                velocity.x += tile_map->GetTile(tile_coords.x, tile_coords.y).velocity.x;
+                velocity.y += tile_map->GetTile(tile_coords.x, tile_coords.y).velocity.y;
 
                 // Move sprite
                 position = sf::Vector2f(position.x + velocity.x, position.y + velocity.y);
@@ -104,7 +104,7 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
                 v[3].position = sf::Vector2f(position.x, position.y + 1);
             } else { // Hit a tile or player
                 parent_expired = true;
-                Hit(tileMap, players, owner_index);
+                Hit(tile_map, players, owner_index, explosions);
             }
         }
     }
@@ -119,7 +119,7 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
     // Children have not expired
     if (!children_expired) {
         for (unsigned int i = 0; i < sub_projectiles.size(); i++) {
-            sub_projectiles[i]->Update(tileMap, players, owner_index);
+            sub_projectiles[i]->Update(tile_map, players, owner_index, explosions);
             window.draw(*sub_projectiles[i]);
 
             if (sub_projectiles[i]->IsExpired()) {
@@ -131,29 +131,31 @@ void Projectile::Update(TileMap* &tileMap, std::vector<Player*> &players, int ow
 
     --life_ticks;
 
-    PostUpdate(tileMap, players, owner_index);
+    PostUpdate(tile_map, players, owner_index, explosions);
 }
 
 // This is called after the update function. This is mainly used by derived classed
-void Projectile::PostUpdate(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+void Projectile::PostUpdate(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     //
 }
 
 // This is called if a hit is detected
-void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+void Projectile::Hit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     // Blast radius, deals damage
-    for (float x = -blast_radius; x <= blast_radius; ++x) {
-        for (float y = -blast_radius; y <= blast_radius; ++y) {
+    for (int y = -blast_radius; y <= blast_radius; ++y) {
+        for (int x = -blast_radius; x <= blast_radius; ++x) {
             sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
 
-            if (x*x + y*y < (blast_radius + 0.1)*(blast_radius + 0.1)) {
-                tileMap->WriteStatus(p, status_on_hit);
+            if (x*x + y*y < blast_radius*blast_radius) {
+                tile_map->WriteStatus(p, status_on_hit);
 
                 for (unsigned int i = 0; i < players.size(); ++i) {
                     if (players[i]->IsOnTile(p)) { // Player is on this tile
-                        float dmg = damage + (blast_radius - abs(x) - abs(y)); // damage + modifier (based on distance from center)
+                        int dmg = damage - floor(abs(x) + abs(y)); // damage - xy offset
                         if (dmg > 0) {
                             players[i]->UpdateHitPoints(dmg);
+                        } else {
+                            players[i]->UpdateHitPoints(1);
                         }
                     }
                 }
@@ -163,22 +165,24 @@ void Projectile::Hit(TileMap* &tileMap, std::vector<Player*> &players, unsigned 
 
     // Outer radius, doesn't deal damage
     if (blast_radius_outer > 0) {
-        for (float x = -blast_radius_outer; x <= blast_radius_outer; ++x) {
-            for (float y = -blast_radius_outer; y <= blast_radius_outer; ++y) {
+        for (int x = -blast_radius_outer; x <= blast_radius_outer; ++x) {
+            for (int y = -blast_radius_outer; y <= blast_radius_outer; ++y) {
                 sf::Vector2i p = sf::Vector2i(tile_coords.x + x, tile_coords.y + y);
 
-                if (x*x + y*y < blast_radius_outer*blast_radius_outer && x*x + y*y > blast_radius*blast_radius && tileMap->GetTile(p.x, p.y).status > 0) {
-                    tileMap->WriteStatus(p, status_on_hit_outer);
+                if (x*x + y*y < blast_radius_outer*blast_radius_outer && x*x + y*y > blast_radius*blast_radius && tile_map->GetTile(p.x, p.y).status > 0) {
+                    tile_map->WriteStatus(p, status_on_hit_outer);
                 }
             }
         }
     }
 
-    PostHit(tileMap, players, owner_index);
+    explosions.push_back(new Explosion(position, blast_radius));
+
+    PostHit(tile_map, players, owner_index, explosions);
 }
 
 // This is called after the hit function. This is mainly used by derived classed
-void Projectile::PostHit(TileMap* &tileMap, std::vector<Player*> &players, unsigned int owner_index) {
+void Projectile::PostHit(TileMap* &tile_map, std::vector<Player*> &players, unsigned int owner_index, std::vector<Explosion*> &explosions) {
     //
 }
 
@@ -186,6 +190,8 @@ bool Projectile::PlayerWasHit(std::vector<Player*> &players, unsigned int owner_
     for (unsigned int i = 0; i < players.size(); ++i) {
         if (players[i]->IsOnTile(tile_coords)) { // Hit a player
             if (i == owner_index && life_ticks > starting_life_ticks - 5) { // don't hit yourself for first 5 frames
+                return false;
+            } else if (life_ticks > starting_life_ticks - 1) { // direct hit bug otherwise if projectile spawns children
                 return false;
             } else {
                 return true;

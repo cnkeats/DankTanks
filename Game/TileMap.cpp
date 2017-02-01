@@ -2,7 +2,7 @@
 
 TileMap::~TileMap() {}
 
-TileMap::TileMap(sf::Vector2i selected) {
+TileMap::TileMap(int selected) {
     load_state = _GeneratingTerrain;
     selected_map = selected;
 }
@@ -43,8 +43,8 @@ void TileMap::GenerateTerrain() {
         }
     }
 
-    if (selected_map == sf::Vector2i(0, 0)) { // ??? Add 2 sine waves
-        // Use math to generate terrain
+    // Use math to generate terrain
+    if (selected_map == 0) { // Combine 2 sine waves
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -57,7 +57,7 @@ void TileMap::GenerateTerrain() {
                 amplitude = rand()%(TILES_Y * 1/6) + 3;
                 amplitude2 = rand()%(TILES_Y * 1/20) + 1;
             } else {
-                amplitude = rand()%(TILES_Y * 3/5) + 7;
+                amplitude = rand()%(TILES_Y * 1/2) + 7;
                 amplitude2 = rand()%(TILES_Y * 1/20) + 1;
             }
 
@@ -86,7 +86,7 @@ void TileMap::GenerateTerrain() {
             }
             sign *= -1;
         }
-    } else if (selected_map == sf::Vector2i(1, 0)) { // Flat, static
+    } else if (selected_map == 1) { // Flat, static
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
                 if (y > TILES_Y - 20) {
@@ -94,14 +94,7 @@ void TileMap::GenerateTerrain() {
                 }
             }
         }
-    //} else if (selected_map == sf::Vector2i(2, 0)) {
-        // TODO
-    //} else if (selected_map == sf::Vector2i(3, 0)) {
-        // TODO
-    //} else if (selected_map == sf::Vector2i(0, 1)) {
-        // TODO
-    } else if (selected_map == sf::Vector2i(1, 1)) { // Square wave
-        // Use math to generate terrain
+    } else if (selected_map == 2) { // Square Wave
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -138,8 +131,7 @@ void TileMap::GenerateTerrain() {
             }
             sign *= -1;
         }
-    } else if (selected_map == sf::Vector2i(2, 1)) { // All peaks
-        // Use math to generate terrain
+    } else if (selected_map == 3) { // All peaks
         int x = 0;
         int sign = -1;
         int number_of_peaks_and_valleys = rand()%5 + 3;
@@ -171,41 +163,7 @@ void TileMap::GenerateTerrain() {
                 }
             }
         }
-    } else if (selected_map == sf::Vector2i(3, 1)) { // All valleys
-        // Use math to generate terrain
-        int x = 0;
-        int sign = 1;
-        int number_of_peaks_and_valleys = rand()%5 + 3;
-        float amplitude = 1;
-
-        while (x < TILES_X) {
-            amplitude = rand()%(TILES_Y * 3/5) + 10;
-
-            for (float x_f = 0; x_f < PI; x_f += PI / (TILES_X / number_of_peaks_and_valleys)) {
-                float fx_f = sign * amplitude * sin(x_f) + TILES_Y * 0.25;
-
-                int fx = static_cast<int> (fx_f);
-
-                if (fx < 0) {
-                    fx = 0;
-                }
-
-                if (fx < TILES_Y) {
-                    tiles[x][fx].status = 1;
-
-                    for (int y = TILES_Y - 1; y > fx; --y) {
-                        tiles[x][y].status = 1;
-                    }
-                }
-                ++x;
-
-                if (x >= TILES_X) {
-                    break;
-                }
-            }
-        }
-    } else {
-        // border 1
+    } else { // Border only
         for (int x = 0; x < TILES_X; ++x) {
             for (int y = 0; y < TILES_Y; ++y) {
                 if (x == 0 || x == TILES_X - 1 || y == 0 || y == TILES_Y - 1) {
@@ -234,7 +192,7 @@ void TileMap::PopulateVectorField() {
 // Create actual drawable map using a vertex array
 void TileMap::MakeTerrainDrawable() {
     // load the tileset texture
-    if (!tile_textures.loadFromFile(TILE_FILE)) {
+    if (!tile_textures.loadFromFile("tile_15.png")) {
         //TODO
     }
 
@@ -245,13 +203,23 @@ void TileMap::MakeTerrainDrawable() {
     // populate the vertex array, with one quad per tile
     for (int x = 0; x < TILES_X; ++x) {
         for (int y = 0; y < TILES_Y; ++y) {
-            WriteStatus(x, y, tiles[x][y].status);
+            WriteStatus(sf::Vector2i(x, y), tiles[x][y].status, true);
         }
     }
 }
 
 // Redefine each tile's texture based on its status each frame
-void TileMap::WriteStatus(sf::Vector2i position, int s) {
+void TileMap::WriteStatus(int x, int y, int status) {
+    WriteStatus(sf::Vector2i(x, y), status, false);
+}
+
+// Redefine each tile's texture based on its status each frame
+void TileMap::WriteStatus(sf::Vector2i position, int status) {
+    WriteStatus(position, status, false);
+}
+
+// Redefine each tile's texture based on its status each frame
+void TileMap::WriteStatus(sf::Vector2i position, int s, bool do_position) {
     if (!IsInBounds(position)) {
         return;
     }
@@ -267,11 +235,13 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
         // get a pointer to the current tile's tile
         sf::Vertex* tile = &vertices[(x + y * (TILES_X + 3)) * 4];
 
-        // define its 4 corners
-        tile[0].position = sf::Vector2f(x * TILE_SIZE      , y * TILE_SIZE);
-        tile[1].position = sf::Vector2f(x * TILE_SIZE      , (y + 1) * TILE_SIZE);
-        tile[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
-        tile[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+        if (do_position) {
+            // define its 4 corners
+            tile[0].position = sf::Vector2f(x * TILE_SIZE      , y * TILE_SIZE);
+            tile[1].position = sf::Vector2f(x * TILE_SIZE      , (y + 1) * TILE_SIZE);
+            tile[2].position = sf::Vector2f((x + 1) * TILE_SIZE, y * TILE_SIZE);
+            tile[3].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+        }
 
         // define its 4 texture coordinates
         tile[0].texCoords = sf::Vector2f(s * TILE_SIZE      , 0);
@@ -282,9 +252,11 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
         // Transparent line wrap verticies
         // TODO EVEN FEWER TRIANGLES DO IT ZIG ZAG
         if (x == TILES_X - 1) {
-            tile[4].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
-            tile[5].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
-            tile[6].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+            if (do_position) {
+                tile[4].position = sf::Vector2f((x + 1) * TILE_SIZE, (y + 1) * TILE_SIZE);
+                tile[5].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+                tile[6].position = sf::Vector2f(0, (y + 1) * TILE_SIZE);
+            }
 
             tile[4].color = sf::Color::Transparent;
             tile[5].color = sf::Color::Transparent;
@@ -293,9 +265,9 @@ void TileMap::WriteStatus(sf::Vector2i position, int s) {
     }
 }
 
-// Redefine each tile's texture based on its status each frame
-void TileMap::WriteStatus(int x, int y, int status) {
-    WriteStatus(sf::Vector2i(x, y), status);
+// Read the status of a tile at a position
+Tile TileMap::GetTile(int x, int y) {
+    return GetTile(sf::Vector2i(x, y));
 }
 
 // Read the status of a tile at a position. Returns (-1, (-1, -1)) if out of bounds
@@ -310,11 +282,6 @@ Tile TileMap::GetTile(sf::Vector2i position) {
     }
 }
 
-// Read the status of a tile at a position
-Tile TileMap::GetTile(int x, int y) {
-    return GetTile(sf::Vector2i(x, y));
-}
-
 // Virtual draw
 void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // apply the tileset texture
@@ -327,7 +294,7 @@ void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 // Move each tile down 1 tile per frame if space exists below it
 void TileMap::UpdateFallingTiles() {
     for (int x = 0; x < TILES_X; ++x) {
-        for (int y = TILES_Y - 1; y >= 0; --y) {
+        for (int y = TILES_Y - 1; y > 0; --y) {
             if (tiles[x][y].status == 0 && tiles[x][y - 1].status == 1) {
                 WriteStatus(sf::Vector2i(x, y), 1);
                 WriteStatus(sf::Vector2i(x, y - 1), 0);
